@@ -89,6 +89,7 @@ function TiltCard({ project }: { project: Project }) {
               height: "100%",
               width: "100%",
               objectFit: "cover",
+              objectPosition: "50% 0%",
               filter: "brightness(0.7) contrast(1.15)",
               transition: "transform 0.5s ease",
               "&:hover": {
