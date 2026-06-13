@@ -151,12 +151,12 @@ export const defaultResumeData: ResumeData = {
   projects: [
     {
       title: "Vaidya Assist",
-      category: "Healthcare Assistant",
-      image: "/vedincharyaa.png",
+      category: "Doctor Appointment System",
+      image: "/vaidya-assist.png",
       tags: ["React", "Node.js", "MongoDB", "AI"],
       description: [
-        "A healthcare assistant application that helps users with medical information and health-related queries.",
-        "Built with AI integration to provide intelligent responses and personalized health recommendations.",
+        "A comprehensive doctor appointment booking system that allows patients to schedule appointments with healthcare providers.",
+        "Features include appointment management, patient records, and AI-powered health recommendations.",
       ],
       demoUrl: "#",
       codeUrl: "https://github.com/Pragnesh8122000/vaidya-assist",

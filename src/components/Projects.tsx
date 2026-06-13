@@ -57,22 +57,26 @@ function TiltCard({ project }: { project: Project }) {
         width: "100%",
         height: "100%",
         display: "flex",
+        flexDirection: "column",
       }}
     >
-      <Card
+      {/* Tiltable Card Content */}
+      <Box
         ref={cardRef}
-        className="tilt-element"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        className="tilt-element"
         sx={{
           width: "100%",
           display: "flex",
           flexDirection: "column",
           cursor: "pointer",
           background: "rgba(25, 27, 35, 0.5)",
-          borderColor: "rgba(255, 255, 255, 0.05)",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
+          borderRadius: 2,
           height: "100%",
           transition: "transform 0.1s ease-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out",
+          flexGrow: 1,
         }}
       >
         {/* Project Image */}
@@ -158,54 +162,59 @@ function TiltCard({ project }: { project: Project }) {
               ))}
             </ul>
           </Box>
-
-          {/* Action Links */}
-          <Box
-            sx={{
-              display: "flex",
-              gap: 2,
-              pt: 3,
-              borderTop: "1px solid rgba(255, 255, 255, 0.06)",
-            }}
-          >
-            <Button
-              variant="text"
-              color="primary"
-              startIcon={<LinkIcon />}
-              href={project.demoUrl}
-              sx={{
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                px: 1.5,
-                py: 0.75,
-                "&:hover": {
-                  background: "rgba(59, 130, 246, 0.08)",
-                },
-              }}
-            >
-              Live Demo
-            </Button>
-            <Button
-              variant="text"
-              sx={{
-                color: "text.secondary",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                px: 1.5,
-                py: 0.75,
-                "&:hover": {
-                  color: "primary.light",
-                  background: "rgba(255, 255, 255, 0.04)",
-                },
-              }}
-              startIcon={<GitHubIcon />}
-              href={project.codeUrl}
-            >
-              Source Code
-            </Button>
-          </Box>
         </CardContent>
-      </Card>
+      </Box>
+
+      {/* Fixed Action Buttons - Not Affected by Tilt */}
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          pt: 2,
+          pb: 2,
+          px: 1,
+        }}
+      >
+        <Button
+          variant="text"
+          color="primary"
+          startIcon={<LinkIcon />}
+          href={project.demoUrl}
+          sx={{
+            fontSize: "0.85rem",
+            fontWeight: 600,
+            px: 1.5,
+            py: 0.75,
+            flex: 1,
+            justifyContent: "center",
+            "&:hover": {
+              background: "rgba(59, 130, 246, 0.08)",
+            },
+          }}
+        >
+          Live Demo
+        </Button>
+        <Button
+          variant="text"
+          sx={{
+            color: "text.secondary",
+            fontSize: "0.85rem",
+            fontWeight: 600,
+            px: 1.5,
+            py: 0.75,
+            flex: 1,
+            justifyContent: "center",
+            "&:hover": {
+              color: "primary.light",
+              background: "rgba(255, 255, 255, 0.04)",
+            },
+          }}
+          startIcon={<GitHubIcon />}
+          href={project.codeUrl}
+        >
+          Source Code
+        </Button>
+      </Box>
     </Box>
   );
 }
@@ -255,7 +264,7 @@ export default function Projects({ data }: ProjectsProps) {
         {/* Projects Grid */}
         <Grid container spacing={4}>
           {data.map((project) => (
-            <Grid size={{ xs: 12, md: 4 }} key={project.title} sx={{ display: "flex" }}>
+            <Grid size={{ xs: 12, md: 6, lg: 6 }} key={project.title}>
               <TiltCard project={project} />
             </Grid>
           ))}
