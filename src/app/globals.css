@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --background: #10131a;
+  --foreground: #e1e2ec;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glassmorphic Panel Styles */
+.glass-panel {
+  background-color: rgba(25, 27, 35, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel:hover {
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Glowing Typography */
+.glow-text {
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+/* 3D Perspective Layout */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.tilt-element {
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+}
+
+/* Floating Keyframes */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Cursor Mouse Glow */
+#mouse-glow {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle 350px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(59, 130, 246, 0.06), transparent 80%);
+  z-index: 1;
+  transition: background 0.1s ease;
+}
+
+/* Timeline Components styling */
+.timeline-line {
+  background: linear-gradient(to bottom, #3b82f6 0%, rgba(59, 130, 246, 0.1) 100%);
+}
+
+/* Scroll Trigger Animations */
+.reveal-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal-element.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #10131a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #272a31;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+/* Code block adjustments */
+.code-block {
+  font-family: var(--font-mono), monospace;
+}
