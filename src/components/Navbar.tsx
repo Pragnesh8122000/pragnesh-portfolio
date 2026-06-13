@@ -24,9 +24,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "About", href: "#hero" },
-  { label: "Skills", href: "#skills" },
+  { label: "Services", href: "#services" },
   { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
+  { label: "Repos", href: "#repositories" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -119,23 +119,6 @@ export default function Navbar() {
                   {item.label}
                 </Button>
               ))}
-              
-              <Button
-                variant="outlined"
-                color="primary"
-                href="/Users/pragnesh/Downloads/CV/pragnesh_resume_26_05_2026.pdf"
-                target="_blank"
-                sx={{
-                  ml: 2,
-                  borderColor: "rgba(59, 130, 246, 0.4)",
-                  "&:hover": {
-                    borderColor: "primary.main",
-                    background: "rgba(59, 130, 246, 0.08)",
-                  },
-                }}
-              >
-                Resume
-              </Button>
             </Box>
 
             {/* Mobile Hamburger Toggle */}
@@ -202,17 +185,6 @@ export default function Navbar() {
               </ListItemButton>
             </ListItem>
           ))}
-          <ListItem sx={{ px: 4, py: 4 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              color="primary"
-              href="/Users/pragnesh/Downloads/CV/pragnesh_resume_26_05_2026.pdf"
-              target="_blank"
-            >
-              Resume
-            </Button>
-          </ListItem>
         </List>
       </Drawer>
     </>

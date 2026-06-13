@@ -11,7 +11,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export default function Services({ data }: { data: any[] }) {
   return (
-    <Box sx={{ py: 8, px: 2 }}>
+    <Box id="services" sx={{ py: 8, px: 2 }}>
       <Typography
         variant="h4"
         component="h2"
