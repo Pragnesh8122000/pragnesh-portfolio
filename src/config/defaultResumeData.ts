@@ -3,7 +3,6 @@ export interface ResumeData {
     hero: boolean;
     skills: boolean;
     projects: boolean;
-    repositories: boolean;
     services: boolean;
     testimonials: boolean;
     process: boolean;
@@ -79,7 +78,6 @@ export const defaultResumeData: ResumeData = {
     hero: true,
     skills: true,
     projects: true,
-    repositories: true,
     services: true,
     testimonials: true,
     process: true,
@@ -152,6 +150,18 @@ export const defaultResumeData: ResumeData = {
   ],
   projects: [
     {
+      title: "Vaidya Assist",
+      category: "Healthcare Assistant",
+      image: "/vedincharyaa.png",
+      tags: ["React", "Node.js", "MongoDB", "AI"],
+      description: [
+        "A healthcare assistant application that helps users with medical information and health-related queries.",
+        "Built with AI integration to provide intelligent responses and personalized health recommendations.",
+      ],
+      demoUrl: "#",
+      codeUrl: "https://github.com/Pragnesh8122000/vaidya-assist",
+    },
+    {
       title: "Vedincharyaa — Vedic Wisdom Platform",
       category: "AI-Powered Learning Platform",
       image: "/vedincharyaa.png",
@@ -161,31 +171,7 @@ export const defaultResumeData: ResumeData = {
         "Created an intelligent spaced-repetition system that adapts to each user's learning pace, improving retention by 40%.",
       ],
       demoUrl: "#",
-      codeUrl: "#",
-    },
-    {
-      title: "Shuffgroup — Home Security Platform",
-      category: "Real-time IoT Dashboard",
-      image: "/shuffgroup.png",
-      tags: ["React", "Node.js", "Redis", "AWS"],
-      description: [
-        "Developed a real-time emergency response system that delivers alerts instantly to security personnel.",
-        "Engineered a high-performance caching layer that reduced response times by 40%, handling thousands of concurrent users.",
-      ],
-      demoUrl: "#",
-      codeUrl: "#",
-    },
-    {
-      title: "Chandipe — Bullion Trading Platform",
-      category: "FinTech Trading Application",
-      image: "/chandipe.png",
-      tags: ["React", "Node.js", "PostgreSQL", "AWS"],
-      description: [
-        "Built a secure, real-time trading platform for gold and silver with reliable transaction processing.",
-        "Deployed with zero-downtime updates, ensuring traders never miss a market opportunity.",
-      ],
-      demoUrl: "#",
-      codeUrl: "#",
+      codeUrl: "https://github.com/Pragnesh8122000/vedincharyaa-fe",
     },
   ],
   services: [

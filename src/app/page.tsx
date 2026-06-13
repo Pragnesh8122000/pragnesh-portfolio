@@ -7,7 +7,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
-import Repositories from "@/components/Repositories";
 import Services from "@/components/Services";
 import Testimonials from "@/components/Testimonials";
 import Process from "@/components/Process";
@@ -64,9 +63,6 @@ export default function Home() {
 
         {/* Portfolio projects - Proof of capability */}
         {visibility.projects && <Projects data={resumeData.projects} />}
-
-        {/* GitHub Repositories */}
-        {visibility.repositories && <Repositories />}
 
         {/* Client Testimonials - Social Proof */}
         {visibility.testimonials && <Testimonials data={resumeData.testimonials} />}
