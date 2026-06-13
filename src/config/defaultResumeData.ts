@@ -3,8 +3,7 @@ export interface ResumeData {
     hero: boolean;
     skills: boolean;
     projects: boolean;
-    experience: boolean;
-    education: boolean;
+    repositories: boolean;
     services: boolean;
     testimonials: boolean;
     process: boolean;
@@ -80,8 +79,7 @@ export const defaultResumeData: ResumeData = {
     hero: true,
     skills: true,
     projects: true,
-    experience: false,
-    education: false,
+    repositories: true,
     services: true,
     testimonials: true,
     process: true,
