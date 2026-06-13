@@ -82,19 +82,14 @@ export default function TerminalConsole() {
         output = (
           <Box>
             <div style={{ marginBottom: "8px" }}>
-              <b style={{ color: "#ffdcc6" }}>1. Vedincharyaa</b> - Vedic Wisdom Platform (LLM/GenAI)
+              <b style={{ color: "#ffdcc6" }}>1. Vaidya Assist</b> - Doctor Appointment System (Healthcare Platform)
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;Tech: Node.js, TypeScript, React.js, OpenAI API, VectorDB, MongoDB
-            </div>
-            <div style={{ marginBottom: "8px" }}>
-              <b style={{ color: "#ffdcc6" }}>2. Shuffgroup</b> - Home Security Platform (Real-time WebSockets)
-              <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;Tech: Node.js, Express.js, React.js, Redis, AWS, MongoDB
+              &nbsp;&nbsp;&nbsp;&nbsp;Tech: React.js, Node.js, Express.js, MongoDB, AI Integration
             </div>
             <div>
-              <b style={{ color: "#ffdcc6" }}>3. Chandipe</b> - Bullion Trading Platform (Event-Driven Trading)
+              <b style={{ color: "#ffdcc6" }}>2. Vedincharyaa</b> - Vedic Wisdom Platform (LLM/GenAI)
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;Tech: Node.js, Express.js, PostgreSQL, Docker, AWS EC2
+              &nbsp;&nbsp;&nbsp;&nbsp;Tech: Node.js, TypeScript, React.js, OpenAI API, VectorDB, MongoDB
             </div>
           </Box>
         );
