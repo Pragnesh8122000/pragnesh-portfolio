@@ -1,0 +1,15 @@
+import { footer } from '../content/portfolio';
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-rule py-8">
+      <div className="container-page">
+        <div className="flex flex-col gap-1 md:flex-row md:justify-between">
+          <p className="t-body m-0 font-bold">{footer.left}</p>
+          <p className="t-body m-0 text-muted">{footer.right}</p>
+        </div>
+        <p className="t-meta mt-6 mb-0 max-w-[720px] border-t border-rule pt-6 text-muted">{footer.disclaimer}</p>
+      </div>
+    </footer>
+  );
+}

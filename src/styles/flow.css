@@ -1,0 +1,623 @@
+/* Flow language: tab pile, rail, stage index, feature tabs and backing edges. */
+
+/* ---------- Hero pile ---------- */
+
+.flow-scene {
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+}
+
+.flow-pile {
+  --step: 26px;
+  --reserve: 96px;
+  --branch-trim: 0px;
+  --rail-right: 28px;
+  --tab-w: calc(100% - var(--reserve));
+  position: relative;
+  width: min(100%, 586px);
+  min-height: 580px;
+  perspective: 1200px;
+}
+
+.flow-plane {
+  position: relative;
+  /* Coplanar 3D containers would otherwise win hit-testing over parts of the tabs. */
+  pointer-events: none;
+  transform: rotateY(-7deg) rotateX(3deg);
+  transform-style: preserve-3d;
+}
+
+.flow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 18px 0 8px;
+  list-style: none;
+  transform-style: preserve-3d;
+}
+
+.flow-pos {
+  --x: calc(var(--k) * var(--step));
+  position: relative;
+  width: var(--tab-w);
+  margin-left: var(--x);
+  transform: rotateZ(var(--rz));
+  transform-style: preserve-3d;
+}
+
+/* Branch from each tab's title row to the rail. Decorative. */
+.flow-pos::after {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: 100%;
+  width: calc(var(--reserve) - var(--x) - var(--branch-trim));
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--rail-glow);
+  pointer-events: none;
+}
+
+.flow-enter,
+.flow-scroll,
+.flow-hover {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flow-hover {
+  transition: transform 180ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .flow-hover:hover {
+    transform: translate3d(0, -3px, 16px);
+  }
+}
+
+.flow-tab {
+  display: block;
+  min-height: 84px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: var(--tab-shadow);
+  pointer-events: auto;
+}
+
+.flow-tab-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 700;
+}
+
+.flow-tab-num {
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.flow-tab-dot {
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+.flow-tab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-height: 50px;
+  padding: 11px 14px;
+}
+
+.flow-arrow {
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.flow-tab:hover .flow-tab-name {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+.flow-rail {
+  position: absolute;
+  top: 40px;
+  bottom: 18px;
+  right: var(--rail-right);
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--rail-glow);
+  pointer-events: none;
+}
+
+.flow-caption {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* Compact: static staggered pile in normal flow, no 3D. */
+@media (max-width: 767px) {
+  .flow-pile {
+    --step: 12px;
+    --reserve: 62px;
+    --branch-trim: 10px;
+    --rail-right: 10px;
+    width: 100%;
+    min-height: 0;
+    perspective: none;
+  }
+
+  .flow-plane {
+    transform: none;
+  }
+
+  .flow-list {
+    padding: 0;
+  }
+
+  .flow-pos {
+    transform: none;
+  }
+
+  .flow-pos::after {
+    top: 15px;
+  }
+
+  .flow-tab {
+    min-height: 76px;
+  }
+
+  .flow-tab-title {
+    min-height: 30px;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .flow-tab-chips {
+    min-height: 46px;
+    gap: 6px 8px;
+    padding: 10px 12px;
+  }
+
+  .flow-rail {
+    top: 15px;
+    bottom: 20px;
+  }
+}
+
+@media (max-width: 359px) {
+  .flow-pile {
+    --step: 8px;
+    --reserve: 34px;
+  }
+}
+
+/* ---------- Compact flow index ---------- */
+
+.flow-index {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--background);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.flow-index-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 56px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-index-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 12px;
+  border-radius: 5px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+.flow-index-link:hover {
+  color: var(--text);
+}
+
+.flow-index-num {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.flow-index-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.flow-index-link[aria-current='location'] {
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+  .flow-index-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    height: 104px;
+    padding-block: 6px;
+  }
+
+  .flow-index-link {
+    justify-content: center;
+    width: 100%;
+    padding-inline: 4px;
+    gap: 6px;
+  }
+
+  .flow-index-pip {
+    display: none;
+  }
+}
+
+/* ---------- Feature tabs and backing edges ---------- */
+
+.edge-wrap {
+  position: relative;
+  padding: 0 6px 6px 0;
+}
+
+.edge-back {
+  position: absolute;
+  inset: 6px 0 0 6px;
+  border-radius: 6px;
+  background: var(--depth-edge);
+}
+
+.edge-face {
+  position: relative;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.edge-face--top {
+  border-top: 2px solid var(--accent);
+}
+
+.tab-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 28px;
+  padding: 6px 24px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--accent);
+}
+
+.tab-header::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+
+/* Slim diagram tabs used by WebRTC and delivery views. */
+.slim-tab {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  background: var(--surface);
+  box-shadow: var(--tab-shadow);
+  font-weight: 700;
+}
+
+.connector {
+  display: block;
+  color: var(--accent);
+  flex: none;
+}
+
+/* ---------- Case-study detail ---------- */
+
+
+.case-details {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 6px 16px;
+  margin: 18px 0 0;
+}
+
+.case-details dt {
+  color: var(--accent);
+  font-size: 11px;
+  line-height: 23px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.case-details dd {
+  margin: 0;
+  max-width: 65ch;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+@media (max-width: 767px) {
+  .case-details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .case-details dd {
+    margin-bottom: 8px;
+  }
+}
+
+/* ---------- Flow diagram (real, simplified data flows) ---------- */
+
+.fd-chain,
+.fd-targets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-step,
+.fd-target {
+  display: block;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 5px;
+  background: var(--surface-raised);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+}
+
+.fd-arrow {
+  display: inline-flex;
+  color: var(--accent);
+  flex: none;
+}
+
+/* Between the chain and its targets: points down, aligned under the first step. */
+.fd-arrow--down {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 4px 12px;
+  transform: rotate(90deg);
+}
+
+.fd-via {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ---------- Horizontal card rows ---------- */
+
+.carousel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.carousel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: border-color 150ms ease-out, color 150ms ease-out;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.carousel-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.carousel-track {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  /* Room for the backing edge, shadow and focus ring inside the clipped row. */
+  padding: 4px 6px 24px 2px;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .carousel-track {
+    scroll-behavior: smooth;
+  }
+}
+
+.carousel-item {
+  display: flex;
+  flex: 0 0 min(600px, 88%);
+  scroll-snap-align: start;
+}
+
+.carousel-track--narrow .carousel-item {
+  flex-basis: min(400px, 80%);
+}
+
+.carousel-item > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Phones show one card at a time: natural heights avoid tall empty cards. */
+@media (max-width: 767px) {
+  .carousel-track {
+    align-items: flex-start;
+  }
+}
+
+/* ---------- Hero proof strip and availability ---------- */
+
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 520px;
+  margin: 28px 0 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-proof > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.hero-proof dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .hero-proof {
+    gap: 10px;
+  }
+
+  .hero-proof dd {
+    font-size: 24px;
+    line-height: 30px;
+  }
+}
+
+.open-to {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.open-to span {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.open-to:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Compact pile on phones: six stage links in a 2-column grid ---------- */
+
+@media (max-width: 767px) {
+  .flow-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .flow-pos {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .flow-pos::after,
+  .flow-rail,
+  .flow-tab-chips {
+    display: none;
+  }
+
+  .flow-tab {
+    min-height: 0;
+  }
+
+  .flow-tab-title {
+    min-height: 44px;
+    border-bottom: 0;
+  }
+}
