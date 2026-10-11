@@ -8,7 +8,6 @@ export function SiteFooter() {
           <p className="t-body m-0 font-bold">{footer.left}</p>
           <p className="t-body m-0 text-muted">{footer.right}</p>
         </div>
-        <p className="t-meta mt-6 mb-0 max-w-[720px] border-t border-rule pt-6 text-muted">{footer.disclaimer}</p>
       </div>
     </footer>
   );

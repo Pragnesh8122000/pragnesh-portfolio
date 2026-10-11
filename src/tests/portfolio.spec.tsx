@@ -52,8 +52,7 @@ describe('portfolio page', () => {
       content.about.education.degree,
       ...content.experience.rows.flatMap((r) => [r.employer, r.role, r.dates, ...r.highlights]),
       ...content.stack.rows.map((r) => r.tools.join(' · ')),
-      content.contact.lookingFor,
-      content.footer.disclaimer
+      content.contact.lookingFor
     ];
     for (const copy of required) expect(text).toContain(copy);
     expect(text).not.toMatch(/in plain terms/i);
