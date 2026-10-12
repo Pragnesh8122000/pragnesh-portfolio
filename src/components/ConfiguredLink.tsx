@@ -25,9 +25,11 @@ interface ConfiguredLinkProps {
   className?: string;
   /** Optional links disappear from public builds when unset. */
   optional?: boolean;
+  /** Analytics event name; GoatCounter counts clicks on elements with data-goatcounter-click. */
+  track?: string;
 }
 
-export function ConfiguredLink({ linkKey, label, icon, className, optional = false }: ConfiguredLinkProps) {
+export function ConfiguredLink({ linkKey, label, icon, className, optional = false, track }: ConfiguredLinkProps) {
   const href = resolveLink(linkKey);
 
   if (!href) {
@@ -44,6 +46,7 @@ export function ConfiguredLink({ linkKey, label, icon, className, optional = fal
     <a
       href={href}
       className={className}
+      data-goatcounter-click={track}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {label}

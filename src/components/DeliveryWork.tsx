@@ -17,7 +17,7 @@ export function DeliveryWork() {
           />
         </div>
 
-        <Carousel label="Mypcot work">
+        <Carousel label="Mypcot work" stackOnMobile>
           <FeatureTab feature={delivery.migration} />
           <FeatureTab feature={delivery.dispatch} />
         </Carousel>

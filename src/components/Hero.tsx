@@ -32,6 +32,7 @@ export function Hero() {
             <ConfiguredLink
               linkKey={hero.secondaryAction.link}
               label={hero.secondaryAction.label}
+              track="resume-hero"
               icon="↗"
               className="text-link inline-flex min-h-11 items-center gap-2"
             />

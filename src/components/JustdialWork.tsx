@@ -16,7 +16,7 @@ export function JustdialWork() {
             meta={justdial.meta}
           />
         </div>
-        <Carousel label="Justdial work">
+        <Carousel label="Justdial work" stackOnMobile>
           {justdial.features.map((feature) => (
             <FeatureTab key={feature.id} feature={feature} />
           ))}

@@ -6,6 +6,8 @@ interface CarouselProps {
   label: string;
   /** Narrow rows suit short items such as the "Also shipped" list. */
   size?: 'wide' | 'narrow';
+  /** Phones show the cards as a vertical stack instead of a swipeable row. */
+  stackOnMobile?: boolean;
   children: ReactNode;
 }
 
@@ -13,7 +15,7 @@ interface CarouselProps {
  * Horizontal, swipeable row of cards. Native scroll with snap points, so touch, trackpad,
  * keyboard (focus the row, then arrow keys) and anchor links all work; buttons help mouse users.
  */
-export function Carousel({ label, size = 'wide', children }: CarouselProps) {
+export function Carousel({ label, size = 'wide', stackOnMobile = false, children }: CarouselProps) {
   const trackRef = useRef<HTMLUListElement>(null);
   const reduced = useReducedMotion();
   const [edges, setEdges] = useState({ atStart: true, atEnd: false });
@@ -45,7 +47,7 @@ export function Carousel({ label, size = 'wide', children }: CarouselProps) {
   };
 
   return (
-    <div className="carousel">
+    <div className={`carousel${stackOnMobile ? ' carousel--stack' : ''}`}>
       <div className="carousel-bar">
         <p className="t-meta m-0 text-muted">
           {items.length} items · swipe or use the arrows

@@ -450,6 +450,123 @@
   line-height: 20px;
 }
 
+/* Each arrow stays with the step it points at, so wrapping never strands an arrow. */
+.fd-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fd-down {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.fd-group {
+  padding: 12px;
+  border: 1px dashed var(--accent);
+  border-radius: 6px;
+}
+
+.fd-group-label {
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fd-bus {
+  flex-basis: 100%;
+  background: var(--accent-soft);
+}
+
+/* Phones: the chain runs top to bottom and the fan-out hangs off one branch line. */
+@media (max-width: 767px) {
+  .fd-chain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fd-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fd-link .fd-arrow {
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    transform: rotate(90deg);
+  }
+
+  .fd-targets {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 25px;
+    padding-left: 18px;
+    border-left: 2px solid var(--accent);
+  }
+
+  .fd-group .fd-targets {
+    align-items: stretch;
+  }
+
+  .fd-target {
+    position: relative;
+  }
+
+  .fd-target::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -19px;
+    width: 16px;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .fd-bus {
+    flex-basis: auto;
+  }
+}
+
+/* ---------- Owner-supplied facts, status and contact extras ---------- */
+
+.todo {
+  color: var(--accent-on-soft);
+  background: var(--accent-soft);
+  font-style: italic;
+}
+
+.status-chip {
+  padding: 0 6px;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.copy-email {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.card-toggle {
+  display: none;
+}
+
 /* ---------- Horizontal card rows ---------- */
 
 .carousel-bar {
@@ -525,6 +642,44 @@
 @media (max-width: 767px) {
   .carousel-track {
     align-items: flex-start;
+  }
+
+  /* Work rows stack instead: titles and metrics scan in one column, stories open on tap. */
+  .carousel--stack .carousel-bar {
+    display: none;
+  }
+
+  .carousel--stack .carousel-track {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .carousel--stack .carousel-item {
+    flex: none;
+  }
+
+  .card-more[data-open='false'] {
+    display: none;
+  }
+
+  .card-toggle {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
   }
 }
 

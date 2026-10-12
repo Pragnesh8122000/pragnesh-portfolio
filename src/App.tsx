@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { indexItems } from './content/portfolio';
 import { About } from './components/About';
+import { CaseStudies } from './components/CaseStudies';
 import { Contact } from './components/Contact';
 import { DeliveryWork } from './components/DeliveryWork';
 import { Experience } from './components/Experience';
@@ -36,6 +37,7 @@ export function App() {
           <FlowIndex active={active} />
           <JustdialWork />
           <DeliveryWork />
+          <CaseStudies />
           <PersonalBuilds />
         </div>
         <About />

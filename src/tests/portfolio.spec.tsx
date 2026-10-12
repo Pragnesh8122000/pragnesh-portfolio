@@ -21,7 +21,7 @@ describe('portfolio page', () => {
 
   it('renders every section in the specified order', () => {
     const { container } = renderSite();
-    const ids = ['top', 'work', 'gateway', 'events', 'data', 'observe', 'webrtc', 'delivery', 'migration', 'dispatch', 'projects', 'about', 'experience', 'stack', 'contact'];
+    const ids = ['top', 'work', 'gateway', 'events', 'data', 'observe', 'webrtc', 'delivery', 'migration', 'dispatch', 'case-studies', 'case-kafka', 'case-migration', 'projects', 'about', 'experience', 'stack', 'contact'];
     const positions = ids.map((id) => {
       const el = container.querySelector(`#${id}`);
       expect(el, `#${id}`).not.toBeNull();
@@ -52,7 +52,9 @@ describe('portfolio page', () => {
       content.about.education.degree,
       ...content.experience.rows.flatMap((r) => [r.employer, r.role, r.dates, ...r.highlights]),
       ...content.stack.rows.map((r) => r.tools.join(' · ')),
-      content.contact.lookingFor
+      content.contact.lookingFor,
+      content.contact.primaryAction.label,
+      ...content.caseStudies.items.flatMap((c) => [c.header, c.title, ...c.parts.map((p) => p.text ?? '')])
     ];
     for (const copy of required) expect(text).toContain(copy);
     expect(text).not.toMatch(/in plain terms/i);
@@ -102,7 +104,39 @@ describe('portfolio page', () => {
     // Owner chose to show years and current company, but not a home city, in the hero.
     expect(JSON.stringify(content.hero)).not.toMatch(/Bengaluru/);
     expect(content.justdial.features.find((f) => f.id === 'webrtc')?.body).toMatch(/designed/i);
+    // Review wording: metrics match the resume and claims stay precise.
+    expect(JSON.stringify(content)).not.toMatch(/healthy leads|feel instant|errors ~40% faster|faster at peak/i);
     // Owner asked not to claim sub-second alert delivery.
     expect(JSON.stringify(content)).not.toMatch(/sub-second|under a second|<1s/i);
+  });
+});
+
+describe('review fixes', () => {
+  it('links the Kafka and migration cards to their case studies', () => {
+    const { container } = renderSite();
+    for (const id of ['case-kafka', 'case-migration']) {
+      expect(container.querySelector(`a[href="#${id}"]`), id).not.toBeNull();
+    }
+  });
+
+  it('lets phone readers expand each work card', () => {
+    renderSite();
+    const toggles = screen.getAllByRole('button', { name: /show details/i });
+    expect(toggles).toHaveLength(content.justdial.features.length + 2);
+    for (const toggle of toggles) expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('captions every diagram as a simplified illustration', () => {
+    const { container } = renderSite();
+    const figures = Array.from(container.querySelectorAll('figure.fd'));
+    expect(figures.length).toBeGreaterThan(0);
+    for (const figure of figures) expect(figure).toHaveTextContent(content.diagramCaption);
+  });
+
+  it('names the wanted roles next to a copyable email', () => {
+    renderSite();
+    const contactSection = document.getElementById('contact')!;
+    for (const role of content.contact.roles) expect(contactSection).toHaveTextContent(role);
+    expect(within(contactSection).getByRole('button', { name: new RegExp(content.links.email) })).toBeInTheDocument();
   });
 });

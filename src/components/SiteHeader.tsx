@@ -33,6 +33,7 @@ export function SiteHeader() {
           <ConfiguredLink
             linkKey="resume"
             label={site.resumeLabel}
+            track="resume-header"
             className="btn btn-secondary min-h-11 px-3 text-sm md:px-4"
           />
           <ThemeToggle />
