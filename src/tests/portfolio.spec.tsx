@@ -74,18 +74,23 @@ describe('portfolio page', () => {
     }
   });
 
-  it('shows Justdial, Mypcot and also-shipped work as horizontal rows', () => {
-    renderSite();
-    const rows = [
+  it('lists Justdial, Mypcot and also-shipped work in full, with nothing behind a sideways scroll', () => {
+    const { container } = renderSite();
+    const lists = [
       ['Justdial work', content.justdial.features.length],
       ['Mypcot work', 2],
       ['Also shipped at Mypcot', content.delivery.alsoShipped.length]
     ] as const;
-    for (const [label, count] of rows) {
-      const row = screen.getByRole('list', { name: label });
-      expect(within(row).getAllByRole('listitem').filter((li) => li.parentElement === row)).toHaveLength(count);
-      expect(screen.getByRole('button', { name: `Next in ${label}` })).toBeInTheDocument();
+    for (const [label, count] of lists) {
+      const list = screen.getByRole('list', { name: label });
+      expect(within(list).getAllByRole('listitem').filter((li) => li.parentElement === list)).toHaveLength(count);
     }
+    expect(container.querySelector('.carousel-track')).toBeNull();
+  });
+
+  it('offers a replay control for the hero request trace', () => {
+    renderSite();
+    expect(screen.getByRole('button', { name: content.hero.replay })).toBeInTheDocument();
   });
 
   it('never renders a placeholder or bare hash as a link', () => {

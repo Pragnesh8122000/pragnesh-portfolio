@@ -14,8 +14,23 @@ function themeTokens(): Plugin {
   };
 }
 
+// Preloads the hashed web font so it arrives with the CSS instead of after it.
+function preloadFont(): Plugin {
+  return {
+    name: 'preload-font',
+    transformIndexHtml: (_html, ctx) =>
+      Object.keys(ctx.bundle ?? {})
+        .filter((file) => file.endsWith('.woff2'))
+        .map((file) => ({
+          tag: 'link',
+          attrs: { rel: 'preload', as: 'font', type: 'font/woff2', href: `/${file}`, crossorigin: '' },
+          injectTo: 'head' as const
+        }))
+  };
+}
+
 export default defineConfig({
-  plugins: [themeTokens(), react(), tailwindcss()],
+  plugins: [themeTokens(), preloadFont(), react(), tailwindcss()],
   test: {
     environment: 'jsdom',
     globals: true,

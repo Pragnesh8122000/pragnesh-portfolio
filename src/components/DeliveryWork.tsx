@@ -1,42 +1,34 @@
 import { delivery } from '../content/portfolio';
-import { Carousel } from './Carousel';
-import { FeatureTab } from './FeatureTab';
 import { SectionHeading } from './SectionHeading';
+import { WorkRow } from './WorkRow';
 
 export function DeliveryWork() {
   return (
     <section aria-labelledby="delivery-title" className="section">
       <div className="container-page">
         <div id={delivery.id}>
-          <SectionHeading
-            id="delivery-title"
-            badge={delivery.badge}
-            title={delivery.title}
-            subtitle={delivery.subtitle}
-            meta={delivery.meta}
-          />
+          <SectionHeading id="delivery-title" title={delivery.title} subtitle={delivery.subtitle} meta={delivery.meta} />
         </div>
 
-        <Carousel label="Mypcot work" stackOnMobile>
-          <FeatureTab feature={delivery.migration} />
-          <FeatureTab feature={delivery.dispatch} />
-        </Carousel>
+        <ul className="work-list" aria-label="Mypcot work">
+          <li>
+            <WorkRow feature={delivery.migration} />
+          </li>
+          <li>
+            <WorkRow feature={delivery.dispatch} />
+          </li>
+        </ul>
 
-        <h3 className="t-eyebrow mt-12 mb-0 text-accent">Also shipped at Mypcot</h3>
-        <div className="mt-3">
-          <Carousel label="Also shipped at Mypcot" size="narrow">
-            {delivery.alsoShipped.map((item) => (
-              <article key={item.heading} className="edge-wrap h-full">
-                <div className="edge-back" aria-hidden="true" />
-                <div className="edge-face edge-face--top p-6">
-                  <p className="t-metric m-0 whitespace-nowrap text-accent">{item.value}</p>
-                  <h4 className="t-feature mt-2 mb-0">{item.heading}</h4>
-                  <p className="t-body mt-2 mb-0 text-ink">{item.text}</p>
-                </div>
-              </article>
-            ))}
-          </Carousel>
-        </div>
+        <h3 className="t-label mt-14 mb-0">Also shipped at Mypcot</h3>
+        <ul className="shipped-grid" aria-label="Also shipped at Mypcot">
+          {delivery.alsoShipped.map((item) => (
+            <li key={item.heading}>
+              <p className="t-metric m-0 whitespace-nowrap">{item.value}</p>
+              <h4 className="t-feature mt-3 mb-0">{item.heading}</h4>
+              <p className="t-body mt-2 mb-0 max-w-[46ch] text-ink">{item.text}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

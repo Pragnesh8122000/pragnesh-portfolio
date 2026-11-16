@@ -9,7 +9,7 @@ function NavLinks({ className }: { className: string }) {
         <li key={item.href}>
           <a
             href={item.href}
-            className="inline-flex min-h-11 items-center px-2 text-muted underline-offset-4 hover:text-ink hover:underline"
+            className="inline-flex min-h-11 items-center px-2 font-medium text-muted underline-offset-4 hover:text-ink hover:underline"
           >
             {item.label}
           </a>
@@ -23,8 +23,9 @@ export function SiteHeader() {
   return (
     <header className="border-b border-rule">
       <div className="container-page grid h-16 grid-cols-[1fr_auto] items-center md:h-20 md:grid-cols-[1fr_auto_1fr]">
-        <a href="#top" className="t-wordmark justify-self-start text-ink no-underline" aria-label="pragnesh, back to top">
-          pragnesh<span className="text-accent">.</span>
+        <a href="#top" className="t-wordmark inline-flex min-h-11 items-baseline justify-self-start py-1.5 text-ink no-underline" aria-label="pragnesh, back to top">
+          pragnesh
+          <span className="wordmark-packet" aria-hidden="true" />
         </a>
         <nav aria-label="Primary" className="hidden md:block">
           <NavLinks className="flex items-center gap-1" />

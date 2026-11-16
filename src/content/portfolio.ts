@@ -75,7 +75,7 @@ export const site = {
 };
 
 export const hero = {
-  eyebrow: 'BACKEND ENGINEER / NODE.JS + TYPESCRIPT',
+  eyebrow: 'Backend engineer, Node.js and TypeScript',
   headline: { primary: 'Behind the API.', accent: ['Through the', 'whole flow.'] },
   paragraph:
     'Backend engineer with 3.5+ years of building API gateways, event pipelines, caching layers and AWS deployments in Node.js and TypeScript.',
@@ -89,7 +89,8 @@ export const hero = {
     { value: '120K+', label: 'leads a day through my Kafka pipeline · Justdial' },
     { value: 'Zero', label: 'downtime across releases · Mypcot' }
   ],
-  caption: 'Illustrative flow. Explore the work below.'
+  caption: 'Illustrative flow. Each stage links to real work below.',
+  replay: 'Send a request'
 };
 
 export const flowIndex = {
@@ -148,21 +149,20 @@ export interface Feature {
 
 export const justdial = {
   id: 'work',
-  badge: 'WORK',
   title: 'Justdial Ltd. · SDE 1',
   subtitle: 'Follow the backend: the gateway, event pipeline, caching and monitoring I built.',
-  meta: 'JAN 2026 TO PRESENT',
+  meta: 'Jan 2026 to present',
   features: [
     {
       id: 'gateway',
-      header: '01 / API GATEWAY',
+      header: '01 / API gateway',
       title: 'One gateway, used by 10+ services.',
       body: "I built Justdial's centralized API gateway in Node.js and Express. Backend services across different environments route their requests through it.",
       metric: { value: '10+', label: 'Services using it' }
     },
     {
       id: 'events',
-      header: '02 / KAFKA LEAD PIPELINE',
+      header: '02 / Kafka lead pipeline',
       title: '120K+ leads, delivered every day.',
       body: "Justdial's database team publishes new lead data to Kafka. I built the consumer pipeline that picks up that stream, processes it and passes each lead on to the communication, appointment and database services.",
       metric: { value: '120-130K', label: 'Leads per day, around 10K per city' },
@@ -175,21 +175,21 @@ export const justdial = {
     },
     {
       id: 'data',
-      header: '03 / CACHING AND LOAD BALANCING',
+      header: '03 / Caching and load balancing',
       title: '35% lower API response time at peak.',
       body: "I implemented Redis caching and load balancing for Justdial's IRO management platform, speeding up its API responses under peak load.",
       metric: { value: '-35%', label: 'API response time at peak load', note: 'Measured from service logs' }
     },
     {
       id: 'observe',
-      header: '04 / LOGS AND MONITORING',
+      header: '04 / Logs and monitoring',
       title: '~40% lower MTTD.',
       body: 'I automated error-log monitoring with Slack alerts across 7 servers, reducing manual log checking and shortening the average time to detect a production error (MTTD).',
       metric: { value: '~40%', label: 'Lower mean time to detect (MTTD)', note: 'Approximate' }
     },
     {
       id: 'webrtc',
-      header: '05 / WEBRTC CALLING',
+      header: '05 / WebRTC calling',
       title: 'In-app calling, owned end to end.',
       body: 'I designed and integrated a WebRTC-based calling service with a third-party provider, and owned the backend integration end to end.',
       diagram: {
@@ -203,13 +203,12 @@ export const justdial = {
 
 export const delivery = {
   id: 'delivery',
-  badge: 'WORK',
   title: 'Mypcot Infotech · Software Engineer',
   subtitle: 'Ship the system: a microservices migration, faster releases and APIs at scale.',
-  meta: 'MAY 2024 TO DEC 2025',
+  meta: 'May 2024 to Dec 2025',
   migration: {
     id: 'migration',
-    header: 'MONOLITH TO MICROSERVICES',
+    header: 'Monolith to microservices',
     title: 'One monolith, split into 4 services.',
     body: 'I led the migration of a monolithic application to microservices on AWS ECS, working in a four-person team, with SQS and SNS carrying messages between the services.',
     metric: { value: '4', label: 'Independent services' },
@@ -246,7 +245,7 @@ export const delivery = {
   ],
   dispatch: {
     id: 'dispatch',
-    header: 'REAL-TIME EMERGENCY DISPATCH',
+    header: 'Real-time emergency dispatch',
     title: 'Real-time emergency alerts, 40% lower latency.',
     body: "When a user raises an emergency, their family members and the emergency team are alerted in real time, with the user's location on a map.",
     metric: { value: '-40%', label: 'API latency' },
@@ -273,13 +272,12 @@ export interface CaseStudy {
 
 export const caseStudies = {
   id: 'case-studies',
-  badge: 'CASE STUDIES',
   title: 'Two case studies',
   subtitle: 'The problem, my part, the design, one tradeoff and the result.',
   items: [
     {
       id: 'case-kafka',
-      header: 'JUSTDIAL / KAFKA LEAD PIPELINE',
+      header: 'Justdial / Kafka lead pipeline',
       title: 'Moving 120K+ leads a day off Kafka.',
       parts: [
         { label: 'Problem', todo: 'What was slow or broken before the consumer pipeline existed?' },
@@ -302,7 +300,7 @@ export const caseStudies = {
     },
     {
       id: 'case-migration',
-      header: 'MYPCOT / MONOLITH TO MICROSERVICES',
+      header: 'Mypcot / Monolith to microservices',
       title: 'Splitting a growing monolith into 4 services.',
       parts: [
         {
@@ -353,12 +351,11 @@ export interface Project {
 
 export const projects = {
   id: 'projects',
-  badge: 'PROJECTS',
   title: 'Personal projects',
   subtitle: 'Systems of my own.',
   items: [
     {
-      label: '01 / AI BESTIE',
+      label: '01 / AI Bestie',
       heading: 'A conversation that keeps flowing.',
       status: 'Prototype',
       chips: ['SSE', 'LLM fallback', 'JWT', 'Rate limits'],
@@ -377,7 +374,7 @@ export const projects = {
       links: [{ label: 'View code', key: 'aiBestieCode' }]
     },
     {
-      label: '02 / VAIDYA ASSIST',
+      label: '02 / Vaidya Assist',
       heading: 'From a health question to a booked doctor.',
       chips: ['RAG', 'LLM APIs', 'Doctor search', 'Booking'],
       what: 'An AI healthcare assistant that answers health questions, helps people find doctors and books appointments.',
@@ -394,7 +391,6 @@ export const projects = {
 
 export const about = {
   id: 'about',
-  badge: 'ABOUT',
   title: 'About me',
   subtitle: "Who's behind the flow.",
   paragraphs: [
@@ -422,7 +418,6 @@ export interface ExperienceRow {
 
 export const experience = {
   id: 'experience',
-  badge: 'EXPERIENCE',
   title: 'Experience',
   subtitle: 'The work so far.',
   rows: [
@@ -461,19 +456,18 @@ export const experience = {
 
 export const stack = {
   id: 'stack',
-  badge: 'SKILLS',
   title: 'Skills and tools',
   subtitle: 'What powers the flow.',
   rows: [
-    { label: 'API / SERVICES', tools: ['Node.js', 'TypeScript', 'Express', 'REST', 'GraphQL'] },
-    { label: 'EVENTS / DATA', tools: ['Kafka', 'Redis', 'PostgreSQL', 'MongoDB'] },
-    { label: 'DELIVERY / QUALITY', tools: ['AWS', 'Docker', 'GitHub Actions', 'Jest', 'JMeter', 'k6'] }
+    { label: 'API and services', tools: ['Node.js', 'TypeScript', 'Express', 'REST', 'GraphQL'] },
+    { label: 'Events and data', tools: ['Kafka', 'Redis', 'PostgreSQL', 'MongoDB'] },
+    { label: 'Delivery and quality', tools: ['AWS', 'Docker', 'GitHub Actions', 'Jest', 'JMeter', 'k6'] }
   ]
 };
 
 export const contact = {
   id: 'contact',
-  eyebrow: 'NEXT REQUEST',
+  eyebrow: 'Next request',
   headline: { primary: "Let's build", accent: 'what comes next.' },
   roles: ['Backend Engineer', 'SDE 2', 'Senior Backend Engineer', 'Node.js Engineer'],
   location: 'in Bengaluru or remote',
