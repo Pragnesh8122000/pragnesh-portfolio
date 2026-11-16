@@ -50,7 +50,11 @@ export function ConfiguredLink({ linkKey, label, icon, className, optional = fal
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {label}
-      {icon && <span aria-hidden="true">{icon}</span>}
+      {icon && (
+        <span className="nudge nudge--out" aria-hidden="true">
+          {icon}
+        </span>
+      )}
       {external && <span className="sr-only"> (opens in a new tab)</span>}
     </a>
   );

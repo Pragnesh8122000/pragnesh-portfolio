@@ -1,0 +1,468 @@
+/* Work rows, panels, case details and flow diagrams. */
+
+/* ---------- Work rows: every item and its number visible at once, no sideways scrolling ---------- */
+
+.work-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.work-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 240px;
+  gap: 8px 40px;
+  align-items: start;
+  padding-block: 32px;
+  border-top: 1px solid var(--rule);
+}
+
+.work-row-key {
+  margin: 0;
+  padding-top: 5px;
+}
+
+.work-row-metric {
+  margin: 0;
+  padding-left: 24px;
+  border-left: 3px solid var(--accent-line);
+}
+
+.work-row-metric .t-metric,
+.work-row-metric .t-meta {
+  display: block;
+}
+
+.work-row-metric .t-meta {
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.card-toggle {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .work-row {
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 8px 32px;
+  }
+
+  .work-row-key {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+}
+
+/* Phones: title and number first, the story opens on tap. */
+@media (max-width: 767px) {
+  .work-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-block: 24px;
+  }
+
+  .work-row-main {
+    display: contents;
+  }
+
+  .work-row-key {
+    margin-bottom: 6px;
+  }
+
+  .work-row-metric {
+    order: 1;
+    margin-top: 14px;
+    padding-left: 14px;
+  }
+
+  .card-more {
+    order: 2;
+    margin-top: 12px;
+  }
+
+  .card-more[data-open='false'] {
+    display: none;
+  }
+
+  .card-toggle {
+    order: 3;
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: underline;
+    text-decoration-color: var(--accent-line);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    cursor: pointer;
+  }
+
+  /* inline-block keeps the underline off the arrow. */
+  .card-toggle > span {
+    display: inline-block;
+  }
+}
+
+/* ---------- Also shipped ---------- */
+
+.shipped-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px 40px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shipped-grid > li {
+  padding-top: 20px;
+  border-top: 3px solid var(--accent-line);
+}
+
+@media (max-width: 899px) {
+  .shipped-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Panels: case studies and personal projects ---------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.panel-key {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.panel-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 24px 28px 28px;
+}
+
+.status-chip {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .panel-key {
+    padding: 12px 20px;
+  }
+
+  .panel-body {
+    padding: 20px;
+  }
+}
+
+/* ---------- Case-study detail ---------- */
+
+.case-details {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 18px 0 0;
+}
+
+.case-details dt {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 23px;
+  font-weight: 600;
+}
+
+.case-details dd {
+  margin: 0;
+  max-width: 65ch;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+@media (max-width: 767px) {
+  .case-details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .case-details dd {
+    margin-bottom: 10px;
+  }
+}
+
+/* ---------- Flow diagram (real, simplified data flows) ---------- */
+
+.fd-chain,
+.fd-targets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-step,
+.fd-target {
+  position: relative;
+  display: block;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-line);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+/* Signal ring: the motion hook flashes it down the chain once, in data-flow order. */
+.fd-step::after,
+.fd-target::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--accent-line);
+  border-radius: 7px;
+  opacity: var(--sig, 0);
+  pointer-events: none;
+}
+
+.fd-arrow {
+  display: inline-flex;
+  color: var(--muted);
+  flex: none;
+}
+
+/* Between the chain and its targets: points down, aligned under the first step. */
+.fd-arrow--down {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 4px 12px;
+  transform: rotate(90deg);
+}
+
+.fd-via {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* Each arrow stays with the step it points at, so wrapping never strands an arrow. */
+.fd-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fd-down {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.fd-group {
+  padding: 12px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.fd-group-label {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.fd-bus {
+  flex-basis: 100%;
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+}
+
+/* Phones: the chain runs top to bottom and the fan-out hangs off one branch line. */
+@media (max-width: 767px) {
+  .fd-chain {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fd-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .fd-link .fd-arrow {
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+    transform: rotate(90deg);
+  }
+
+  .fd-targets {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 25px;
+    padding-left: 18px;
+    border-left: 2px solid var(--accent-line);
+  }
+
+  .fd-group .fd-targets {
+    align-items: stretch;
+  }
+
+  .fd-target::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -21px;
+    width: 16px;
+    height: 2px;
+    background: var(--accent-line);
+  }
+
+  .fd-bus {
+    flex-basis: auto;
+  }
+}
+
+/* ---------- Owner-supplied facts and contact extras ---------- */
+
+.todo {
+  color: var(--accent-on-soft);
+  background: var(--accent-soft);
+  font-style: italic;
+}
+
+.copy-email {
+  font-weight: 500;
+}
+
+/* ---------- Hero proof strip and availability ---------- */
+
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 540px;
+  margin: 28px 0 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.hero-proof > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.hero-proof dd {
+  margin: 0 0 2px;
+  color: var(--text);
+  font-size: 32px;
+  line-height: 36px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .hero-proof {
+    gap: 10px;
+  }
+
+  .hero-proof dd {
+    font-size: 25px;
+    line-height: 30px;
+  }
+}
+
+.open-to {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.open-to span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-on-soft);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.open-to span::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-line);
+}
+
+.open-to:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Wordmark full stop, drawn as the packet. */
+.wordmark-packet {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-line);
+}

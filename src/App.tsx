@@ -13,7 +13,7 @@ import { SiteFooter } from './components/SiteFooter';
 import { SiteHeader } from './components/SiteHeader';
 import { StackTools } from './components/StackTools';
 import { useActiveStage } from './hooks/useActiveStage';
-import { useAnchorRows } from './hooks/useAnchorRows';
+import { useAnchorScroll } from './hooks/useAnchorScroll';
 import { useFlowMotion } from './hooks/useFlowMotion';
 
 const stageIds = indexItems.map((item) => item.target);
@@ -22,7 +22,7 @@ export function App() {
   const rootRef = useRef<HTMLDivElement>(null);
   const active = useActiveStage(stageIds, 'top');
   useFlowMotion(rootRef);
-  useAnchorRows();
+  useAnchorScroll();
 
   return (
     <div ref={rootRef}>

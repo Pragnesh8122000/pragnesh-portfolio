@@ -4,6 +4,7 @@ import { App } from './App';
 import { ThemeProvider } from './components/ThemeProvider';
 import './styles/globals.css';
 import './styles/flow.css';
+import './styles/work.css';
 
 // Privacy-friendly visit and click counts. Set VITE_GOATCOUNTER_CODE (the account code) to enable.
 const goatcounter = import.meta.env.VITE_GOATCOUNTER_CODE;

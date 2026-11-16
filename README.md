@@ -32,15 +32,33 @@ Colors and geometry live in `src/design/tokens.ts`. A Vite plugin (`vite.config.
 turns the palettes into CSS variables inlined in `index.html`, and a small inline
 script sets `data-theme` before first paint: an explicit choice saved in
 `localStorage` wins, otherwise the system preference is used. Tailwind maps the
-variables to semantic colors (`bg-bg`, `text-ink`, `text-muted`, `text-accent`, ...)
+variables to semantic colors (`bg-bg`, `text-ink`, `text-muted`, `bg-accent`, ...)
 in `src/styles/globals.css`.
+
+One rule holds in both themes: yellow is signal, never text. It marks the rail, the
+packet, the active index entry, status lights and the primary button. Text is ink or
+muted ink, so contrast never depends on the accent.
+
+The typeface is Bricolage Grotesque (latin subset, variable weight), self-hosted from
+`@fontsource-variable/bricolage-grotesque` and preloaded by a Vite plugin. A
+width-matched Arial fallback keeps the swap from re-wrapping text.
 
 ## Motion
 
-`src/hooks/useFlowMotion.ts` runs only at 768px and wider without a
-reduced-motion preference: hero tab entrance, the tab sequence as the hero
-scrolls away, the index pip fade and work-card growth. Content is fully visible
-without it. `useActiveStage.ts` drives the sticky index highlight.
+Three pieces, all optional on top of a complete page:
+
+- Hero tab entrance: CSS keyframes in `src/styles/flow.css`, so it starts with first paint.
+- Request trace and diagram signals: `src/hooks/flowMotion.ts` (GSAP + ScrollTrigger).
+  `useFlowMotion.ts` loads it as a separate chunk when the browser is idle. A packet
+  runs down the hero rail once and again on "Send a request"; each diagram flashes
+  once in data-flow order when it scrolls into view.
+- Index marker: a CSS transition in `flow.css`, positioned by `FlowIndex.tsx`.
+
+All of it runs only at 768px and wider without a reduced-motion preference (the index
+marker also moves on phones, without animation under reduced motion).
+`useActiveStage.ts` picks the active index entry and `useAnchorScroll.ts` animates
+in-page jumps. Do not add CSS `scroll-behavior: smooth`: it smooths scripted scrolls
+too, which made Chrome stop reporting LCP.
 
 ## Screenshots
 

@@ -1,5 +1,22 @@
 @import 'tailwindcss';
 
+/* Latin subset of the variable font, self-hosted; vite.config.ts preloads it. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Arial resized to the web font's average width, so the swap does not re-wrap text. */
+@font-face {
+  font-family: 'Bricolage Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 104%;
+}
+
 /* Semantic colors come from CSS variables generated out of src/design/tokens.ts. */
 @theme inline {
   --color-bg: var(--background);
@@ -13,9 +30,11 @@
   --color-line: var(--border);
   --color-rule: var(--rule);
   --color-on-accent: var(--button-text);
-  --color-depth: var(--depth-edge);
-  --font-sans: Arial, Helvetica, ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Bricolage Grotesque', 'Bricolage Fallback', ui-sans-serif, system-ui, sans-serif;
   --breakpoint-wide: 68.8125rem; /* 1101px: two-column hero above 1100px */
+  /* Shared easings: settle for things that arrive, snap for feedback under the pointer. */
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snap: cubic-bezier(0.3, 0, 0.2, 1);
 }
 
 @layer base {
@@ -35,7 +54,7 @@
     :root {
       --gutter: 24px;
       --header-h: 64px;
-      --index-h: 104px;
+      --index-h: 52px;
     }
   }
 
@@ -50,11 +69,8 @@
     -webkit-text-size-adjust: 100%;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
-  }
+  /* No CSS smooth scrolling: useAnchorScroll animates in-page jumps, so script-driven
+     scrolls stay instant and browsers keep reporting LCP. */
 
   body {
     margin: 0;
@@ -77,14 +93,26 @@
     scroll-margin-top: calc(var(--index-h) + 20px);
   }
 
+  /* Jump targets take focus so keyboard order follows the jump; they are not controls. */
+  [tabindex='-1']:focus {
+    outline: none;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--focus);
     outline-offset: 3px;
   }
 
   ::selection {
-    background: var(--accent-soft);
-    color: var(--text);
+    background: var(--accent);
+    color: var(--button-text);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
   }
 }
 
@@ -97,41 +125,39 @@
   }
 
   .section {
-    padding-block: 64px;
+    padding-block: 88px;
     border-top: 1px solid var(--rule);
   }
 
   @media (max-width: 767px) {
     .section {
-      padding-block: 48px;
+      padding-block: 56px;
     }
   }
 
-  /* Type scale: desktop first, mobile below 768px. */
-  .t-wordmark { font-size: 26px; line-height: 32px; font-weight: 700; letter-spacing: -0.05em; }
-  .t-hero { font-size: 72px; line-height: 76px; font-weight: 700; letter-spacing: -0.045em; }
-  .t-section { font-size: 30px; line-height: 38px; font-weight: 500; letter-spacing: -0.035em; }
-  .t-feature { font-size: 24px; line-height: 30px; font-weight: 500; letter-spacing: -0.025em; }
-  .t-statement { font-size: 38px; line-height: 42px; font-weight: 700; letter-spacing: -0.03em; }
-  .t-metric { font-size: 38px; line-height: 44px; font-weight: 700; letter-spacing: -0.04em; }
-  .t-contact { font-size: 56px; line-height: 60px; font-weight: 500; letter-spacing: -0.04em; }
+  /* Type scale: desktop first, mobile below 768px. Display sizes run tight and heavy; labels stay sentence case. */
+  .t-wordmark { font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -0.03em; }
+  .t-hero { font-size: 76px; line-height: 74px; font-weight: 700; letter-spacing: -0.04em; }
+  .t-section { font-size: 40px; line-height: 44px; font-weight: 650; letter-spacing: -0.03em; }
+  .t-feature { font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.02em; }
+  .t-metric { font-size: 44px; line-height: 46px; font-weight: 700; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+  .t-contact { font-size: 64px; line-height: 64px; font-weight: 700; letter-spacing: -0.04em; }
   .t-body { font-size: 16px; line-height: 26px; font-weight: 400; }
   .t-meta { font-size: 13px; line-height: 20px; }
-  .t-eyebrow { font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .t-label { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--muted); }
 
   @media (max-width: 767px) {
     .t-wordmark { font-size: 22px; line-height: 28px; }
-    .t-hero { font-size: 44px; line-height: 46px; }
-    .t-section { font-size: 26px; line-height: 32px; }
-    .t-feature { font-size: 22px; line-height: 28px; }
-    .t-statement { font-size: 30px; line-height: 34px; }
-    .t-metric { font-size: 28px; line-height: 34px; }
-    .t-contact { font-size: 38px; line-height: 42px; }
+    .t-hero { font-size: 46px; line-height: 46px; }
+    .t-section { font-size: 30px; line-height: 34px; }
+    .t-feature { font-size: 21px; line-height: 27px; }
+    .t-metric { font-size: 32px; line-height: 36px; }
+    .t-contact { font-size: 40px; line-height: 42px; }
     .t-body { line-height: 25px; }
   }
 
   @media (max-width: 359px) {
-    .t-hero { font-size: 40px; line-height: 43px; }
+    .t-hero { font-size: 40px; line-height: 42px; }
   }
 
   .btn {
@@ -142,10 +168,20 @@
     min-height: 44px;
     min-width: 44px;
     padding-inline: 20px;
-    border-radius: 5px;
-    font-weight: 700;
+    border-radius: 8px;
+    font-weight: 650;
     text-decoration: none;
-    transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+    cursor: pointer;
+    transition:
+      background-color 150ms var(--ease-snap),
+      color 150ms var(--ease-snap),
+      border-color 150ms var(--ease-snap),
+      transform 120ms var(--ease-snap);
+  }
+
+  /* Pressing gives a little: the one squash on the page, kept for things you can push. */
+  .btn:active {
+    transform: scale(0.97);
   }
 
   .btn-primary {
@@ -164,8 +200,22 @@
   }
 
   .btn-secondary:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--text);
+  }
+
+  /* Trailing arrow marks nudge the way the link goes. */
+  .nudge {
+    display: inline-block;
+    transition: transform 180ms var(--ease-settle);
+  }
+
+  a:hover > .nudge--down,
+  button:hover > .nudge--down {
+    transform: translateY(3px);
+  }
+
+  a:hover > .nudge--out {
+    transform: translate(2px, -2px);
   }
 
   .text-link {
@@ -173,12 +223,13 @@
     text-decoration: underline;
     text-decoration-color: var(--border);
     text-underline-offset: 4px;
-    transition: text-decoration-color 150ms ease-out, color 150ms ease-out;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color 150ms var(--ease-snap);
   }
 
   .text-link:hover {
-    color: var(--accent);
-    text-decoration-color: var(--accent);
+    text-decoration-color: var(--accent-line);
+    text-decoration-thickness: 2px;
   }
 
   .chip {
@@ -186,7 +237,7 @@
     align-items: center;
     padding: 2px 8px;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: 4px;
     background: var(--surface-raised);
     color: var(--text);
     font-size: 12px;
@@ -202,13 +253,15 @@
     }
   }
 
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 3px;
-    background: var(--accent-soft);
-    color: var(--accent-on-soft);
+  @media (prefers-reduced-motion: reduce) {
+    .btn,
+    .nudge {
+      transition: none;
+    }
+
+    .btn:active {
+      transform: none;
+    }
   }
 
   .sr-only-focusable:not(:focus) {
