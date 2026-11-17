@@ -9,7 +9,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      aria-label={`Switch to ${next} theme`}
+      aria-label={`${label} theme, switch to ${next}`}
       className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium text-ink hover:bg-raised"
     >
       <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">

@@ -89,6 +89,13 @@
     }
   }
 
+  /* No double-tap zoom delay on controls; tap flash is a soft accent instead of the UA grey. */
+  a,
+  button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
   [id] {
     scroll-margin-top: calc(var(--index-h) + 20px);
   }

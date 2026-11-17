@@ -23,7 +23,7 @@ export function SiteHeader() {
   return (
     <header className="border-b border-rule">
       <div className="container-page grid h-16 grid-cols-[1fr_auto] items-center md:h-20 md:grid-cols-[1fr_auto_1fr]">
-        <a href="#top" className="t-wordmark inline-flex min-h-11 items-baseline justify-self-start py-1.5 text-ink no-underline" aria-label="pragnesh, back to top">
+        <a href="#top" translate="no" className="t-wordmark inline-flex min-h-11 items-baseline justify-self-start py-1.5 text-ink no-underline" aria-label="pragnesh, back to top">
           pragnesh
           <span className="wordmark-packet" aria-hidden="true" />
         </a>
