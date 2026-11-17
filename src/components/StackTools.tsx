@@ -10,7 +10,7 @@ export function StackTools() {
           {stack.rows.map((row) => (
             <div key={row.label} className="grid gap-2 border-b border-rule py-5 md:grid-cols-[230px_minmax(0,1fr)] md:gap-6">
               <dt className="t-label md:pt-[3px]">{row.label}</dt>
-              <dd className="t-body m-0 text-ink">{row.tools.join(' · ')}</dd>
+              <dd className="t-body m-0 text-ink" translate="no">{row.tools.join(' · ')}</dd>
             </div>
           ))}
         </dl>

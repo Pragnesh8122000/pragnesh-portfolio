@@ -19,12 +19,23 @@ function CopyEmail() {
     }
   };
   return (
-    <button type="button" className="btn btn-secondary copy-email" onClick={copy} data-goatcounter-click="copy-email">
-      <span>{links.email}</span>
-      <span className="t-meta text-muted" aria-live="polite">
-        {copied ? 'Copied' : 'Copy'}
+    <>
+      <button
+        type="button"
+        className="btn btn-secondary copy-email"
+        onClick={copy}
+        aria-label={`${links.email}, copy to clipboard`}
+        data-goatcounter-click="copy-email"
+      >
+        <span translate="no">{links.email}</span>
+        <span className="t-meta text-muted" aria-hidden="true">
+          {copied ? 'Copied' : 'Copy'}
+        </span>
+      </button>
+      <span role="status" className="sr-only">
+        {copied ? 'Email address copied' : ''}
       </span>
-    </button>
+    </>
   );
 }
 

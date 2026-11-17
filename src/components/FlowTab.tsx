@@ -31,7 +31,7 @@ export function FlowTab({ stage, index, offset, rotate }: FlowTabProps) {
                         →
                       </span>
                     )}
-                    <span className="chip">{chip}</span>
+                    <span className="chip" translate="no">{chip}</span>
                   </span>
                 ))}
               </span>

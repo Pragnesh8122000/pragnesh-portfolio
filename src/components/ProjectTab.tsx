@@ -23,7 +23,7 @@ export function ProjectTab({ project, index }: { project: Project; index: number
         <ul className="mt-4 mb-0 flex list-none flex-wrap items-center gap-2 p-0" aria-label="Highlights">
           {project.chips.map((chip) => (
             <li key={chip}>
-              <span className="chip">{chip}</span>
+              <span className="chip" translate="no">{chip}</span>
             </li>
           ))}
         </ul>
@@ -41,7 +41,7 @@ export function ProjectTab({ project, index }: { project: Project; index: number
             <FlowDiagram diagram={project.diagram} />
           </div>
         )}
-        <p className="t-meta mt-4 mb-0 text-muted">{project.stack}</p>
+        <p className="t-meta mt-4 mb-0 text-muted" translate="no">{project.stack}</p>
         {project.video !== undefined &&
           (project.video ? (
             <a href={project.video} target="_blank" rel="noopener noreferrer" className="text-link mt-3 inline-flex min-h-11 items-center gap-2">
