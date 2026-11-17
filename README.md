@@ -9,7 +9,7 @@ React 19, TypeScript, Vite, Tailwind CSS v4 and GSAP ScrollTrigger. No backend.
 npm install
 npm run dev       # http://localhost:5173
 npm test          # content, link and structure tests (Vitest)
-npm run build     # typecheck + production bundle in dist/
+npm run build     # typecheck, production bundle, then prerender into dist/index.html
 npm run preview   # serve dist/ at http://localhost:4173
 ```
 
@@ -60,16 +60,29 @@ marker also moves on phones, without animation under reduced motion).
 in-page jumps. Do not add CSS `scroll-behavior: smooth`: it smooths scripted scrolls
 too, which made Chrome stop reporting LCP.
 
-## Screenshots
+## Prerendering
+
+`npm run build` also builds `src/entry-server.tsx`, and `scripts/prerender.mjs` writes
+the rendered page into `dist/index.html`, so first paint and crawlers get the content
+before any script runs. `main.tsx` hydrates it (`hydrateRoot`); the dev server still
+renders client-side. Anything that reads `window` or `document` must run in an effect,
+or sit behind `useSyncExternalStore` with a server snapshot, as `ThemeProvider` does.
+
+## Checks against a running preview
 
 ```bash
 npm run build && npm run preview &
-npm run screenshots   # writes screenshots/ for 1440px and 440px in both themes
+npm run e2e          # navigation, focus, tap targets, hydration, theme, reduced motion, no-JS render
+npm run perf         # FCP, LCP, CLS, long tasks and bytes on a throttled mobile profile (median of 5)
+npm run screenshots  # writes screenshots/ for 1440px and 440px in both themes
 ```
 
-Set `WIDTHS=320,768,1024` to capture other widths, or `CHROME_PATH` to use a
-specific Chromium build. The script fails if it finds horizontal overflow, a
-wrong theme or console errors.
+If Playwright reports a missing browser, run `npx playwright install chromium`, or
+point `CHROME_PATH` at an installed Chrome. `perf` numbers are lab measurements from
+one machine: compare runs from the same machine only. `BASE_URL` targets another host.
+
+Set `WIDTHS=320,768,1024` to capture other screenshot widths. The screenshots script
+fails if it finds horizontal overflow, a wrong theme or console errors.
 
 ## Deploy
 

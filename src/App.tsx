@@ -17,10 +17,12 @@ import { useAnchorScroll } from './hooks/useAnchorScroll';
 import { useFlowMotion } from './hooks/useFlowMotion';
 
 const stageIds = indexItems.map((item) => item.target);
+/** Sections that sit between index entries and belong to none of them. */
+const endIds = ['case-studies', 'case-kafka', 'case-migration'];
 
 export function App() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const active = useActiveStage(stageIds, 'top');
+  const active = useActiveStage(stageIds, 'top', endIds);
   useFlowMotion(rootRef);
   useAnchorScroll();
 

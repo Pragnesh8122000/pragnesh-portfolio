@@ -7,15 +7,23 @@ const READING_OFFSET = 60;
 /**
  * Tracks which stage target is under the reading line just below the sticky index, using a
  * 1px IntersectionObserver band. Keeps the last stage while nothing crosses the line; clears
- * on hero entry.
+ * on hero entry. `endIds` are sections that belong to no index entry (the case studies): while
+ * one is under the line nothing is active, instead of the previous stage staying lit.
  */
-export function useActiveStage(ids: readonly StageId[], heroId: string): StageId | null {
+export function useActiveStage(
+  ids: readonly StageId[],
+  heroId: string,
+  endIds: readonly string[] = []
+): StageId | null {
   const [active, setActive] = useState<StageId | null>(null);
 
   useEffect(() => {
-    const targets = ids
+    const ended = new Set(endIds);
+    // Page order, not index order: the end sections sit between index entries.
+    const targets = [...ids, ...endIds]
       .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
+      .filter((el): el is HTMLElement => el !== null)
+      .sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
     const hero = document.getElementById(heroId);
     const crossing = new Set<HTMLElement>();
     let heroVisible = false;
@@ -25,7 +33,7 @@ export function useActiveStage(ids: readonly StageId[], heroId: string): StageId
     const pick = () => {
       // Targets are in page order, so the first one on the line is the one being read.
       const current = targets.find((el) => crossing.has(el));
-      if (current) lastStage = current.id as StageId;
+      if (current) lastStage = ended.has(current.id) ? null : (current.id as StageId);
       setActive(heroVisible ? null : lastStage);
     };
 
@@ -68,7 +76,7 @@ export function useActiveStage(ids: readonly StageId[], heroId: string): StageId
       stageObserver?.disconnect();
       heroObserver.disconnect();
     };
-  }, [ids, heroId]);
+  }, [ids, heroId, endIds]);
 
   return active;
 }

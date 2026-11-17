@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { App } from './App';
 import { ThemeProvider } from './components/ThemeProvider';
 import './styles/globals.css';
@@ -16,10 +16,15 @@ if (goatcounter && /^[a-z0-9-]+$/i.test(goatcounter)) {
   document.body.appendChild(script);
 }
 
-createRoot(document.getElementById('root')!).render(
+const root = document.getElementById('root')!;
+const app = (
   <StrictMode>
     <ThemeProvider>
       <App />
     </ThemeProvider>
   </StrictMode>
 );
+
+// Production HTML is prerendered (scripts/prerender.mjs); the dev server serves an empty root.
+if (root.hasChildNodes()) hydrateRoot(root, app);
+else createRoot(root).render(app);
