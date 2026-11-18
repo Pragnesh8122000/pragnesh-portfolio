@@ -29,11 +29,14 @@ function preloadFont(): Plugin {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
+  build: isSsrBuild ? {} : {
+    rollupOptions: { input: { home: 'index.html', engineering: 'engineering/index.html' } }
+  },
   plugins: [themeTokens(), preloadFont(), react(), tailwindcss()],
   test: {
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/tests/setup.ts']
   }
-});
+}));
