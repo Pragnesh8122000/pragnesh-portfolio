@@ -28,6 +28,8 @@ requestAnimationFrame(() => requestAnimationFrame(() => {
 }));
 let timer;
 function selectStage(index) {
+  document.querySelector('#signal-stage').textContent=['INPUT','TRANSCRIPTION','GENERATION','OUTPUT'][index];
+  scope.querySelectorAll('.bar').forEach((bar,i)=>bar.style.setProperty('--h',(8+83*Math.sin(Math.PI*(i+1)/48)*Math.abs(Math.sin(i*(1.37+index*.21)+index)))+'px'));
   stages.forEach((stage, position) => stage.setAttribute('aria-pressed', String(index === position)));
   document.querySelector('#stage-title').textContent = stages[index].textContent;
   document.querySelector('#stage-copy').textContent = descriptions[index];
@@ -149,3 +151,14 @@ addEventListener('scroll', () => {
 addEventListener('resize', updateProgress);
 addEventListener('pagehide', () => { stopReplay(); if (currentSpeech) window.speechSynthesis?.cancel(); });
 updateProgress();
+
+const header=document.querySelector('.sitehead');
+let lastY=scrollY;
+addEventListener('scroll',()=>{
+ const now=Math.max(0,scrollY);
+ if(now<80){header.classList.remove('away');lastY=now;return}
+ if(Math.abs(now-lastY)<12)return;
+ header.classList.toggle('away',now>lastY);
+ lastY=now;
+},{passive:true});
+header.addEventListener('focusin',()=>header.classList.remove('away'));
