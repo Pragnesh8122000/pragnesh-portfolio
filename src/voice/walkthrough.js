@@ -1,164 +1,136 @@
+const demo = document.querySelector('#voice-demo');
+const playbackControls = document.querySelector('#playback');
+const playButton = document.querySelector('#play');
+const status = document.querySelector('#demo-status');
+const turns = [...demo.querySelectorAll('.turn')];
+const speech = window.speechSynthesis;
+const textTurnDurations = [1400, 3600];
+const audioFallback = 'Audio is unavailable in this browser. You can read the sample conversation above.';
+let activePlayback;
 
-const demo = document.querySelector('.console');
-const scope = document.querySelector('#scope');
-// Only the interactive walkthrough loads; hiring content is immediately readable.
-demo.dataset.loading = 'true';
-demo.setAttribute('aria-busy', 'true');
-const stages = [...document.querySelectorAll('.stage')];
-const play = document.querySelector('#play');
-const audio = document.querySelector('#audio');
-const audioStatus = document.querySelector('#audio-status');
-const reply = 'Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.';
-const descriptions = [
-  'Sample user: “Help me unwind after a long day.”',
-  'Speech-to-text turns the spoken request into text.',
-  'The model generates a reply with conversation context. The chat backend streams the text over SSE.',
-  'Sample reply: “' + reply + '”'
-];
-for (let index = 0; index < 47; index++) {
-  const bar = document.createElement('span');
-  bar.className = 'bar';
-  bar.style.setProperty('--h', (8 + 83 * Math.sin(Math.PI * (index + 1) / 48) * Math.abs(Math.sin(index * 1.37))) + 'px');
-  bar.style.setProperty('--delay', -(index % 9) * 72 + 'ms');
-  scope.append(bar);
+function highlightTurn(index) {
+  turns.forEach((turn, position) => turn.toggleAttribute('data-current', index === position));
 }
-requestAnimationFrame(() => requestAnimationFrame(() => {
-  demo.dataset.loading = 'false';
-  demo.setAttribute('aria-busy', 'false');
-}));
-let timer;
-function selectStage(index) {
-  document.querySelector('#signal-stage').textContent=['INPUT','TRANSCRIPTION','GENERATION','OUTPUT'][index];
-  scope.querySelectorAll('.bar').forEach((bar,i)=>bar.style.setProperty('--h',(8+83*Math.sin(Math.PI*(i+1)/48)*Math.abs(Math.sin(i*(1.37+index*.21)+index)))+'px'));
-  stages.forEach((stage, position) => stage.setAttribute('aria-pressed', String(index === position)));
-  document.querySelector('#stage-title').textContent = stages[index].textContent;
-  document.querySelector('#stage-copy').textContent = descriptions[index];
-}
-function stopReplay() {
-  clearTimeout(timer);
-  demo.dataset.playing = 'false';
-  play.textContent = '▶ Replay turn';
-}
-function runStage(index) {
-  selectStage(index);
-  timer = setTimeout(index === stages.length - 1 ? stopReplay : () => runStage(index + 1), 1450);
-}
-stages.forEach((stage, index) => stage.addEventListener('click', () => {
-  stopReplay();
-  selectStage(index);
-}));
-play.addEventListener('click', () => {
-  if (demo.dataset.playing === 'true') {
-    stopReplay();
-    return;
-  }
-  demo.dataset.playing = 'true';
-  play.textContent = '■ Stop replay';
-  runStage(0);
-});
-let currentSpeech;
-audio.addEventListener('click', () => {
-  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-    audioStatus.textContent = 'Audio is unavailable in this browser. The sample reply is shown above.';
-    stopReplay();
-    selectStage(3);
-    return;
-  }
-  if (currentSpeech) {
-    const engine = window.speechSynthesis;
-    currentSpeech = undefined;
-    engine.cancel();
-    audio.textContent = 'Hear sample reply';
-    return;
-  }
-  stopReplay();
-  selectStage(3);
-  audioStatus.textContent = '';
-  const speech = new SpeechSynthesisUtterance(reply);
-  speech.lang = 'en-IN';
-  currentSpeech = speech;
-  audio.textContent = 'Stop sample audio';
-  function complete(message) {
-    if (currentSpeech !== speech) return;
-    currentSpeech = undefined;
-    audio.textContent = 'Hear sample reply';
-    audioStatus.textContent = message;
-  }
-  speech.onend = () => complete('');
-  speech.onerror = () => complete('Audio is unavailable in this browser. The sample reply is shown above.');
-  window.speechSynthesis.speak(speech);
-});
-const pointerMode = matchMedia('(pointer: fine) and (hover: hover) and (prefers-reduced-motion: no-preference)');
-const cursor = document.querySelector('.cursor');
-let frame = 0;
-let pointer;
-document.addEventListener('pointermove', event => {
-  if (!pointerMode.matches || event.pointerType !== 'mouse') return;
-  pointer = event;
-  if (frame) return;
-  frame = requestAnimationFrame(() => {
-    frame = 0;
-    cursor.dataset.action = Boolean(pointer.target.closest('a, button, summary'));
-    const offset = cursor.dataset.action === 'true' ? 19 : 12;
-    cursor.style.transform = 'translate(' + (pointer.clientX - offset) + 'px,' + (pointer.clientY - offset) + 'px)';
-    cursor.dataset.visible = 'true';
-  });
-});
-document.documentElement.addEventListener('pointerleave', () => {
-  cancelAnimationFrame(frame);
-  frame = 0;
-  cursor.dataset.visible = 'false';
-});
-scope.addEventListener('pointermove', event => {
-  if (!pointerMode.matches || event.pointerType !== 'mouse') return;
-  scope.style.setProperty('--x', event.offsetX + 'px');
-  scope.style.setProperty('--y', event.offsetY + 'px');
-});
 
-const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-const revealTargets = [...document.querySelectorAll('.section > .eyebrow, .section > h2, .card, .work-row, .bio > div, #contact > p, #contact > .actions')];
-let revealObserver;
-function configureReveals() {
-  revealObserver?.disconnect();
-  revealTargets.forEach(el => el.classList.remove('reveal-ready', 'is-visible'));
-  if (motionPreference.matches || !('IntersectionObserver' in window)) return;
-  revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
-      revealObserver.unobserve(entry.target);
+function cancelSpeech(playback) {
+  if (!playback.utterances) return;
+  playback.utterances = undefined;
+  speech.cancel();
+}
+
+function finishPlayback(playback, message = '') {
+  if (activePlayback !== playback) return;
+  activePlayback = undefined;
+  clearTimeout(playback.timer);
+  cancelSpeech(playback);
+  highlightTurn();
+  demo.removeAttribute('data-playing');
+  playButton.textContent = 'Replay sample conversation';
+  status.textContent = message;
+}
+
+function playTextTurn(playback, index) {
+  highlightTurn(index);
+  playback.timer = setTimeout(() => {
+    if (index + 1 < turns.length) {
+      playTextTurn(playback, index + 1);
+    } else {
+      finishPlayback(playback, audioFallback);
+    }
+  }, textTurnDurations[index]);
+}
+
+function fallBackToText(playback) {
+  if (activePlayback !== playback) return;
+  clearTimeout(playback.timer);
+  cancelSpeech(playback);
+  status.textContent = audioFallback;
+  playTextTurn(playback, playback.turn);
+}
+
+function playWithAudio(playback) {
+  try {
+    const utterances = turns.map((turn, index) => {
+      const utterance = new SpeechSynthesisUtterance(turn.querySelector('q').textContent);
+      utterance.lang = document.documentElement.lang;
+      utterance.onstart = () => {
+        if (activePlayback !== playback || !playback.utterances) return;
+        playback.turn = index;
+        highlightTurn(index);
+        clearTimeout(playback.timer);
+        playback.timer = setTimeout(() => fallBackToText(playback), 15000);
+      };
+      utterance.onerror = () => {
+        if (activePlayback === playback && playback.utterances) fallBackToText(playback);
+      };
+      return utterance;
     });
-  }, {threshold: 0, rootMargin: '0px 0px -24px 0px'});
-  revealTargets.forEach(el => {
-    // Content already on screen never waits for an entrance animation.
-    if (el.getBoundingClientRect().top < innerHeight) return;
-    el.classList.add('reveal-ready');
-    revealObserver.observe(el);
-  });
+    utterances.at(-1).onend = () => {
+      if (playback.utterances) finishPlayback(playback);
+    };
+    playback.utterances = utterances;
+    // Some browsers expose speech synthesis even when they cannot start a voice.
+    playback.timer = setTimeout(() => fallBackToText(playback), 3500);
+    for (const utterance of utterances) {
+      if (!playback.utterances) break;
+      speech.speak(utterance);
+    }
+  } catch {
+    fallBackToText(playback);
+  }
 }
-configureReveals();
-motionPreference.addEventListener('change', configureReveals);
-const progress = document.querySelector('.scroll-progress');
-let scrollFrame;
-function updateProgress() {
-  const distance = document.documentElement.scrollHeight - innerHeight;
-  progress.style.transform = 'scaleX(' + (distance > 0 ? Math.min(1, Math.max(0, scrollY / distance)) : 0) + ')';
-  scrollFrame = undefined;
-}
-addEventListener('scroll', () => {
-  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateProgress);
-}, {passive:true});
-addEventListener('resize', updateProgress);
-addEventListener('pagehide', () => { stopReplay(); if (currentSpeech) window.speechSynthesis?.cancel(); });
-updateProgress();
 
-const header=document.querySelector('.sitehead');
-let lastY=scrollY;
-addEventListener('scroll',()=>{
- const now=Math.max(0,scrollY);
- if(now<80){header.classList.remove('away');lastY=now;return}
- if(Math.abs(now-lastY)<12)return;
- header.classList.toggle('away',now>lastY);
- lastY=now;
-},{passive:true});
-header.addEventListener('focusin',()=>header.classList.remove('away'));
+playButton.addEventListener('click', () => {
+  if (activePlayback) {
+    finishPlayback(activePlayback, status.textContent);
+    return;
+  }
+
+  const playback = { turn: 0 };
+  activePlayback = playback;
+  status.textContent = '';
+  demo.setAttribute('data-playing', '');
+  playButton.textContent = 'Stop sample conversation';
+  highlightTurn(0);
+
+  if (speech && 'SpeechSynthesisUtterance' in window) {
+    playWithAudio(playback);
+  } else {
+    fallBackToText(playback);
+  }
+});
+
+playbackControls.hidden = false;
+addEventListener('pagehide', () => {
+  if (activePlayback) finishPlayback(activePlayback);
+});
+
+const progress = document.querySelector('.scroll-progress');
+const header = document.querySelector('.sitehead');
+let lastScrollY = scrollY;
+let scrollFrame;
+
+function updateScroll() {
+  scrollFrame = undefined;
+  const position = Math.max(0, scrollY);
+  const distance = document.documentElement.scrollHeight - innerHeight;
+  const fraction = distance > 0 ? Math.min(1, position / distance) : 0;
+  progress.style.transform = `scaleX(${fraction})`;
+
+  if (position < 80) {
+    header.classList.remove('away');
+    lastScrollY = position;
+  } else if (Math.abs(position - lastScrollY) >= 12) {
+    header.classList.toggle('away', position > lastScrollY);
+    lastScrollY = position;
+  }
+}
+
+function scheduleScrollUpdate() {
+  if (scrollFrame === undefined) scrollFrame = requestAnimationFrame(updateScroll);
+}
+
+addEventListener('scroll', scheduleScrollUpdate, { passive: true });
+addEventListener('resize', scheduleScrollUpdate);
+header.addEventListener('focusin', () => header.classList.remove('away'));
+updateScroll();
