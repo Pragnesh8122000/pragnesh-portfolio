@@ -8,7 +8,7 @@
 html.voice-home:root {
   color-scheme: dark;
   --bg: #101313;
-  --panel: #141c17;
+  --panel: #18231b;
   --line: #3c483e;
   --ink: #f7f5e9;
   --muted: #bcc3ba;
@@ -205,6 +205,17 @@ button.btn { cursor: pointer; }
 
 .hero-action { margin-top: 22px; }
 
+.btn.hero-action {
+  border-color: #829580;
+  background: transparent;
+  color: var(--ink);
+}
+
+.btn.hero-action:hover {
+  border-color: var(--signal);
+  background: #243128;
+}
+
 .hero-note {
   margin-top: 15px;
   font: 400 12px/1.5 var(--mono);
@@ -222,7 +233,7 @@ button.btn { cursor: pointer; }
 }
 
 .console {
-  border: 1px solid #526550;
+  border: 1px solid #6c836b;
   border-radius: 16px;
   background: var(--panel);
 }
@@ -234,10 +245,15 @@ button.btn { cursor: pointer; }
   justify-content: space-between;
   gap: 5px 12px;
   padding: 14px 18px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid #526751;
+  border-radius: 15px 15px 0 0;
+  background: #26372a;
 }
 
-.console-head h2 { font-size: 26px; }
+.console-head h2 {
+  font-size: clamp(31px, 3.1vw, 40px);
+  line-height: 1.06;
+}
 
 .console-head p, .speaker {
   color: var(--signal);
@@ -475,9 +491,21 @@ summary {
     justify-content: space-between;
   }
 
-  .hero { padding-block: 30px; gap: 24px; }
-  h1 { font-size: clamp(46px, 12vw, 70px); }
+  .hero { padding-block: 18px 28px; gap: 17px; }
+
+  h1 {
+    margin-block: 11px 13px;
+    font-size: clamp(46px, 12vw, 70px);
+  }
+
+  .hero-action { margin-top: 16px; }
+  .hero-note { margin-top: 8px; }
   .console-head, .console-body { padding-inline: 13px; }
+  .console-head { padding-block: 12px; }
+  .console-body { padding-block: 12px 13px; }
+  .conversation { gap: 8px; }
+  .turn { padding-block: 8px; }
+  .playback { margin-top: 11px; }
   .work-row { grid-template-columns: 1fr; gap: 5px; }
   .work-row .label { padding-top: 0; }
 }
