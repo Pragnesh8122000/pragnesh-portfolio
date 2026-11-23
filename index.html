@@ -1,183 +1,235 @@
 <!doctype html>
-<html lang="en" class="voice-home">
+<html lang="en" class="voice-home" data-type="software" data-buttons="solid">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="Pragnesh Prajapati builds voice agents and real-time backends. Explore AI Bestie, a voice AI prototype with streamed replies and model provider fallback.">
-    <title>Pragnesh Prajapati — Voice AI &amp; Real-time Systems</title>
+    <meta name="description" content="Pragnesh Prajapati builds voice agents and real-time backends. Explore the voice prototype, streamed replies and model provider fallback.">
+    <meta name="page-type" content="software">
+    <meta name="site-kind" content="software">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#eef0f3" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#101421" media="(prefers-color-scheme: dark)">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pragnesh-portfolio-seven.vercel.app/">
+    <meta property="og:title" content="Pragnesh Prajapati — Voice Agents &amp; Real-Time Systems">
+    <meta property="og:description" content="Explore Pragnesh Prajapati’s voice prototype and real-time backend engineering work.">
+    <meta property="og:image" content="https://pragnesh-portfolio-seven.vercel.app/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Pragnesh Prajapati — Voice Agents &amp; Real-Time Systems</title>
     <link rel="canonical" href="https://pragnesh-portfolio-seven.vercel.app/">
     <link rel="icon" href="/favicon.svg">
+    <script>
+      try {
+        const theme = localStorage.getItem('theme');
+        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
     <link rel="stylesheet" href="/src/voice/portfolio.css">
+    <link rel="stylesheet" href="/assets/taste/motion/motion.css">
+    <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
   </head>
   <body id="top">
-    <div class="scroll-progress" aria-hidden="true"></div>
-    <a class="skip" href="#main">Skip to content</a>
-    <header class="sitehead">
+    <header class="sitehead nav">
+      <a class="skip" href="#main">Skip to content</a>
       <div class="wrap head">
-        <a href="#top" class="brand"><span class="mark" aria-hidden="true">PP</span>Pragnesh Prajapati</a>
-        <nav aria-label="Main">
-          <a href="#projects">AI Bestie</a>
+        <a href="#top" class="brand">Pragnesh Prajapati</a>
+        <button type="button" class="btn menu-toggle" aria-controls="site-navigation" aria-expanded="false" hidden>
+          <span class="menu-icon" aria-hidden="true"></span> Menu
+        </button>
+        <nav class="site-nav" id="site-navigation" aria-label="Main">
+          <a href="#projects">Projects</a>
           <a href="#systems">Work</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
+          <a class="nav-resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
         </nav>
-        <a class="resume" href="/resume.pdf">Résumé</a>
+        <div class="header-actions">
+          <button type="button" class="btn theme-toggle" aria-label="Dark mode" aria-pressed="false" hidden>
+            <span class="theme-icon" aria-hidden="true"></span>
+            <span class="theme-label">Dark</span>
+          </button>
+          <a class="btn resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
     </header>
 
-    <main id="main" class="wrap" tabindex="-1">
-      <section class="hero" aria-labelledby="headline">
-        <div class="hero-copy">
-          <p class="eyebrow">Voice AI · Backend engineering</p>
-          <h1 id="headline">I build <em>voice agents.</em></h1>
-          <p class="intro">AI Bestie is my voice AI prototype. I built its backend to stream replies as they’re generated and switch providers if one fails.</p>
-          <a class="btn primary hero-action" href="#voice-demo">Explore AI Bestie <span aria-hidden="true">↓</span></a>
-          <p class="hero-note">Bengaluru / Remote</p>
-        </div>
+    <main id="main" tabindex="-1">
+      <section class="hero hero--centred" data-enter aria-labelledby="headline">
+        <div class="wrap">
+          <div class="hero-text">
+            <div class="hero-copy">
+              <p class="eyebrow">Backend engineer in Bengaluru</p>
+              <h1 id="headline">I build <em>voice agents.</em></h1>
+              <p class="intro hero__lead">My voice prototype streams replies as they’re generated and switches model providers when one fails.</p>
+              <a class="link hero-action" href="#voice-demo">Explore the voice demo <span aria-hidden="true">↓</span></a>
+            </div>
 
-        <article class="console" id="voice-demo" aria-labelledby="demo-title" tabindex="-1">
-          <header class="console-head">
-            <h2 id="demo-title">AI Bestie</h2>
-            <p>Scripted walkthrough</p>
-          </header>
-          <div class="console-body">
-            <div class="conversation">
-              <div class="turn" data-turn="input">
-                <span class="speaker">You</span>
-                <p><q>Help me unwind after a long day.</q></p>
+            <div class="hero-stage" data-visual>
+              <article class="console app-frame" id="voice-demo" aria-labelledby="demo-title" data-enter-media tabindex="-1">
+                <header class="console-head">
+                  <span id="demo-title">AI Bestie</span>
+                  <span class="demo-label">Scripted sample</span>
+                </header>
+                <div class="console-body">
+                  <div class="conversation">
+                    <div class="turn" data-turn="input">
+                      <span class="speaker">You</span>
+                      <p><q>Help me unwind after a long day.</q></p>
+                    </div>
+                    <div class="turn" data-turn="output">
+                      <span class="speaker">Reply</span>
+                      <p><q>Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.</q></p>
+                    </div>
+                  </div>
+                  <div class="console-listen">
+                    <div class="playback" id="playback" hidden>
+                      <div class="sample-track" aria-hidden="true">
+                        <span>Prompt</span><span>Reply</span>
+                      </div>
+                      <button type="button" class="btn primary play" id="play">Play sample conversation</button>
+                    </div>
+                    <p id="demo-status" class="demo-status" role="status"></p>
+                  </div>
+                </div>
+                <div class="console-foot">
+                  <a class="link" href="#projects">How it works <span aria-hidden="true">↓</span></a>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section project-section" id="projects" aria-labelledby="project-title" tabindex="-1">
+        <div class="wrap">
+          <h2 id="project-title">Selected projects</h2>
+          <details class="bestie-story">
+            <summary class="bestie-cover" aria-labelledby="bestie-name bestie-title bestie-action">
+              <span class="bestie-copy">
+                <strong id="bestie-name">AI Bestie</strong>
+                <span id="bestie-title">Same question.<br><em>Different company.</em></span>
+                <span class="bestie-deck">One voice companion, two personalities. What changes when you ask a friend instead of a mentor?</span>
+                <span class="btn primary bestie-action" id="bestie-action"><span class="when-closed">Discover AI Bestie</span><span class="when-open">Close project brief</span><i aria-hidden="true"></i></span>
+              </span>
+              <span class="companion-print" data-visual>
+                <span class="sample-prompt">“Where do I start?”</span>
+                <span class="persona friend"><i class="voice-mark" aria-hidden="true"></i><span><b>Friend</b><q>Want to talk it through?</q></span></span>
+                <span class="persona mentor"><i class="voice-mark" aria-hidden="true"></i><span><b>Mentor</b><q>Which part feels hardest?</q></span></span>
+              </span>
+            </summary>
+            <div class="bestie-brief">
+              <div>
+                <h3>How the personalities work</h3>
+                <p>Friend and Mentor each have their own voice and range of settings. Five traits shape a reply, from how warmly the companion responds to how directly it challenges you. The cover shows two scripted examples.</p>
               </div>
-              <div class="turn" data-turn="output">
-                <span class="speaker">AI Bestie</span>
-                <p><q>Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.</q></p>
+              <div>
+                <h3>From a thought to a spoken reply</h3>
+                <p>Speech recognition captures your question. The backend uses the last 20 messages for context and streams the reply as it forms. Fish Audio speaks it sentence by sentence.</p>
+                <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">Explore the AI Bestie source <span aria-hidden="true">↗</span></a>
               </div>
             </div>
-            <div class="playback" id="playback" hidden>
-              <button type="button" class="btn primary play" id="play">Play sample conversation</button>
-              <div class="waveform" aria-hidden="true">
-                <span style="--height:4px"></span><span style="--height:7px"></span><span style="--height:5px"></span>
-                <span style="--height:12px"></span><span style="--height:18px"></span><span style="--height:10px"></span>
-                <span style="--height:23px"></span><span style="--height:28px"></span><span style="--height:16px"></span>
-                <span style="--height:25px"></span><span style="--height:29px"></span><span style="--height:17px"></span>
-                <span style="--height:22px"></span><span style="--height:13px"></span><span style="--height:8px"></span>
-                <span style="--height:10px"></span><span style="--height:4px"></span>
-              </div>
+          </details>
+
+          <article class="other-project">
+            <h3>Vaidya Assist chat</h3>
+            <p>Find a doctor and book an appointment in the same chat. I built Vaidya Assist to retrieve relevant information before answering a health question.</p>
+            <div class="links">
+              <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-fe" aria-label="Vaidya Assist frontend">Frontend <span aria-hidden="true">↗</span></a>
+              <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-be" aria-label="Vaidya Assist backend">Backend <span aria-hidden="true">↗</span></a>
             </div>
-            <p id="demo-status" class="demo-status" role="status"></p>
-            <p class="demo-details"><a class="link" href="#projects">How it works <span aria-hidden="true">↓</span></a></p>
-          </div>
-        </article>
-      </section>
-
-      <section class="section" id="projects" aria-labelledby="project-title">
-        <p class="eyebrow">Featured project</p>
-        <div class="section-heading">
-          <h2 id="project-title">Inside AI Bestie</h2>
-          <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">Source code</a>
-        </div>
-        <ol class="voice-flow" aria-label="Voice processing stages" role="list">
-          <li>Voice input</li>
-          <li>Transcription</li>
-          <li>Streamed reply</li>
-          <li>Spoken response</li>
-        </ol>
-        <p>The chat backend sends reply text as it’s generated using server-sent events. If a model provider fails, the backend switches to another provider.</p>
-      </section>
-
-      <section class="section other-projects" aria-labelledby="other-projects-title">
-        <p class="eyebrow" id="other-projects-title">Other projects</p>
-        <div class="section-heading">
-          <h2>Vaidya Assist</h2>
-          <div class="links">
-            <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-fe" aria-label="Vaidya Assist frontend">Frontend</a>
-            <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-be" aria-label="Vaidya Assist backend">Backend</a>
-          </div>
-        </div>
-        <p>Find a doctor and book an appointment in the same chat. I built Vaidya Assist to retrieve relevant information before answering a health question.</p>
-      </section>
-
-      <section class="section professional-work" id="systems" aria-labelledby="calling">
-        <p class="eyebrow">Professional work</p>
-        <h2 id="calling">In-app calling at Justdial</h2>
-        <p>I designed and owned the backend integration for a third-party WebRTC calling service.</p>
-
-        <ul class="work-metrics" aria-label="Engineering results" role="list">
-          <li><a href="#pipeline"><strong>120K+</strong> leads processed daily</a></li>
-          <li><a href="#gateway"><strong>10+</strong> services on one gateway</a></li>
-          <li><a href="#caching"><strong>35%</strong> lower peak API response time</a></li>
-        </ul>
-
-        <article class="work-row" id="pipeline">
-          <p class="label">Kafka</p>
-          <div>
-            <h3>120K+ leads a day</h3>
-            <p>I built the consumer pipeline that delivers lead data to communication, appointment and database services.</p>
-            <a class="link" href="/engineering/#case-kafka">Read the Kafka case study</a>
-          </div>
-        </article>
-        <article class="work-row" id="gateway">
-          <p class="label">API gateway</p>
-          <div>
-            <h3>One gateway for 10+ services</h3>
-            <p>I built the shared API gateway in Node.js and Express. 10+ Justdial services route requests through it.</p>
-          </div>
-        </article>
-        <article class="work-row" id="caching">
-          <p class="label">Redis</p>
-          <div>
-            <h3>35% lower peak API response time</h3>
-            <p>I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses during peak traffic.</p>
-          </div>
-        </article>
-        <article class="work-row" id="ecs">
-          <p class="label">AWS ECS</p>
-          <div>
-            <h3>Four independently deployed services</h3>
-            <p>I led a four-person team through a monolith migration at Mypcot Infotech.</p>
-            <a class="link" href="/engineering/#case-migration">Read the migration case study</a>
-          </div>
-        </article>
-        <p class="work-link"><a class="link" href="/engineering/">Read the full engineering portfolio <span aria-hidden="true">→</span></a></p>
-      </section>
-
-      <section class="section bio" id="about" aria-labelledby="about-title">
-        <div>
-          <p class="eyebrow">About</p>
-          <h2 id="about-title">Pragnesh Prajapati</h2>
-          <p>I’m an SDE 1 at Justdial in Bengaluru with 3.5+ years of backend engineering experience. I’m focusing my next role on voice agents, conversational AI and the real-time systems behind them.</p>
-          <p class="tags">TypeScript · Node.js · WebRTC · Kafka · Redis · AWS</p>
-        </div>
-        <div>
-          <details open>
-            <summary>Justdial · SDE 1</summary>
-            <p>Jan 2026–present · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
-          </details>
-          <details>
-            <summary>Mypcot Infotech · Software Engineer</summary>
-            <p>May 2024–Dec 2025 · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
-          </details>
-          <details>
-            <summary>Weboccult Technologies · Backend Engineer</summary>
-            <p>Jan 2023–May 2024 · REST APIs and Twilio/WebRTC video calling.</p>
-          </details>
+          </article>
         </div>
       </section>
 
-      <section class="section" id="contact" aria-labelledby="contact-title">
-        <p class="eyebrow">Contact</p>
-        <h2 id="contact-title">Have a role or project in mind?</h2>
-        <p>Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
-        <div class="actions">
-          <a class="btn primary" href="mailto:pragnesh8122000@gmail.com">Email me</a>
-          <a class="btn" href="https://www.linkedin.com/in/pragneshprajapati08">LinkedIn</a>
-          <a class="btn" href="https://github.com/Pragnesh8122000">GitHub</a>
+      <section class="section professional-work" id="systems" aria-labelledby="calling" tabindex="-1">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <h2 id="calling">Justdial’s in-app calling backend</h2>
+            </div>
+            <a class="link" href="/engineering/">Full engineering portfolio <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="section-lead">I designed and owned the backend integration for a third-party WebRTC calling service.</p>
+
+          <ul class="work-metrics" aria-label="Engineering results" role="list" data-moment="counter-rolls">
+            <li><a href="#pipeline" aria-label="120K+ leads processed daily"><strong data-count aria-hidden="true">120K+</strong><span>Leads processed daily</span></a></li>
+            <li><a href="#gateway" aria-label="10+ services on one gateway"><strong data-count aria-hidden="true">10+</strong><span>Services on one gateway</span></a></li>
+            <li><a href="#caching" aria-label="35% lower peak API response time"><strong data-count aria-hidden="true">35%</strong><span>Lower peak API response time</span></a></li>
+          </ul>
+
+          <div class="work-list">
+            <article class="work-row" id="pipeline" tabindex="-1">
+              <h3>Kafka lead pipeline</h3>
+              <div>
+                <p>I built the consumer pipeline that delivers lead data to communication, appointment and database services.</p>
+                <a class="link" href="/engineering/#case-kafka">Read the Kafka case study <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+            <article class="work-row" id="gateway" tabindex="-1">
+              <h3>Node.js API gateway</h3>
+              <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
+            </article>
+            <article class="work-row" id="caching" tabindex="-1">
+              <h3>Redis caching</h3>
+              <p>I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses during peak traffic.</p>
+            </article>
+            <article class="work-row" id="ecs">
+              <h3>AWS ECS migration</h3>
+              <div>
+                <p>I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services independently.</p>
+                <a class="link" href="/engineering/#case-migration">Read the migration case study <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section bio" id="about" aria-labelledby="about-title" tabindex="-1">
+        <div class="wrap bio-layout">
+          <div>
+            <h2 id="about-title">Pragnesh Prajapati</h2>
+            <p class="section-lead">I’m an SDE 1 at Justdial in Bengaluru with 3.5+ years of backend engineering experience. I’m focusing my next role on voice agents and the real-time systems behind them.</p>
+            <p class="tags" translate="no">TypeScript · Node.js · WebRTC · Kafka · Redis · AWS</p>
+          </div>
+          <div class="roles" aria-label="Career history" role="group">
+            <details open>
+              <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
+              <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
+            </details>
+            <details>
+              <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
+              <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
+            </details>
+            <details>
+              <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
+              <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
+            </details>
+          </div>
         </div>
       </section>
     </main>
 
-    <footer class="wrap footer">
-      <span>Pragnesh Prajapati</span>
-      <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+    <footer class="closing" id="contact" aria-labelledby="contact-title" tabindex="-1">
+      <div class="wrap">
+        <div class="contact">
+          <h2 id="contact-title">Have a role or project in mind?</h2>
+          <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
+          <div class="actions">
+            <a class="btn primary" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+            <a class="link" href="https://www.linkedin.com/in/pragneshprajapati08">LinkedIn <span aria-hidden="true">↗</span></a>
+            <a class="link" href="https://github.com/Pragnesh8122000">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="footer">
+          <span>Pragnesh Prajapati</span>
+          <a class="link" href="#top">Back to top <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
     </footer>
+    <script type="module" src="/assets/taste/motion/motion.js"></script>
+    <script type="module" src="/assets/taste/moments/moments.js"></script>
+    <script type="module" src="/src/voice/theme.js"></script>
+    <script type="module" src="/src/voice/navigation.js"></script>
     <script type="module" src="/src/voice/walkthrough.js"></script>
   </body>
 </html>

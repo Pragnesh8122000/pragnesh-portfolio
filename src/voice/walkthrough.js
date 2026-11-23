@@ -10,6 +10,12 @@ let activePlayback;
 
 function highlightTurn(index) {
   turns.forEach((turn, position) => turn.toggleAttribute('data-current', index === position));
+  const turn = turns[index]?.dataset.turn;
+  if (turn) {
+    demo.dataset.sampleTurn = turn;
+  } else {
+    delete demo.dataset.sampleTurn;
+  }
 }
 
 function cancelSpeech(playback) {
@@ -104,33 +110,3 @@ playbackControls.hidden = false;
 addEventListener('pagehide', () => {
   if (activePlayback) finishPlayback(activePlayback);
 });
-
-const progress = document.querySelector('.scroll-progress');
-const header = document.querySelector('.sitehead');
-let lastScrollY = scrollY;
-let scrollFrame;
-
-function updateScroll() {
-  scrollFrame = undefined;
-  const position = Math.max(0, scrollY);
-  const distance = document.documentElement.scrollHeight - innerHeight;
-  const fraction = distance > 0 ? Math.min(1, position / distance) : 0;
-  progress.style.transform = `scaleX(${fraction})`;
-
-  if (position < 80) {
-    header.classList.remove('away');
-    lastScrollY = position;
-  } else if (Math.abs(position - lastScrollY) >= 12) {
-    header.classList.toggle('away', position > lastScrollY);
-    lastScrollY = position;
-  }
-}
-
-function scheduleScrollUpdate() {
-  if (scrollFrame === undefined) scrollFrame = requestAnimationFrame(updateScroll);
-}
-
-addEventListener('scroll', scheduleScrollUpdate, { passive: true });
-addEventListener('resize', scheduleScrollUpdate);
-header.addEventListener('focusin', () => header.classList.remove('away'));
-updateScroll();
