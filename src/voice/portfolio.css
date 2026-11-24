@@ -282,6 +282,59 @@ button { cursor: pointer; touch-action: manipulation; }
   text-transform: none;
 }
 
+.console-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Voice waveform: a quiet mark at rest; demoMotion.js moves the bars while a turn plays. */
+.voice-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  color: var(--muted);
+  transition: color 150ms ease;
+}
+
+.voice-wave i {
+  --idle: .25;
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleY(var(--idle));
+}
+
+.voice-wave i:nth-child(2) { --idle: .45; }
+.voice-wave i:nth-child(3) { --idle: .7; }
+.voice-wave i:nth-child(4) { --idle: .4; }
+.voice-wave i:nth-child(5) { --idle: .2; }
+.console[data-sample-turn] .voice-wave { color: var(--accent); }
+
+/* Streamed reply: a zero-width caret, so moving it never re-wraps the text. */
+.stream-caret {
+  position: relative;
+  display: inline-block;
+  width: 0;
+}
+
+.stream-caret::after {
+  position: absolute;
+  bottom: -.22em;
+  left: 2px;
+  width: 2px;
+  height: 1.05em;
+  background: var(--accent);
+  content: "";
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink { 50% { opacity: 0; } }
+
+.console[data-streaming] [data-turn="output"] q::after { opacity: 0; }
+
 .console-body {
   display: grid;
   grid-template: "listen transcript" 1fr / minmax(0, .9fr) minmax(0, 1.1fr);
