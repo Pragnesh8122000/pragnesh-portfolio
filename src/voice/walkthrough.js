@@ -16,8 +16,6 @@ function highlightTurn(index) {
   } else {
     delete demo.dataset.sampleTurn;
   }
-  // demoMotion.js streams the reply and moves the waveform from this.
-  demo.dispatchEvent(new CustomEvent('demo:turn', { detail: { turn: turn ?? null } }));
 }
 
 function cancelSpeech(playback) {
@@ -109,16 +107,6 @@ playButton.addEventListener('click', () => {
 });
 
 playbackControls.hidden = false;
-
-// The demo's motion is an extra: load it once the page is idle, and never under reduced motion.
-if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const loadMotion = () => import('./demoMotion.js').catch(() => {});
-  if (typeof requestIdleCallback === 'function') {
-    requestIdleCallback(loadMotion, { timeout: 2000 });
-  } else {
-    setTimeout(loadMotion, 300);
-  }
-}
 addEventListener('pagehide', () => {
   if (activePlayback) finishPlayback(activePlayback);
 });
