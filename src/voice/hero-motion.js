@@ -2,13 +2,17 @@
 // - the reply streams word by word (M1)
 // - mid-stream the primary model times out and a fallback takes over (M2)
 // - sound ripples spread from behind the console (M5)
-// The headline cycles through roles (M3). On mouse or trackpad devices the console tilts toward the
-// pointer (M6) and the main button leans toward it (M7). The scroll exit (M8) is CSS only, in portfolio.css.
-// Nothing runs under prefers-reduced-motion. Loops wait while their part of the hero is off screen or the
-// tab is hidden, and the streaming loop steps aside while walkthrough.js plays the sample conversation.
+// The headline cycles through roles (M3). On mouse or trackpad devices a soft light follows the pointer
+// over the console (M6; the console itself never tilts) and the main button leans toward it (M7).
+// Nothing runs under prefers-reduced-motion. The round button in the console header pauses every loop
+// for the rest of the visit. Loops wait while their part of the hero is off screen or the tab is hidden,
+// and the streaming loop steps aside while walkthrough.js plays the sample conversation.
 const root = document.documentElement;
 const hero = document.querySelector('.hero');
 const demo = document.querySelector('#voice-demo');
+const PAUSE_KEY = 'hero-motion-paused';
+const paused = () => root.classList.contains('motion-paused');
+const pauseListeners = [];
 
 const EASE = 'cubic-bezier(.22, 1, .36, 1)';
 const EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
@@ -77,7 +81,7 @@ function streamReply(ripples) {
 
   let run = 0;
   const playing = () => demo.hasAttribute('data-playing');
-  const alive = (id) => id === run && !playing();
+  const alive = (id) => id === run && !playing() && !paused();
 
   async function setRoute(state, text) {
     if (!chip || chip.dataset.state === state) return;
@@ -116,7 +120,7 @@ function streamReply(ripples) {
     for (let i = 0; i < tokens.length; i++) {
       if (i === failAt) {
         demo.removeAttribute('data-streaming');
-        await setRoute('failing', 'Primary timed out');
+        await setRoute('failing', 'Primary model');
         await wait(850);
         await setRoute('fallback', 'Fallback model');
         if (!alive(id)) return;
@@ -131,16 +135,21 @@ function streamReply(ripples) {
     await wait(700);
   }
 
-  // Pressing "Play sample conversation" stops the loop at once and shows the whole reply.
-  new MutationObserver(() => {
-    if (!playing()) return;
+  // Pressing "Play sample conversation" or the pause button stops the loop at once and shows the whole reply.
+  const stop = () => {
     run++;
     settle();
+  };
+  new MutationObserver(() => {
+    if (playing()) stop();
   }).observe(demo, { attributes: true, attributeFilter: ['data-playing'] });
+  pauseListeners.push(() => {
+    if (paused()) stop();
+  });
 
   (async () => {
     for (;;) {
-      await until(() => onScreen(demo) && !playing());
+      await until(() => onScreen(demo) && !playing() && !paused());
       const id = ++run;
       await streamOnce(id);
       settle();
@@ -164,7 +173,7 @@ function rotateRoles() {
   (async () => {
     for (let k = 0; ;) {
       await wait(k === 0 ? 3400 : 2200);
-      if (!onScreen(hero)) continue;
+      if (!onScreen(hero) || paused()) continue;
       await word.animate([{ transform: 'none' }, { transform: 'translateY(-105%)' }], { duration: 380, easing: EASE_IO, fill: 'forwards' }).finished;
       k = (k + 1) % ROLES.length;
       word.textContent = ROLES[k];
@@ -173,11 +182,32 @@ function rotateRoles() {
   })();
 }
 
-// ---------------------------------------------------------------- M6 console tilt + M7 magnetic button
+// ---------------------------------------------------------------- the pause button (house rule: loops past 5 s pause)
+function pauseControl() {
+  const button = demo.querySelector('.motion-pause');
+  if (!button) return;
+  const apply = (on) => {
+    root.classList.toggle('motion-paused', on);
+    button.setAttribute('aria-pressed', String(on));
+    button.setAttribute('aria-label', on ? 'Play motion' : 'Pause motion');
+    pauseListeners.forEach((listener) => listener());
+  };
+  let stored = false;
+  try { stored = sessionStorage.getItem(PAUSE_KEY) === '1'; } catch { /* nothing remembered */ }
+  apply(stored);
+  button.hidden = false;
+  button.addEventListener('click', () => {
+    const on = !paused();
+    apply(on);
+    try { sessionStorage.setItem(PAUSE_KEY, on ? '1' : '0'); } catch { /* this visit only */ }
+  });
+}
+
+// ---------------------------------------------------------------- M6 console sheen + M7 magnetic button
 function followPointer() {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   const cta = hero.querySelector('.hero-action');
-  const now = { rx: 0, ry: 0, mx: 0, my: 0 };
+  const now = { mx: 0, my: 0 };
   let px = null;
   let py = null;
   let frame = 0;
@@ -185,10 +215,6 @@ function followPointer() {
   const step = () => {
     frame = 0;
     const box = demo.getBoundingClientRect();
-    const nx = px === null ? 0 : Math.max(-1, Math.min(1, (px - (box.left + box.width / 2)) / (box.width / 2 + 160)));
-    const ny = py === null ? 0 : Math.max(-1, Math.min(1, (py - (box.top + box.height / 2)) / (box.height / 2 + 160)));
-    now.rx += (-ny * 5 - now.rx) * 0.1;
-    now.ry += (nx * 6 - now.ry) * 0.1;
     if (px !== null) {
       demo.style.setProperty('--mx', `${px - box.left}px`);
       demo.style.setProperty('--my', `${py - box.top}px`);
@@ -202,8 +228,7 @@ function followPointer() {
     now.mx += ((near ? Math.max(-10, Math.min(10, dx * 0.22)) : 0) - now.mx) * 0.16;
     now.my += ((near ? Math.max(-8, Math.min(8, dy * 0.3)) : 0) - now.my) * 0.16;
 
-    const resting = px === null && Math.max(Math.abs(now.rx), Math.abs(now.ry), Math.abs(now.mx), Math.abs(now.my)) < 0.02;
-    demo.style.transform = resting ? '' : `perspective(1300px) rotateX(${now.rx.toFixed(2)}deg) rotateY(${now.ry.toFixed(2)}deg)`;
+    const resting = px === null && Math.max(Math.abs(now.mx), Math.abs(now.my)) < 0.02;
     cta.style.translate = resting ? '' : `${now.mx.toFixed(2)}px ${now.my.toFixed(2)}px`;
     if (!resting) frame = requestAnimationFrame(step);
   };
@@ -227,6 +252,7 @@ if (hero && demo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   observer.observe(hero);
   observer.observe(demo);
   const ripples = addRipples();
+  pauseControl();
   heroSettled().then(() => {
     streamReply(ripples);
     rotateRoles();

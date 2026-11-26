@@ -428,14 +428,15 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 
 .project-section {
+  /* Blue, black and white: white buttons, sky-blue accents, no lavender. */
   --project-bg: light-dark(#121b34, #151d34);
-  --ink: #f1f3ff;
-  --muted: #bac7e4;
+  --ink: #f0f3fc;
+  --muted: #b7c3db;
   --line: #465473;
-  --action: #aabaff;
-  --accent: #c2cdff;
-  --action-ink: var(--project-bg);
-  --action-hover: var(--accent);
+  --action: #ffffff;
+  --accent: #8fb0ff;
+  --action-ink: #121b34;
+  --action-hover: #dfe6f3;
   background: var(--project-bg);
   color: var(--ink);
 }
@@ -466,10 +467,7 @@ button { cursor: pointer; touch-action: manipulation; }
 #bestie-title { font: 500 clamp(36px, 4.8vw, 72px)/1.02 Georgia, serif; letter-spacing: -.052em; }
 #bestie-title em { color: var(--accent); }
 .bestie-deck { color: var(--muted); max-width: 42ch; }
-.bestie-action {
-  --action: color-mix(in srgb, var(--accent) 72%, var(--project-bg));
-  gap: 16px;
-}
+.bestie-action { gap: 16px; }
 .bestie-cover:is(:hover, :focus-visible) .bestie-action { background: var(--action-hover); }
 .bestie-action i { width: 10px; height: 10px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-2px); }
 .bestie-story[open] .bestie-action i { transform: rotate(225deg) translate(-1px,-1px); }
@@ -657,19 +655,19 @@ button { cursor: pointer; touch-action: manipulation; }
 .roles summary:hover span:first-child { color: var(--action); }
 
 .closing {
-  --ink: #f1f3ff;
-  --muted: #e1e6ff;
-  --line: light-dark(#6874da, #6976c5);
-  --action: #e0e6ff;
-  --accent: #e4e9ff;
+  --ink: #ffffff;
+  --muted: #dbe3f2;
+  --line: color-mix(in srgb, #ffffff 34%, transparent);
+  --action: #ffffff;
+  --accent: #ffffff;
   background: light-dark(#2346a0, #202f63);
   color: var(--ink);
 }
 
 .contact { padding-block: clamp(62px, 8vw, 114px); }
 .contact h2 { max-width: 17ch; font-size: clamp(43px, 7vw, 98px); text-wrap: balance; }
-.contact .btn.primary { border-color: #bfcbff; background: #bfcbff; color: #141d3e; }
-.contact .btn.primary:hover { background: #dce4ff; }
+.contact .btn.primary { border-color: #ffffff; background: #ffffff; color: #0b0c0e; }
+.contact .btn.primary:hover { background: #dfe6f3; }
 .actions { margin-top: 24px; }
 
 .footer {
@@ -1040,17 +1038,49 @@ html.hero-fx .hero .console { position: relative; z-index: 1; }
 }
 
 .route-chip[hidden] { display: none; }
-.route-chip i { width: 7px; height: 7px; border-radius: 50%; background: #1f9d63; }
+.route-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
 .route-chip-name { display: inline-block; }
-.route-chip[data-state="failing"] { border-color: #d9822b; background: color-mix(in srgb, var(--console-bg) 88%, #d9822b); color: var(--ink); }
-.route-chip[data-state="failing"] i { background: #d9822b; animation: route-ping .7s ease-out infinite; }
+/* Blue, black and white only: a timeout strikes the primary out in ink, the fallback takes over in blue. */
+.route-chip[data-state="failing"] { border-color: var(--ink); color: var(--ink); }
+.route-chip[data-state="failing"] .route-chip-name { text-decoration: line-through 1.5px; }
+.route-chip[data-state="failing"]::after { content: 'timed out'; }
+.route-chip[data-state="failing"] i { animation: route-ping .7s ease-out infinite; }
 .route-chip[data-state="fallback"] { border-color: var(--action); color: var(--ink); }
 .route-chip[data-state="fallback"] i { background: var(--action); }
 
 @keyframes route-ping {
-  from { box-shadow: 0 0 0 0 #d9822b66; }
-  to { box-shadow: 0 0 0 7px #d9822b00; }
+  from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ink) 40%, transparent); }
+  to { box-shadow: 0 0 0 7px transparent; }
 }
+
+/* Pause for the hero loops: a solid 32px disc inside a 44px target */
+.motion-pause {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -8px -6px -4px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink) 15.5px, transparent 16.5px);
+  color: var(--console-bg);
+  cursor: pointer;
+}
+
+.motion-pause[hidden] { display: none; }
+.motion-pause i { width: 10px; height: 11px; border-inline: 3px solid currentColor; }
+.motion-pause[aria-pressed="true"] i {
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-style: solid;
+  border-color: transparent transparent transparent currentColor;
+  border-width: 6px 0 6px 10px;
+}
+.motion-pause:hover { background: radial-gradient(circle, var(--action) 15.5px, transparent 16.5px); color: var(--action-ink); }
+
+html.motion-paused :is(.hero-ripples i, .hero-action span, .stream-tok.is-last::after, .console .voice-signal i, .route-chip i) { animation-play-state: paused; }
 
 /* M5 sound ripples */
 .hero-ripples {
@@ -1089,7 +1119,7 @@ html.hero-fx .hero .console { position: relative; z-index: 1; }
   100% { transform: scale(1.32); opacity: 0; }
 }
 
-/* M6 console sheen (the tilt itself is set inline from the pointer) */
+/* M6 console sheen: a soft light follows the pointer (the console itself never tilts) */
 html.hero-fx .hero .console::after {
   content: '';
   position: absolute;
@@ -1110,23 +1140,43 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
   86% { transform: translateY(-1px); }
 }
 
-/* M8 scroll exit: CSS scroll timeline, desktop only (on phones the console sits under the copy) */
-@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
-    .hero-copy, .hero .console, .hero-ripples {
-      animation-timeline: scroll(root);
-      animation-range: 0 75vh;
-      animation-fill-mode: both;
-      animation-timing-function: linear;
-    }
-
-    .hero-copy { animation-name: hero-copy-exit; }
-    .hero .console, .hero-ripples { animation-name: hero-console-exit; }
-
-    @keyframes hero-copy-exit { to { translate: 0 -70px; opacity: .1; } }
-    @keyframes hero-console-exit { to { translate: 0 -150px; } }
-  }
+/* C1 case studies open in place in their work rows */
+.case summary {
+  gap: 9px;
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
 }
+
+.case summary::-webkit-details-marker { display: none; }
+
+.case summary::after {
+  width: 7px;
+  height: 7px;
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  content: "";
+  transform: rotate(45deg) translateY(-2px);
+}
+
+.case[open] summary::after { transform: rotate(225deg) translate(-1px, -1px); }
+
+.case dl {
+  display: grid;
+  gap: 10px;
+  margin: 2px 0 8px;
+  padding-inline-start: 14px;
+  border-inline-start: 2px solid var(--action);
+}
+
+.case dt {
+  color: var(--action);
+  font: 600 11px/1.5 var(--mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.case dd { max-width: 58ch; margin: 2px 0 0; color: var(--muted); }
 
 @media (max-width: 600px) {
   .console-tags { justify-content: flex-start; }

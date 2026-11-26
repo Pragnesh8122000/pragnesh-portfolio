@@ -104,6 +104,7 @@
                 <div class="console-tags">
                   <span class="route-chip" data-state="primary" aria-hidden="true" hidden><i></i><span class="route-chip-name">Primary model</span></span>
                   <span class="demo-label">Scripted sample</span>
+                  <button type="button" class="motion-pause" aria-label="Pause motion" aria-pressed="false" hidden><i aria-hidden="true"></i></button>
                 </div>
               </header>
               <div class="conversation">
@@ -180,7 +181,6 @@
             <div>
               <h2 id="calling">Justdial’s in-app calling backend</h2>
             </div>
-            <a class="link" href="/engineering/">Full engineering portfolio <span aria-hidden="true">↗</span></a>
           </div>
           <p class="section-lead">I designed and owned the backend integration for a third-party WebRTC calling service.</p>
 
@@ -195,7 +195,13 @@
               <h3>Kafka lead pipeline</h3>
               <div>
                 <p>I built the consumer pipeline that delivers lead data to communication, appointment and database services.</p>
-                <a class="link" href="/engineering/#case-kafka">Read the Kafka case study <span aria-hidden="true">↗</span></a>
+                <details class="case">
+                  <summary class="link">How it worked</summary>
+                  <dl>
+                    <div><dt>My part</dt><dd>Justdial’s database team publishes new lead data to Kafka. I built the consumer pipeline that processes it and passes each lead on.</dd></div>
+                    <div><dt>Result</dt><dd>Around 120K to 130K leads a day, about 10K per city. Consumer lag builds while a batch is processed and drains back to zero once it is done.</dd></div>
+                  </dl>
+                </details>
               </div>
             </article>
             <article class="work-row" id="gateway" tabindex="-1">
@@ -210,7 +216,14 @@
               <h3>AWS ECS migration</h3>
               <div>
                 <p>I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services independently.</p>
-                <a class="link" href="/engineering/#case-migration">Read the migration case study <span aria-hidden="true">↗</span></a>
+                <details class="case">
+                  <summary class="link">How it worked</summary>
+                  <dl>
+                    <div><dt>Problem</dt><dd>The client asked for the split. As the project grew, the monolith became hard to maintain, and a failure in one part could not be allowed to break the whole system.</dd></div>
+                    <div><dt>My part</dt><dd>I worked with a third-party consultant to design the target architecture from the start, and led the migration. We built it around a shared database and the saga pattern.</dd></div>
+                    <div><dt>Result</dt><dd>Independent deployments and better service isolation.</dd></div>
+                  </dl>
+                </details>
               </div>
             </article>
           </div>
