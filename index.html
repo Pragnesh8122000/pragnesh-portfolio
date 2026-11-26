@@ -136,6 +136,7 @@
 
       <section class="section project-section" id="projects" aria-labelledby="project-title" tabindex="-1">
         <div class="wrap">
+          <p class="eyebrow">Projects</p>
           <h2 id="project-title">Selected projects</h2>
           <details class="bestie-story">
             <summary class="bestie-cover" aria-labelledby="bestie-name bestie-title bestie-action">
@@ -179,6 +180,7 @@
         <div class="wrap">
           <div class="section-head">
             <div>
+              <p class="eyebrow">Work</p>
               <h2 id="calling">Justdial’s in-app calling backend</h2>
             </div>
           </div>
@@ -195,6 +197,7 @@
               <h3>Kafka lead pipeline</h3>
               <div>
                 <p>I built the consumer pipeline that delivers lead data to communication, appointment and database services.</p>
+                <p class="flow-mini" aria-hidden="true"><span>DB team</span><i></i><b>Kafka</b><i></i><span>My consumer</span><i></i><span>3 services</span></p>
                 <details class="case">
                   <summary class="link">How it worked</summary>
                   <dl>
@@ -206,16 +209,23 @@
             </article>
             <article class="work-row" id="gateway" tabindex="-1">
               <h3>Node.js API gateway</h3>
-              <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
+              <div>
+                <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
+                <p class="flow-mini" aria-hidden="true"><span>Clients</span><i></i><b>Express gateway</b><i></i><span>10+ services</span></p>
+              </div>
             </article>
             <article class="work-row" id="caching" tabindex="-1">
               <h3>Redis caching</h3>
-              <p>I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses during peak traffic.</p>
+              <div>
+                <p>I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses during peak traffic.</p>
+                <p class="flow-mini" aria-hidden="true"><span>Request</span><i></i><b>Redis</b><i></i><span>IRO platform on a miss</span></p>
+              </div>
             </article>
             <article class="work-row" id="ecs">
               <h3>AWS ECS migration</h3>
               <div>
                 <p>I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services independently.</p>
+                <p class="flow-mini" aria-hidden="true"><span>Monolith</span><i></i><b>AWS ECS</b><i></i><span>4 services</span></p>
                 <details class="case">
                   <summary class="link">How it worked</summary>
                   <dl>
@@ -232,10 +242,23 @@
 
       <section class="section bio" id="about" aria-labelledby="about-title" tabindex="-1">
         <div class="wrap bio-layout">
-          <div>
-            <h2 id="about-title">Pragnesh Prajapati</h2>
-            <p class="section-lead">I’m an SDE 1 at Justdial in Bengaluru with 3.5+ years of backend engineering experience. I’m focusing my next role on voice agents and the real-time systems behind them.</p>
-            <p class="tags" translate="no">TypeScript · Node.js · WebRTC · Kafka · Redis · AWS</p>
+          <div class="bio-main">
+            <div>
+              <p class="eyebrow">About</p>
+              <h2 id="about-title">Pragnesh Prajapati</h2>
+              <p class="section-lead">I’m an SDE 1 at Justdial in Bengaluru with 3.5+ years of backend engineering experience. I’m focusing my next role on voice agents and the real-time systems behind them.</p>
+              <ul class="stack" aria-label="Main tools" translate="no">
+                <li><i class="logo" style="--logo: url(/assets/icons/typescript.svg)" aria-hidden="true"></i>TypeScript</li>
+                <li><i class="logo" style="--logo: url(/assets/icons/nodejs.svg)" aria-hidden="true"></i>Node.js</li>
+                <li><i class="logo" style="--logo: url(/assets/icons/webrtc.svg)" aria-hidden="true"></i>WebRTC</li>
+                <li><i class="logo" style="--logo: url(/assets/icons/kafka.svg)" aria-hidden="true"></i>Kafka</li>
+                <li><i class="logo" style="--logo: url(/assets/icons/redis.svg)" aria-hidden="true"></i>Redis</li>
+                <li><i class="logo" style="--logo: url(/assets/icons/aws.svg)" aria-hidden="true"></i>AWS</li>
+              </ul>
+            </div>
+            <!-- Client slot: portrait. Put a 4:5 photo at public/portrait.jpg and replace the span below with
+                 <img src="/portrait.jpg" alt="Pragnesh Prajapati" width="400" height="500">. -->
+            <figure class="portrait"><span class="portrait-mark" aria-hidden="true">PP</span></figure>
           </div>
           <div class="roles" aria-label="Career history" role="group">
             <details open>
@@ -258,6 +281,7 @@
     <footer class="closing" id="contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="wrap">
         <div class="contact">
+          <p class="eyebrow">Contact</p>
           <h2 id="contact-title">Have a role or project in mind?</h2>
           <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
           <div class="actions">

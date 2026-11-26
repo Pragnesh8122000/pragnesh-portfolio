@@ -164,6 +164,9 @@ button { font: inherit; }
   text-transform: uppercase;
 }
 
+/* S2 every section opens with a mono label above its h2 */
+.eyebrow + h2 { margin-top: 10px; }
+
 h1, h2, h3 {
   font-family: var(--display);
   font-weight: 650;
@@ -206,7 +209,7 @@ h3 { font-size: clamp(21px, 2.5vw, 31px); letter-spacing: -.04em; }
 .btn {
   padding: 9px 16px;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 8px;
   background: transparent;
   color: var(--ink);
   text-decoration: none;
@@ -270,7 +273,7 @@ button { cursor: pointer; touch-action: manipulation; }
   gap: 3px;
   width: 40px;
   height: 40px;
-  border-radius: 9px;
+  border-radius: 8px;
   background: var(--console-turn);
   color: var(--action);
 }
@@ -441,11 +444,7 @@ button { cursor: pointer; touch-action: manipulation; }
   color: var(--ink);
 }
 
-.project-section h2 {
-  color: var(--muted);
-  font-size: clamp(23px, 2.35vw, 34px);
-  letter-spacing: -.035em;
-}
+.project-section .eyebrow { color: var(--accent); }
 
 .bestie-story {
   margin-top: clamp(22px, 3vw, 40px);
@@ -464,8 +463,8 @@ button { cursor: pointer; touch-action: manipulation; }
 .bestie-cover:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 .bestie-copy { display: grid; justify-items: start; gap: 16px; }
 #bestie-name { color: var(--accent); font: 680 22px/1.1 var(--display); }
-#bestie-title { font: 500 clamp(36px, 4.8vw, 72px)/1.02 Georgia, serif; letter-spacing: -.052em; }
-#bestie-title em { color: var(--accent); }
+#bestie-title { font: 650 clamp(32px, 3.7vw, 54px)/1.02 var(--display); letter-spacing: -.05em; }
+#bestie-title em { color: var(--accent); font-style: normal; }
 .bestie-deck { color: var(--muted); max-width: 42ch; }
 .bestie-action { gap: 16px; }
 .bestie-cover:is(:hover, :focus-visible) .bestie-action { background: var(--action-hover); }
@@ -478,7 +477,7 @@ button { cursor: pointer; touch-action: manipulation; }
   display: grid; align-content: center; gap: 10px; isolation: isolate; overflow: hidden;
   padding: clamp(18px, 3vw, 44px); background: var(--art-bg); color: var(--accent);
   border: 1px solid var(--line);
-  border-radius: 10px; position: relative; min-height: 250px;
+  border-radius: 16px; position: relative; min-height: 250px;
 }
 .companion-print::before, .companion-print::after {
   content: ''; position: absolute; z-index: -1; width: 82%; aspect-ratio: 1;
@@ -487,7 +486,7 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 .companion-print::before { inset: -83% auto auto -16%; }
 .companion-print::after { inset: 67% -27% auto auto; }
-.sample-prompt { justify-self: center; font: italic 500 clamp(18px, 2vw, 27px)/1.2 Georgia, serif; }
+.sample-prompt { justify-self: center; font: 600 clamp(18px, 2vw, 26px)/1.2 var(--display); letter-spacing: -.025em; }
 .persona {
   display: flex; gap: 13px; align-items: center; width: 88%; padding: 14px;
   border: 1px solid var(--line);
@@ -497,7 +496,7 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 .persona.mentor { justify-self: end; background: var(--project-bg); color: var(--ink); border-radius: 18px 3px 18px 18px; }
 .persona b { display: block; font: 650 12px/1.5 var(--display); }
-.persona q { font: 500 clamp(16px, 1.8vw, 24px)/1.25 Georgia, serif; }
+.persona q { font: 600 clamp(16px, 1.7vw, 22px)/1.25 var(--display); letter-spacing: -.02em; }
 .voice-mark {
   position: relative; flex: 0 0 32px; height: 32px;
   border: 1.5px solid currentColor; border-radius: 46% 54% 62% 38%; transform: rotate(-15deg);
@@ -586,7 +585,7 @@ button { cursor: pointer; touch-action: manipulation; }
 .work-row:target { background: var(--target-row); box-shadow: 8px 0 var(--target-row), -8px 0 var(--target-row); }
 .work-row .link { margin-top: 3px; }
 
-.bio { background: var(--surface); }
+.bio { border-top: 1px solid var(--line); }
 
 .bio-layout {
   display: grid;
@@ -595,10 +594,83 @@ button { cursor: pointer; touch-action: manipulation; }
   gap: 28px 24px;
 }
 
-.tags {
-  margin-top: 18px;
-  color: var(--action);
-  font: 600 13px/1.8 var(--mono);
+/* V2 real tech logos, drawn in one colour so they keep to blue, black and white */
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+  font: 600 13px/1.6 var(--mono);
+}
+
+.stack li { display: inline-flex; align-items: center; gap: 8px; }
+
+.logo {
+  flex: 0 0 18px;
+  height: 18px;
+  background: var(--action);
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
+}
+
+/* V1 portrait slot: a 4:5 frame that takes the client's photograph */
+.portrait {
+  display: grid;
+  place-items: center;
+  width: min(220px, 42vw);
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--action);
+  color: var(--action-ink);
+}
+
+.portrait img { width: 100%; height: 100%; object-fit: cover; }
+.portrait-mark { font: 650 clamp(56px, 6vw, 84px)/1 var(--display); letter-spacing: -.06em; }
+
+.bio-main { display: grid; gap: 28px; align-content: start; }
+
+/* V4 small flow diagrams in the work rows */
+.flow-mini {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--ink);
+  font: 600 12px/1.2 var(--mono);
+}
+
+.flow-mini :is(span, b) {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  font-weight: 600;
+}
+
+.flow-mini b { border-color: var(--action); color: var(--action); box-shadow: inset 0 0 0 1px var(--action); }
+
+.flow-mini i {
+  position: relative;
+  width: 14px;
+  height: 1.5px;
+  background: var(--action);
+}
+
+.flow-mini i::after {
+  position: absolute;
+  inset: -3px -1px auto auto;
+  width: 6px;
+  height: 6px;
+  border: solid var(--action);
+  border-width: 1.5px 1.5px 0 0;
+  content: "";
+  transform: rotate(45deg);
 }
 
 .roles { position: relative; padding-inline-start: 25px; }
@@ -637,7 +709,7 @@ button { cursor: pointer; touch-action: manipulation; }
   height: 9px;
   border: 2px solid var(--action);
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--bg);
   content: "";
 }
 
@@ -690,7 +762,15 @@ button { cursor: pointer; touch-action: manipulation; }
   .work-row { padding-block: 12px; }
 }
 
-@media (min-width: 801px) {
+/* V3 About fills its screen: portrait and bio on the left, the timeline on the right */
+@media (min-width: 1024px) {
+  .bio-layout { grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: center; gap: clamp(40px, 6vw, 96px); }
+  .bio-main { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: clamp(28px, 3vw, 48px); }
+  .bio-main .portrait { order: -1; }
+  .bio .section-lead { font-size: clamp(16px, 1.35vw, 19px); }
+}
+
+@media (min-width: 801px) and (max-width: 1023px) {
   .bio-layout { grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 6vw, 70px); }
 
   .roles {
