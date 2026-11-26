@@ -961,3 +961,173 @@ html.welcome-on .welcome {
   .welcome-meta { font-size: 11px; }
   .welcome-skip { right: 14px; bottom: 14px; font-size: 10px; }
 }
+
+/* Hero motion: src/voice/hero-motion.js adds html.hero-fx only when motion is allowed. */
+.console-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px 10px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+html.hero-fx .hero { position: relative; overflow: clip; }
+html.hero-fx .hero .console { position: relative; z-index: 1; }
+
+/* M3 rotating role */
+.role-rot {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: .1em;
+  margin-bottom: -.1em;
+}
+
+.role-rot > span { display: inline-block; }
+
+/* M1 streaming reply: words are laid out from the start and only revealed, so nothing reflows */
+.stream-tok { transition: opacity .18s ease; }
+.console[data-revealing] .stream-tok:not(.is-on) { opacity: 0; }
+.console[data-revealing] [data-turn="output"] q::after { visibility: hidden; }
+
+.stream-tok.is-last::after {
+  content: '';
+  display: inline-block;
+  width: .5em;
+  height: 1.05em;
+  margin-left: .12em;
+  vertical-align: -.18em;
+  border-radius: 2px;
+  background: var(--action);
+  animation: stream-caret .9s steps(1) infinite;
+}
+
+.console[data-thinking] [data-turn="output"] .speaker::after {
+  content: ' · thinking…';
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.console[data-streaming] .voice-signal i { animation: voice-signal 420ms ease-in-out infinite alternate; }
+.console[data-streaming] .voice-signal i:nth-child(even) { animation-delay: 120ms; }
+.console[data-streaming] .voice-signal i:nth-child(3) { animation-delay: 220ms; }
+
+@keyframes stream-caret { 50% { opacity: 0; } }
+
+/* M2 provider failover chip */
+.route-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--console-bg);
+  color: var(--muted);
+  font: 600 11px/1.4 var(--mono);
+  letter-spacing: .03em;
+  white-space: nowrap;
+  transition: border-color .25s, color .25s, background-color .25s;
+}
+
+.route-chip[hidden] { display: none; }
+.route-chip i { width: 7px; height: 7px; border-radius: 50%; background: #1f9d63; }
+.route-chip-name { display: inline-block; }
+.route-chip[data-state="failing"] { border-color: #d9822b; background: color-mix(in srgb, var(--console-bg) 88%, #d9822b); color: var(--ink); }
+.route-chip[data-state="failing"] i { background: #d9822b; animation: route-ping .7s ease-out infinite; }
+.route-chip[data-state="fallback"] { border-color: var(--action); color: var(--ink); }
+.route-chip[data-state="fallback"] i { background: var(--action); }
+
+@keyframes route-ping {
+  from { box-shadow: 0 0 0 0 #d9822b66; }
+  to { box-shadow: 0 0 0 7px #d9822b00; }
+}
+
+/* M5 sound ripples */
+.hero-ripples {
+  --ring: 5.4s;
+  position: absolute;
+  z-index: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.hero-ripples::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--r) * -.75);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--action) 16%, transparent), transparent);
+}
+
+.hero-ripples i {
+  position: absolute;
+  inset: calc(var(--r) * -.5);
+  border: 1.5px solid color-mix(in srgb, var(--action) 45%, transparent);
+  border-radius: 50%;
+  opacity: 0;
+  animation: hero-ring var(--ring) cubic-bezier(.2, .6, .3, 1) infinite;
+}
+
+.hero-ripples i:nth-child(2) { animation-delay: calc(var(--ring) / -3); }
+.hero-ripples i:nth-child(3) { animation-delay: calc(var(--ring) / -1.5); }
+.hero-ripples[data-fast] { --ring: 2.6s; }
+
+@keyframes hero-ring {
+  0% { transform: scale(.62); opacity: 0; }
+  14% { opacity: .75; }
+  100% { transform: scale(1.32); opacity: 0; }
+}
+
+/* M6 console sheen (the tilt itself is set inline from the pointer) */
+html.hero-fx .hero .console::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(460px circle at var(--mx, 50%) var(--my, 0%), light-dark(color-mix(in srgb, var(--action) 9%, transparent), #ffffff14), transparent 62%);
+  opacity: var(--sheen, 0);
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+/* M7 arrow nudge (the magnetic pull is set inline from the pointer) */
+html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6s ease-in-out infinite; }
+
+@keyframes cta-nudge {
+  0%, 62%, 100% { transform: none; }
+  74% { transform: translateY(4px); }
+  86% { transform: translateY(-1px); }
+}
+
+/* M8 scroll exit: CSS scroll timeline, desktop only (on phones the console sits under the copy) */
+@media (min-width: 761px) and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero-copy, .hero .console, .hero-ripples {
+      animation-timeline: scroll(root);
+      animation-range: 0 75vh;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+    }
+
+    .hero-copy { animation-name: hero-copy-exit; }
+    .hero .console, .hero-ripples { animation-name: hero-console-exit; }
+
+    @keyframes hero-copy-exit { to { translate: 0 -70px; opacity: .1; } }
+    @keyframes hero-console-exit { to { translate: 0 -150px; } }
+  }
+}
+
+@media (max-width: 600px) {
+  .console-tags { justify-content: flex-start; }
+}
