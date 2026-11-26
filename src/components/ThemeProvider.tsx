@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useSyncExternalStore, type ReactNode } from 'react';
-import type { ThemeName } from '../design/tokens';
+import { palettes, type ThemeName } from '../design/tokens';
 
 const STORAGE_KEY = 'theme';
 
@@ -10,24 +10,13 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function readStored(): ThemeName | null {
-  try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    return value === 'dark' || value === 'light' ? value : null;
-  } catch {
-    return null;
-  }
-}
-
-function systemTheme(): ThemeName {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
 function applyTheme(theme: ThemeName) {
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.dataset.theme = theme;
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (themeColor) themeColor.content = palettes[theme].background;
 }
 
-/** The pre-paint script in index.html sets data-theme; the attribute is the single source of truth. */
+/** Subscribe to the theme attribute used by the pre-paint script and theme toggle. */
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -35,9 +24,7 @@ function subscribe(onChange: () => void) {
 }
 
 function readTheme(): ThemeName {
-  const attr = document.documentElement.getAttribute('data-theme');
-  if (attr === 'dark' || attr === 'light') return attr;
-  return readStored() ?? systemTheme();
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 
 /**
@@ -48,14 +35,13 @@ function readTheme(): ThemeName {
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const theme = useSyncExternalStore(subscribe, readTheme, () => 'light' as ThemeName);
 
-  // Follow the system preference until the visitor makes an explicit choice.
   useEffect(() => {
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => {
-      if (!readStored()) applyTheme(mql.matches ? 'dark' : 'light');
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY && event.key !== null) return;
+      applyTheme(event.newValue === 'dark' ? 'dark' : 'light');
     };
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   const toggle = useCallback(() => {

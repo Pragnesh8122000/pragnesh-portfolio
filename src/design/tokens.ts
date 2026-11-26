@@ -75,7 +75,6 @@ function declarations(theme: ThemeName): string {
 export function themeCss(): string {
   return [
     `:root,:root[data-theme="light"]{${declarations('light')}}`,
-    `:root[data-theme="dark"]{${declarations('dark')}}`,
-    `@media (prefers-color-scheme: dark){:root:not([data-theme]){${declarations('dark')}}}`
+    `:root[data-theme="dark"]{${declarations('dark')}}`
   ].join('');
 }

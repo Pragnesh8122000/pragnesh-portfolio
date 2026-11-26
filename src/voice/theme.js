@@ -1,17 +1,18 @@
 const root = document.documentElement;
-const systemTheme = matchMedia('(prefers-color-scheme: dark)');
-const toggle = document.querySelector('.theme-toggle');
-const [lightChrome, darkChrome] = document.querySelectorAll('meta[name="theme-color"]');
+// The header's icon button and the phone menu's row are the same switch.
+const toggles = [...document.querySelectorAll('.theme-toggle, .menu-theme')];
+const themeColor = document.querySelector('meta[name="theme-color"]');
 
 function syncThemeControl() {
-  const preference = root.dataset.theme;
-  const dark = preference ? preference === 'dark' : systemTheme.matches;
-  toggle.setAttribute('aria-pressed', String(dark));
-  lightChrome.media = preference ? (dark ? 'not all' : 'all') : '(prefers-color-scheme: light)';
-  darkChrome.media = preference ? (dark ? 'all' : 'not all') : '(prefers-color-scheme: dark)';
+  const dark = root.dataset.theme === 'dark';
+  toggles.forEach((toggle) => {
+    toggle.setAttribute('aria-pressed', String(dark));
+    toggle.title = dark ? 'Switch to light mode' : 'Switch to dark mode';
+  });
+  themeColor.content = dark ? '#101421' : '#eef0f3';
 }
 
-toggle.addEventListener('click', () => {
+toggles.forEach((toggle) => toggle.addEventListener('click', () => {
   const theme = toggle.getAttribute('aria-pressed') === 'true' ? 'light' : 'dark';
   root.dataset.theme = theme;
   try {
@@ -20,9 +21,8 @@ toggle.addEventListener('click', () => {
     // The selected theme still applies to this page if storage is unavailable.
   }
   syncThemeControl();
-});
+}));
 
-systemTheme.addEventListener('change', syncThemeControl);
 window.addEventListener('storage', (event) => {
   if (event.key !== 'theme' && event.key !== null) return;
   if (event.newValue === 'light' || event.newValue === 'dark') {
@@ -34,4 +34,4 @@ window.addEventListener('storage', (event) => {
 });
 
 syncThemeControl();
-toggle.hidden = false;
+toggles.forEach((toggle) => { toggle.hidden = false; });

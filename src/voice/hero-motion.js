@@ -2,8 +2,8 @@
 // - the reply streams word by word (M1)
 // - mid-stream the primary model times out and a fallback takes over (M2)
 // - sound ripples spread from behind the console (M5)
-// The headline cycles through roles (M3). On mouse or trackpad devices the console tilts toward the
-// pointer (M6) and the main button leans toward it (M7). The scroll exit (M8) is CSS only, in portfolio.css.
+// The headline cycles through roles (M3). On mouse or trackpad devices a soft light follows the pointer
+// over the console (M6; the console itself never tilts) and the main button leans toward it (M7).
 // Nothing runs under prefers-reduced-motion. Loops wait while their part of the hero is off screen or the
 // tab is hidden, and the streaming loop steps aside while walkthrough.js plays the sample conversation.
 const root = document.documentElement;
@@ -47,17 +47,28 @@ async function heroSettled() {
 }
 
 // ---------------------------------------------------------------- M5 sound ripples
+// One SVG behind the console: a soft glow and three rings drawn as circles, so they read as decoration and
+// never as boxes. The SVG is 1.5 x --r across (the glow's edge); a ring grows to 0.66 of --r at most.
+const SVG = 'http://www.w3.org/2000/svg';
 function addRipples() {
-  const ripples = document.createElement('div');
-  ripples.className = 'hero-ripples';
+  const ripples = document.createElementNS(SVG, 'svg');
+  ripples.setAttribute('class', 'hero-ripples');
+  ripples.setAttribute('viewBox', '-100 -100 200 200');
   ripples.setAttribute('aria-hidden', 'true');
-  ripples.append(...Array.from({ length: 3 }, () => document.createElement('i')));
+  ripples.setAttribute('focusable', 'false');
+  ripples.innerHTML = '<defs><radialGradient id="hero-glow"><stop offset="0" stop-color="currentColor" stop-opacity=".16"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>'
+    + '<circle r="100" fill="url(#hero-glow)"/>'
+    + '<circle class="ring" r="66.6"/><circle class="ring" r="66.6"/><circle class="ring" r="66.6"/>';
   hero.prepend(ripples);
-  // Offsets ignore transforms, so the tilt and the scroll exit never move the centre.
+  // Offsets ignore transforms, so motion never moves the centre; --r is capped so the whole SVG stays
+  // inside the hero (house rule: nothing spills past the panel it sits on).
   const place = () => {
-    ripples.style.left = `${demo.offsetLeft + demo.offsetWidth / 2}px`;
-    ripples.style.top = `${demo.offsetTop + demo.offsetHeight / 2}px`;
-    ripples.style.setProperty('--r', `${Math.max(demo.offsetWidth, demo.offsetHeight) * 1.15}px`);
+    const x = demo.offsetLeft + demo.offsetWidth / 2;
+    const y = demo.offsetTop + demo.offsetHeight / 2;
+    const room = Math.min(x, y, hero.offsetWidth - x, hero.offsetHeight - y);
+    ripples.style.left = `${x}px`;
+    ripples.style.top = `${y}px`;
+    ripples.style.setProperty('--r', `${Math.min(Math.max(demo.offsetWidth, demo.offsetHeight) * 1.15, room / 0.76)}px`);
   };
   place();
   new ResizeObserver(place).observe(hero);
@@ -116,7 +127,7 @@ function streamReply(ripples) {
     for (let i = 0; i < tokens.length; i++) {
       if (i === failAt) {
         demo.removeAttribute('data-streaming');
-        await setRoute('failing', 'Primary timed out');
+        await setRoute('failing', 'Primary model');
         await wait(850);
         await setRoute('fallback', 'Fallback model');
         if (!alive(id)) return;
@@ -131,11 +142,13 @@ function streamReply(ripples) {
     await wait(700);
   }
 
-  // Pressing "Play sample conversation" stops the loop at once and shows the whole reply.
-  new MutationObserver(() => {
-    if (!playing()) return;
+  // Pressing "Click For Demo" stops the loop at once and shows the whole reply.
+  const stop = () => {
     run++;
     settle();
+  };
+  new MutationObserver(() => {
+    if (playing()) stop();
   }).observe(demo, { attributes: true, attributeFilter: ['data-playing'] });
 
   (async () => {
@@ -173,11 +186,11 @@ function rotateRoles() {
   })();
 }
 
-// ---------------------------------------------------------------- M6 console tilt + M7 magnetic button
+// ---------------------------------------------------------------- M6 console sheen + M7 magnetic button
 function followPointer() {
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   const cta = hero.querySelector('.hero-action');
-  const now = { rx: 0, ry: 0, mx: 0, my: 0 };
+  const now = { mx: 0, my: 0 };
   let px = null;
   let py = null;
   let frame = 0;
@@ -185,10 +198,6 @@ function followPointer() {
   const step = () => {
     frame = 0;
     const box = demo.getBoundingClientRect();
-    const nx = px === null ? 0 : Math.max(-1, Math.min(1, (px - (box.left + box.width / 2)) / (box.width / 2 + 160)));
-    const ny = py === null ? 0 : Math.max(-1, Math.min(1, (py - (box.top + box.height / 2)) / (box.height / 2 + 160)));
-    now.rx += (-ny * 5 - now.rx) * 0.1;
-    now.ry += (nx * 6 - now.ry) * 0.1;
     if (px !== null) {
       demo.style.setProperty('--mx', `${px - box.left}px`);
       demo.style.setProperty('--my', `${py - box.top}px`);
@@ -202,8 +211,7 @@ function followPointer() {
     now.mx += ((near ? Math.max(-10, Math.min(10, dx * 0.22)) : 0) - now.mx) * 0.16;
     now.my += ((near ? Math.max(-8, Math.min(8, dy * 0.3)) : 0) - now.my) * 0.16;
 
-    const resting = px === null && Math.max(Math.abs(now.rx), Math.abs(now.ry), Math.abs(now.mx), Math.abs(now.my)) < 0.02;
-    demo.style.transform = resting ? '' : `perspective(1300px) rotateX(${now.rx.toFixed(2)}deg) rotateY(${now.ry.toFixed(2)}deg)`;
+    const resting = px === null && Math.max(Math.abs(now.mx), Math.abs(now.my)) < 0.02;
     cta.style.translate = resting ? '' : `${now.mx.toFixed(2)}px ${now.my.toFixed(2)}px`;
     if (!resting) frame = requestAnimationFrame(step);
   };
