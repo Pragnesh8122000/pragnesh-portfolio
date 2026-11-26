@@ -26,9 +26,38 @@
     </script>
     <link rel="stylesheet" href="/src/voice/portfolio.css">
     <link rel="stylesheet" href="/assets/taste/motion/motion.css">
-    <script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+    <script>
+      // The welcome intro plays once per tab session. It is skipped for reduced motion, deep links and
+      // headless browsers; ?intro=1 forces it and ?intro=0 turns it off. Otherwise the hero gets its usual entrance.
+      (() => {
+        const root = document.documentElement;
+        let welcome = false;
+        try {
+          const forced = new URLSearchParams(location.search).get('intro');
+          welcome = forced === '1' || (forced !== '0'
+            && !location.hash
+            && !matchMedia('(prefers-reduced-motion: reduce)').matches
+            && !/HeadlessChrome/.test(navigator.userAgent)
+            && !sessionStorage.getItem('welcome-seen'));
+        } catch {}
+        if (welcome) {
+          root.classList.add('welcome-on');
+          // If intro.js never runs, the page must not stay covered.
+          window.__welcomeSafety = setTimeout(() => root.classList.remove('welcome-on'), 9000);
+        } else {
+          root.classList.add('m-enter');
+          setTimeout(() => root.classList.add('m-enter-done'), 700);
+        }
+      })();
+    </script>
   </head>
   <body id="top">
+    <div class="welcome" id="welcome" aria-hidden="true">
+      <div class="welcome-wave"></div>
+      <p class="welcome-say"><span class="welcome-w">I’m</span> <span class="welcome-w" data-zoom>Pragnesh.</span> <span class="welcome-w">I</span> <span class="welcome-w">build</span> <span class="welcome-w">voice</span> <span class="welcome-w">agents</span> <span class="welcome-w">that</span> <span class="welcome-w">work</span> <span class="welcome-w">in</span> <span class="welcome-w">production.</span></p>
+      <p class="welcome-meta"><span>AI Bestie · warming up</span><span class="welcome-num">0%</span></p>
+      <span class="welcome-skip">Skip intro →</span>
+    </div>
     <header class="sitehead nav">
       <a class="skip" href="#main">Skip to content</a>
       <div class="wrap head">
@@ -54,48 +83,49 @@
     </header>
 
     <main id="main" tabindex="-1">
-      <section class="hero hero--centred" data-enter aria-labelledby="headline">
+      <section class="hero" data-enter aria-labelledby="headline">
         <div class="wrap">
           <div class="hero-text">
             <div class="hero-copy">
               <p class="eyebrow">Backend engineer in Bengaluru</p>
-              <h1 id="headline">I build <em>voice agents.</em></h1>
+              <h1 id="headline" data-enter-whole>I build <em>voice agents.</em></h1>
               <p class="intro hero__lead">My voice prototype streams replies as they’re generated and switches model providers when one fails.</p>
-              <a class="link hero-action" href="#voice-demo">Explore the voice demo <span aria-hidden="true">↓</span></a>
+              <a class="btn primary hero-action" href="#voice-demo">Explore the voice demo <span aria-hidden="true">↓</span></a>
             </div>
 
-            <div class="hero-stage" data-visual>
-              <article class="console app-frame" id="voice-demo" aria-labelledby="demo-title" data-enter-media tabindex="-1">
-                <header class="console-head">
+            <article class="console app-frame" id="voice-demo" aria-labelledby="demo-title" data-enter-media data-visual tabindex="-1">
+              <header class="console-head">
+                <div class="console-identity">
+                  <span class="voice-signal" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i>
+                  </span>
                   <span id="demo-title">AI Bestie</span>
-                  <span class="demo-label">Scripted sample</span>
-                </header>
-                <div class="console-body">
-                  <div class="conversation">
-                    <div class="turn" data-turn="input">
-                      <span class="speaker">You</span>
-                      <p><q>Help me unwind after a long day.</q></p>
-                    </div>
-                    <div class="turn" data-turn="output">
-                      <span class="speaker">Reply</span>
-                      <p><q>Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.</q></p>
-                    </div>
-                  </div>
-                  <div class="console-listen">
-                    <div class="playback" id="playback" hidden>
-                      <div class="sample-track" aria-hidden="true">
-                        <span>Prompt</span><span>Reply</span>
-                      </div>
-                      <button type="button" class="btn primary play" id="play">Play sample conversation</button>
-                    </div>
-                    <p id="demo-status" class="demo-status" role="status"></p>
-                  </div>
                 </div>
-                <div class="console-foot">
-                  <a class="link" href="#projects">How it works <span aria-hidden="true">↓</span></a>
+                <span class="demo-label">Scripted sample</span>
+              </header>
+              <div class="conversation">
+                <div class="turn" data-turn="input">
+                  <span class="speaker">You</span>
+                  <p><q>Help me unwind after a long day.</q></p>
                 </div>
-              </article>
-            </div>
+                <div class="turn" data-turn="output">
+                  <span class="speaker">Reply</span>
+                  <p><q>Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.</q></p>
+                </div>
+              </div>
+              <div class="console-foot">
+                <div class="console-listen">
+                  <div class="playback" id="playback" hidden>
+                    <div class="sample-track" aria-hidden="true">
+                      <span>Prompt</span><span>Reply</span>
+                    </div>
+                    <button type="button" class="btn play" id="play">Play sample conversation</button>
+                  </div>
+                  <p id="demo-status" class="demo-status" role="status"></p>
+                </div>
+                <a class="link" href="#projects">How it works <span aria-hidden="true">↓</span></a>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -231,5 +261,6 @@
     <script type="module" src="/src/voice/theme.js"></script>
     <script type="module" src="/src/voice/navigation.js"></script>
     <script type="module" src="/src/voice/walkthrough.js"></script>
+    <script type="module" src="/src/voice/intro.js"></script>
   </body>
 </html>
