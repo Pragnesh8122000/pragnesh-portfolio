@@ -6,9 +6,8 @@
     <meta name="description" content="Pragnesh Prajapati builds voice agents and real-time backends. Explore the voice prototype, streamed replies and model provider fallback.">
     <meta name="page-type" content="software">
     <meta name="site-kind" content="software">
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#eef0f3" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#101421" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#eef0f3">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pragnesh-portfolio-seven.vercel.app/">
     <meta property="og:title" content="Pragnesh Prajapati — Voice Agents &amp; Real-Time Systems">
@@ -21,7 +20,10 @@
     <script>
       try {
         const theme = localStorage.getItem('theme');
-        if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+        if (theme === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+          document.querySelector('meta[name="theme-color"]').content = '#101421';
+        }
       } catch {}
     </script>
     <link rel="stylesheet" href="/src/voice/portfolio.css">
@@ -61,7 +63,7 @@
     <header class="sitehead nav">
       <a class="skip" href="#main">Skip to content</a>
       <div class="wrap head">
-        <a href="#top" class="brand">Pragnesh Prajapati</a>
+        <a href="#top" class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>Pragnesh Prajapati</a>
         <button type="button" class="btn menu-toggle" aria-controls="site-navigation" aria-expanded="false" hidden>
           <span class="menu-icon" aria-hidden="true"></span> Menu
         </button>
@@ -71,11 +73,14 @@
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
           <a class="nav-resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
+          <button type="button" class="menu-theme" aria-pressed="false" hidden><span>Dark mode</span><span class="theme-icon" aria-hidden="true"></span></button>
+          <a class="menu-email" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+          <span class="nav-ind" aria-hidden="true"></span>
         </nav>
         <div class="header-actions">
+          <a class="btn primary nav-email" href="mailto:pragnesh8122000@gmail.com"><span>Email<span class="nav-email-long"> me</span></span><span aria-hidden="true">↗</span></a>
           <button type="button" class="btn theme-toggle" aria-label="Dark mode" aria-pressed="false" hidden>
             <span class="theme-icon" aria-hidden="true"></span>
-            <span class="theme-label">Dark</span>
           </button>
           <a class="btn resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
         </div>
@@ -90,7 +95,7 @@
               <p class="eyebrow">Backend engineer in Bengaluru</p>
               <h1 id="headline" data-enter-whole>I build <em>voice agents.</em></h1>
               <p class="intro hero__lead">My voice prototype streams replies as they’re generated and switches model providers when one fails.</p>
-              <a class="btn primary hero-action" href="#voice-demo">Explore the voice demo <span aria-hidden="true">↓</span></a>
+              <a class="btn primary hero-action" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
             </div>
 
             <article class="console app-frame" id="voice-demo" aria-labelledby="demo-title" data-enter-media data-visual tabindex="-1">
@@ -103,8 +108,6 @@
                 </div>
                 <div class="console-tags">
                   <span class="route-chip" data-state="primary" aria-hidden="true" hidden><i></i><span class="route-chip-name">Primary model</span></span>
-                  <span class="demo-label">Scripted sample</span>
-                  <button type="button" class="motion-pause" aria-label="Pause motion" aria-pressed="false" hidden><i aria-hidden="true"></i></button>
                 </div>
               </header>
               <div class="conversation">
@@ -123,7 +126,7 @@
                     <div class="sample-track" aria-hidden="true">
                       <span>Prompt</span><span>Reply</span>
                     </div>
-                    <button type="button" class="btn play" id="play">Play sample conversation</button>
+                    <button type="button" class="btn play" id="play">Click For Demo</button>
                   </div>
                   <p id="demo-status" class="demo-status" role="status"></p>
                 </div>
@@ -137,40 +140,122 @@
       <section class="section project-section" id="projects" aria-labelledby="project-title" tabindex="-1">
         <div class="wrap">
           <p class="eyebrow">Projects</p>
-          <h2 id="project-title">Selected projects</h2>
-          <details class="bestie-story">
-            <summary class="bestie-cover" aria-labelledby="bestie-name bestie-title bestie-action">
-              <span class="bestie-copy">
-                <strong id="bestie-name">AI Bestie</strong>
-                <span id="bestie-title">Same question.<br><em>Different company.</em></span>
-                <span class="bestie-deck">One voice companion, two personalities. What changes when you ask a friend instead of a mentor?</span>
-                <span class="btn primary bestie-action" id="bestie-action"><span class="when-closed">Discover AI Bestie</span><span class="when-open">Close project brief</span><i aria-hidden="true"></i></span>
-              </span>
-              <span class="companion-print" data-visual>
-                <span class="sample-prompt">“Where do I start?”</span>
-                <span class="persona friend"><i class="voice-mark" aria-hidden="true"></i><span><b>Friend</b><q>Want to talk it through?</q></span></span>
-                <span class="persona mentor"><i class="voice-mark" aria-hidden="true"></i><span><b>Mentor</b><q>Which part feels hardest?</q></span></span>
-              </span>
-            </summary>
-            <div class="bestie-brief">
-              <div>
-                <h3>How the personalities work</h3>
-                <p>Friend and Mentor each have their own voice and range of settings. Five traits shape a reply, from how warmly the companion responds to how directly it challenges you. The cover shows two scripted examples.</p>
+          <h2 id="project-title">Two products I built to learn voice and retrieval</h2>
+          <article class="bestie-card">
+            <div class="bestie-cover">
+              <div class="bestie-copy">
+                <h3 id="bestie-name">AI Bestie</h3>
+                <span id="bestie-title">
+                  Same question.
+                  <br />
+                  <em>Different company.</em>
+                </span>
+                <span class="bestie-deck">
+                  One voice companion, two personalities. What changes when you ask a friend instead of a mentor?
+                </span>
+                <ul class="chips" aria-label="AI Bestie stack">
+                  <li>SSE streaming</li>
+                  <li>LLM fallback</li>
+                  <li>JWT</li>
+                  <li>Rate limits</li>
+                </ul>
+                <div class="bestie-actions">
+                  <button type="button" class="btn primary" aria-expanded="false" aria-controls="bestie-brief">
+                    How it works
+                    <i aria-hidden="true"></i>
+                  </button>
+                  <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">
+                    View source
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
               </div>
-              <div>
-                <h3>From a thought to a spoken reply</h3>
-                <p>Speech recognition captures your question. The backend uses the last 20 messages for context and streams the reply as it forms. Fish Audio speaks it sentence by sentence.</p>
-                <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">Explore the AI Bestie source <span aria-hidden="true">↗</span></a>
+              <div class="companion-print" data-visual="" data-persona="friend">
+                <span class="sample-prompt">“Where do I start?”</span>
+                <div class="persona-switch" role="radiogroup" aria-label="Personality">
+                  <label>
+                    <input type="radio" name="persona" value="friend" checked="" />
+                    <span>Friend</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="persona" value="mentor" />
+                    <span>Mentor</span>
+                  </label>
+                </div>
+                <span class="persona friend">
+                  <i class="voice-mark" aria-hidden="true"></i>
+                  <span>
+                    <b>Friend</b>
+                    <q>Want to talk it through?</q>
+                  </span>
+                </span>
+                <span class="persona mentor">
+                  <i class="voice-mark" aria-hidden="true"></i>
+                  <span>
+                    <b>Mentor</b>
+                    <q>Which part feels hardest?</q>
+                  </span>
+                </span>
               </div>
             </div>
-          </details>
+            <div class="brief-wrap" inert="">
+              <div>
+                <div class="bestie-brief" id="bestie-brief">
+                  <div>
+                    <h3>How the personalities work</h3>
+                    <p>
+                      Friend and Mentor each have their own voice and range of settings. Five traits shape a reply,
+                      from how warmly the companion responds to how directly it challenges you. The cover shows two
+                      scripted examples.
+                    </p>
+                  </div>
+                  <div>
+                    <h3>From a thought to a spoken reply</h3>
+                    <p>
+                      Speech recognition captures your question. The backend uses the last 20 messages for context
+                      and streams the reply as it forms. Fish Audio speaks it sentence by sentence.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
 
-          <article class="other-project">
-            <h3>Vaidya Assist chat</h3>
-            <p>Find a doctor and book an appointment in the same chat. I built Vaidya Assist to retrieve relevant information before answering a health question.</p>
-            <div class="links">
-              <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-fe" aria-label="Vaidya Assist frontend">Frontend <span aria-hidden="true">↗</span></a>
-              <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-be" aria-label="Vaidya Assist backend">Backend <span aria-hidden="true">↗</span></a>
+          <article class="vaidya-card">
+            <div>
+              <p class="v-name">Vaidya Assist</p>
+              <h3>From a health question to a booked doctor.</h3>
+              <p>
+                An AI healthcare assistant that answers health questions, helps people find doctors and books
+                appointments. It retrieves relevant context before an LLM answers.
+              </p>
+              <div class="links">
+                <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-fe">
+                  Frontend code
+                  <span aria-hidden="true">↗</span>
+                </a>
+                <a class="link" href="https://github.com/Pragnesh8122000/vaidya-assist-be">
+                  Backend code
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+            <div class="vaidya-flow">
+              <p class="flow-mini">
+                <span>Question</span>
+                <i></i>
+                <b>Retrieve context</b>
+                <i></i>
+                <span>LLM answer</span>
+                <i></i>
+                <span>Book a doctor</span>
+              </p>
+              <ul class="chips" aria-label="Vaidya Assist stack">
+                <li>RAG</li>
+                <li>LLM APIs</li>
+                <li>Doctor search</li>
+                <li>Booking</li>
+              </ul>
             </div>
           </article>
         </div>
@@ -178,64 +263,101 @@
 
       <section class="section professional-work" id="systems" aria-labelledby="calling" tabindex="-1">
         <div class="wrap">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Work</p>
-              <h2 id="calling">Justdial’s in-app calling backend</h2>
-            </div>
-          </div>
-          <p class="section-lead">I designed and owned the backend integration for a third-party WebRTC calling service.</p>
-
-          <ul class="work-metrics" aria-label="Engineering results" role="list" data-moment="counter-rolls">
-            <li><a href="#pipeline" aria-label="120K+ leads processed daily"><strong data-count aria-hidden="true">120K+</strong><span>Leads processed daily</span></a></li>
-            <li><a href="#gateway" aria-label="10+ services on one gateway"><strong data-count aria-hidden="true">10+</strong><span>Services on one gateway</span></a></li>
-            <li><a href="#caching" aria-label="35% lower peak API response time"><strong data-count aria-hidden="true">35%</strong><span>Lower peak API response time</span></a></li>
-          </ul>
-
-          <div class="work-list">
-            <article class="work-row" id="pipeline" tabindex="-1">
-              <h3>Kafka lead pipeline</h3>
-              <div>
-                <p>I built the consumer pipeline that delivers lead data to communication, appointment and database services.</p>
-                <p class="flow-mini" aria-hidden="true"><span>DB team</span><i></i><b>Kafka</b><i></i><span>My consumer</span><i></i><span>3 services</span></p>
-                <details class="case">
-                  <summary class="link">How it worked</summary>
-                  <dl>
-                    <div><dt>My part</dt><dd>Justdial’s database team publishes new lead data to Kafka. I built the consumer pipeline that processes it and passes each lead on.</dd></div>
-                    <div><dt>Result</dt><dd>Around 120K to 130K leads a day, about 10K per city. Consumer lag builds while a batch is processed and drains back to zero once it is done.</dd></div>
-                  </dl>
-                </details>
-              </div>
-            </article>
-            <article class="work-row" id="gateway" tabindex="-1">
-              <h3>Node.js API gateway</h3>
-              <div>
+          <p class="eyebrow">Work</p>
+          <h2 id="calling">Backend systems in production</h2>
+          <p class="section-lead">
+            At Justdial, I designed and owned the backend integration for a third-party WebRTC calling service. These
+            four cases cover my work at Justdial and Mypcot Infotech.
+          </p>
+          <div class="work-stage">
+            <div class="case-deck" id="case-deck">
+              <article tabindex="0" id="pipeline">
+                <p class="eyebrow">Justdial</p>
+                <h3>Kafka lead pipeline</h3>
+                <strong class="metric">120K+</strong><b>leads processed daily</b>
+                <p>
+                  I built the consumer pipeline that delivers lead data to communication, appointment and database
+                  services.
+                </p>
+                <p class="flow-mini" aria-hidden="true">
+                  <span>DB team</span><i></i><b>Kafka</b><i></i><span>My consumer</span><i></i><span>3 services</span>
+                </p>
+                <dl>
+                  <div>
+                    <dt>My part</dt>
+                    <dd>
+                      Justdial’s database team publishes new lead data to Kafka. I built the consumer pipeline that
+                      processes it and passes each lead on.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Result</dt>
+                    <dd>
+                      Around 120K to 130K leads a day, about 10K per city. Consumer lag builds while a batch is processed
+                      and drains back to zero once it is done.
+                    </dd>
+                  </div>
+                </dl>
+              </article>
+              <article tabindex="0" id="gateway">
+                <p class="eyebrow">Justdial</p>
+                <h3>Node.js API gateway</h3>
+                <strong class="metric">10+</strong><b>services on one gateway</b>
                 <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
-                <p class="flow-mini" aria-hidden="true"><span>Clients</span><i></i><b>Express gateway</b><i></i><span>10+ services</span></p>
-              </div>
-            </article>
-            <article class="work-row" id="caching" tabindex="-1">
-              <h3>Redis caching</h3>
-              <div>
-                <p>I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses during peak traffic.</p>
-                <p class="flow-mini" aria-hidden="true"><span>Request</span><i></i><b>Redis</b><i></i><span>IRO platform on a miss</span></p>
-              </div>
-            </article>
-            <article class="work-row" id="ecs">
-              <h3>AWS ECS migration</h3>
-              <div>
-                <p>I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services independently.</p>
-                <p class="flow-mini" aria-hidden="true"><span>Monolith</span><i></i><b>AWS ECS</b><i></i><span>4 services</span></p>
-                <details class="case">
-                  <summary class="link">How it worked</summary>
-                  <dl>
-                    <div><dt>Problem</dt><dd>The client asked for the split. As the project grew, the monolith became hard to maintain, and a failure in one part could not be allowed to break the whole system.</dd></div>
-                    <div><dt>My part</dt><dd>I worked with a third-party consultant to design the target architecture from the start, and led the migration. We built it around a shared database and the saga pattern.</dd></div>
-                    <div><dt>Result</dt><dd>Independent deployments and better service isolation.</dd></div>
-                  </dl>
-                </details>
-              </div>
-            </article>
+                <p class="flow-mini" aria-hidden="true">
+                  <span>Clients</span><i></i><b>Express gateway</b><i></i><span>10+ services</span>
+                </p>
+              </article>
+              <article tabindex="0" id="caching">
+                <p class="eyebrow">Justdial</p>
+                <h3>Redis caching</h3>
+                <strong class="metric">35%</strong><b>lower peak API response time</b>
+                <p>
+                  I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses
+                  during peak traffic.
+                </p>
+                <p class="flow-mini" aria-hidden="true">
+                  <span>Request</span><i></i><b>Redis</b><i></i><span>IRO platform on a miss</span>
+                </p>
+              </article>
+              <article tabindex="0" id="ecs">
+                <p class="eyebrow">Mypcot Infotech</p>
+                <h3>AWS ECS migration</h3>
+                <strong class="metric">4</strong><b>independently deployed services</b>
+                <p>
+                  I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services
+                  independently.
+                </p>
+                <p class="flow-mini" aria-hidden="true">
+                  <span>Monolith</span><i></i><b>AWS ECS</b><i></i><span>4 services</span>
+                </p>
+                <dl>
+                  <div>
+                    <dt>Problem</dt>
+                    <dd>
+                      The client asked for the split. As the project grew, the monolith became hard to maintain, and a
+                      failure in one part could not be allowed to break the whole system.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>My part</dt>
+                    <dd>
+                      I worked with a third-party consultant to design the target architecture from the start, and led the
+                      migration. We built it around a shared database and the saga pattern.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Result</dt>
+                    <dd>Independent deployments and better service isolation.</dd>
+                  </div>
+                </dl>
+              </article>
+            </div>
+            <div class="deck-controls" aria-label="Browse work cases" role="group">
+              <button class="btn" aria-controls="case-deck" data-prev>← Previous</button
+              ><output aria-live="polite">1 / 4 · Kafka lead pipeline</output
+              ><button class="btn" aria-controls="case-deck" data-next>Next →</button>
+            </div>
           </div>
         </div>
       </section>
@@ -256,23 +378,23 @@
                 <li><i class="logo" style="--logo: url(/assets/icons/aws.svg)" aria-hidden="true"></i>AWS</li>
               </ul>
             </div>
-            <!-- Client slot: portrait. Put a 4:5 photo at public/portrait.jpg and replace the span below with
-                 <img src="/portrait.jpg" alt="Pragnesh Prajapati" width="400" height="500">. -->
-            <figure class="portrait"><span class="portrait-mark" aria-hidden="true">PP</span></figure>
           </div>
-          <div class="roles" aria-label="Career history" role="group">
-            <details open>
-              <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
-              <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
-            </details>
-            <details>
-              <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
-              <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
-            </details>
-            <details>
-              <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
-              <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
-            </details>
+          <div class="bio-side">
+            <h3 id="career-history">Career history</h3>
+            <div class="roles" aria-labelledby="career-history" role="group">
+              <details open>
+                <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
+                <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
+              </details>
+              <details>
+                <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
+                <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
+              </details>
+              <details>
+                <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
+                <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
+              </details>
+            </div>
           </div>
         </div>
       </section>
@@ -280,7 +402,7 @@
 
     <footer class="closing" id="contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="wrap">
-        <div class="contact">
+        <div class="contact" data-scroll-moment="word-highlight">
           <p class="eyebrow">Contact</p>
           <h2 id="contact-title">Have a role or project in mind?</h2>
           <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
@@ -297,11 +419,12 @@
       </div>
     </footer>
     <script type="module" src="/assets/taste/motion/motion.js"></script>
-    <script type="module" src="/assets/taste/moments/moments.js"></script>
     <script type="module" src="/src/voice/theme.js"></script>
     <script type="module" src="/src/voice/navigation.js"></script>
     <script type="module" src="/src/voice/walkthrough.js"></script>
     <script type="module" src="/src/voice/intro.js"></script>
     <script type="module" src="/src/voice/hero-motion.js"></script>
+    <script type="module" src="/src/voice/projects.js"></script>
+    <script type="module" src="/src/voice/work-chapters.js"></script>
   </body>
 </html>

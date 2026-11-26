@@ -31,7 +31,7 @@ function finishPlayback(playback, message = '') {
   cancelSpeech(playback);
   highlightTurn();
   demo.removeAttribute('data-playing');
-  playButton.textContent = 'Replay sample conversation';
+  playButton.textContent = 'Click For Demo';
   status.textContent = message;
 }
 
@@ -96,7 +96,7 @@ playButton.addEventListener('click', () => {
   activePlayback = playback;
   status.textContent = '';
   demo.setAttribute('data-playing', '');
-  playButton.textContent = 'Stop sample conversation';
+  playButton.textContent = 'Stop demo';
   highlightTurn(0);
 
   if (speech && 'SpeechSynthesisUtterance' in window) {
