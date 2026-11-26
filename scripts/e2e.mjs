@@ -89,8 +89,10 @@ for (const { w, h, theme } of viewports) {
   );
   check(`${w}px tap targets are 44px or taller`, small.length === 0, small.join(' | '));
 
-  await page.click('button[aria-label^="Switch to"]');
-  check(`${w}px theme toggle`, await page.evaluate((t) => document.documentElement.dataset.theme !== t, theme));
+  check(`${w}px defaults to light with a ${theme} system preference`,
+    await page.evaluate(() => getComputedStyle(document.documentElement).colorScheme === 'light'));
+  await page.getByRole('button', { name: 'Light theme, switch to dark' }).click();
+  check(`${w}px theme toggle`, await page.evaluate(() => document.documentElement.dataset.theme === 'dark'));
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   check(`${w}px no horizontal overflow, console errors or hydration warnings`, overflow <= 0 && problems.length === 0, `${overflow}px ${problems.join(' ; ')}`);

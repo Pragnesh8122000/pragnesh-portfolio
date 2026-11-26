@@ -1,104 +1,74 @@
-// The homepage's two dealt moments, built on GSAP ScrollTrigger (taste-skill: one or two a page, each in
-// its own section, nothing else moves with the scroll).
-// - G1 pinned chapters: on wide screens the work section holds for a screen of scroll while its four
-//   rows open one at a time and the frame beside them swaps to that row's flow diagram. Phones and reduced
-//   motion keep the plain list with each diagram in its row.
-// - G2 word highlight: the closing question rests at a readable tint and turns to full ink word by word as
-//   it rises, "role" gets its underline, and once played it stays inked.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const root = document.documentElement;
-const WIDE = '(min-width: 1024px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)';
 const MOTION = '(prefers-reduced-motion: no-preference)';
 const media = gsap.matchMedia();
 
-// ---------------------------------------------------------------- G1 pinned chapters
-function workChapters() {
-  const section = document.querySelector('#systems');
-  const list = section?.querySelector('.work-list');
-  const rows = list ? [...list.querySelectorAll('.work-row')] : [];
-  if (!rows.length) return;
+const deck = document.querySelector('.case-deck');
+if (deck) {
+  const cards = [...deck.children];
+  const controls = document.querySelector('.deck-controls');
+  const previous = controls.querySelector('[data-prev]');
+  const next = controls.querySelector('[data-next]');
+  const position = controls.querySelector('output');
+  const cardLeft = (card) => card.offsetLeft - cards[0].offsetLeft;
+  const distance = (card) => Math.abs(cardLeft(card) - deck.scrollLeft);
+  const current = () => cards.indexOf(cards.reduce((a, b) => distance(a) <= distance(b) ? a : b));
 
-  media.add(WIDE, () => {
-    // The frame shows a larger copy of each row's diagram; the rows keep the real text.
-    const frame = document.createElement('div');
-    frame.className = 'work-frame';
-    frame.setAttribute('aria-hidden', 'true');
-    const panes = rows.map((row) => {
-      const pane = document.createElement('div');
-      pane.className = 'work-pane';
-      const title = Object.assign(document.createElement('p'), { className: 'work-pane-title', textContent: row.querySelector('h3').textContent });
-      pane.append(title);
-      const flow = row.querySelector('.flow-mini');
-      if (flow) pane.append(flow.cloneNode(true));
-      frame.append(pane);
-      return pane;
+  let pin;
+  function sync() {
+    const index = current();
+    previous.disabled = index === 0;
+    next.disabled = index === cards.length - 1;
+    const label = (index + 1) + ' / ' + cards.length + ' · ' + cards[index].querySelector('h3').textContent;
+    if (position.value !== label) position.value = label;
+  }
+
+  function move(step) {
+    const card = cards[current() + step];
+    if (!card) return;
+    if (pin) {
+      const fraction = Math.min(1, cardLeft(card) / (deck.scrollWidth - deck.clientWidth));
+      window.scrollTo({ top: pin.start + fraction * (pin.end - pin.start), behavior: 'smooth' });
+    } else {
+      deck.scrollTo({ left: cardLeft(card), behavior: 'instant' });
+    }
+  }
+
+  media.add(MOTION, () => {
+    const stage = deck.closest('.work-stage');
+    stage.dataset.scrollDeck = '';
+    const travel = () => deck.scrollWidth - deck.clientWidth;
+    pin = ScrollTrigger.create({
+      trigger: stage,
+      pin: true,
+      start: () => 'top ' + Math.min(document.querySelector('.sitehead').offsetHeight, innerHeight - stage.offsetHeight) + 'px',
+      end: () => '+=' + travel(),
+      onUpdate: (trigger) => { deck.scrollLeft = travel() * trigger.progress; },
     });
-    list.append(frame);
-    root.classList.add('work-chapters');
 
-    let current = -1;
-    const show = (k) => {
-      if (k === current) return;
-      current = k;
-      rows.forEach((row, i) => row.toggleAttribute('data-active', i === k));
-      panes.forEach((pane, i) => gsap.to(pane, {
-        autoAlpha: i === k ? 1 : 0,
-        y: i === k ? 0 : (i < k ? -16 : 16),
-        duration: 0.4,
-        ease: 'power2.out',
-        overwrite: true,
-      }));
+    // Carry a horizontal swipe into the page's scroll position when it settles.
+    const alignPage = () => {
+      if (!pin?.isActive || Math.abs(deck.scrollLeft - travel() * pin.progress) < 2) return;
+      window.scrollTo({ top: pin.start + deck.scrollLeft / travel() * (pin.end - pin.start), behavior: 'instant' });
     };
-    show(0);
-
-    // The section is two screens tall and its .wrap is sticky (portfolio.css), so the page scrolls natively
-    // and nothing wraps the section; ScrollTrigger only reads how far through it the visitor is.
-    const header = () => document.querySelector('.sitehead')?.offsetHeight ?? 0;
-    const trigger = ScrollTrigger.create({
-      trigger: section,
-      start: () => `top ${header()}px`,
-      end: 'bottom bottom',
-      onUpdate: (self) => show(Math.min(rows.length - 1, Math.floor(self.progress * rows.length))),
-    });
-    const stepY = (i) => trigger.start + ((i + 0.5) / rows.length) * (trigger.end - trigger.start);
-
-    // A keyboard user tabbing into a row, or a click on a figure above, moves the scroll to that row's step.
-    const onFocus = (event) => {
-      const i = rows.findIndex((row) => row.contains(event.target));
-      if (i < 0 || i === current) return;
-      show(i);
-      window.scrollTo({ top: stepY(i), behavior: 'instant' });
-    };
-    const metricLinks = [...section.querySelectorAll('.work-metrics a[href^="#"]')];
-    const onMetric = (event) => {
-      const i = rows.findIndex((row) => `#${row.id}` === event.currentTarget.getAttribute('href'));
-      if (i < 0) return;
-      event.preventDefault();
-      window.scrollTo({ top: stepY(i), behavior: 'smooth' });
-    };
-    // Opening "How it worked" changes the section's height, so the pin is measured again.
-    const onToggle = () => ScrollTrigger.refresh();
-
-    list.addEventListener('focusin', onFocus);
-    list.addEventListener('toggle', onToggle, true);
-    metricLinks.forEach((link) => link.addEventListener('click', onMetric));
-
+    deck.addEventListener('scrollend', alignPage);
     return () => {
-      list.removeEventListener('focusin', onFocus);
-      list.removeEventListener('toggle', onToggle, true);
-      metricLinks.forEach((link) => link.removeEventListener('click', onMetric));
-      frame.remove();
-      rows.forEach((row) => row.removeAttribute('data-active'));
-      root.classList.remove('work-chapters');
+      deck.removeEventListener('scrollend', alignPage);
+      delete stage.dataset.scrollDeck;
+      pin = undefined;
     };
   });
+
+  previous.addEventListener('click', () => move(-1));
+  next.addEventListener('click', () => move(1));
+  deck.addEventListener('scroll', sync, { passive: true });
+  new ResizeObserver(sync).observe(deck);
+  sync();
 }
 
-// ---------------------------------------------------------------- G2 word highlight
 function closingHighlight() {
   const heading = document.querySelector('#contact-title');
   if (!heading) return;
@@ -136,5 +106,4 @@ function closingHighlight() {
   });
 }
 
-workChapters();
 closingHighlight();
