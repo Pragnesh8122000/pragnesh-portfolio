@@ -124,8 +124,41 @@ button { font: inherit; }
 }
 
 .site-nav a:is(:hover, :focus-visible, [aria-current]) { color: var(--action); }
-.site-nav a:is(:hover, :focus-visible, [aria-current])::after { transform: scaleX(1); transform-origin: left; }
 .site-nav .nav-resume, .btn.menu-toggle { display: none; }
+.site-nav :is(.menu-theme, .menu-email) { display: none; }
+
+/* N2 condense: once the page scrolls, the bar gets shorter and lets the page show through */
+.sitehead { transition: background-color 200ms ease; }
+.head { transition: min-height 220ms cubic-bezier(.22, 1, .36, 1); }
+.sitehead[data-condensed] { background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: blur(12px) saturate(1.2); }
+.sitehead[data-condensed] .head { min-height: 55px; }
+/* a blur on the bar would trap the fixed phone sheet inside it, so an open menu drops it */
+.sitehead[data-menu-open] { background: var(--bg); backdrop-filter: none; }
+
+/* N4 voice mark: the console's signal, speaking on hover */
+.brand-mark { display: inline-flex; align-items: center; gap: 2px; height: 18px; margin-right: 9px; color: var(--action); }
+.brand-mark i { width: 3px; height: 8px; border-radius: 2px; background: currentColor; }
+.brand-mark i:nth-child(2) { height: 16px; }
+
+/* N1 the header's Email button waits until the hero's own one has scrolled away */
+.nav-email { opacity: 0; visibility: hidden; translate: 0 -6px; transition: opacity 200ms ease, translate 220ms cubic-bezier(.22, 1, .36, 1), visibility 0s 220ms; }
+.sitehead[data-show-cta] .nav-email { opacity: 1; visibility: visible; translate: none; transition-delay: 0s; }
+
+/* N6 one indicator slides under the current section's link */
+.site-nav { position: relative; }
+.site-nav a:is(:hover, :focus-visible):not([aria-current])::after { transform: scaleX(1); transform-origin: left; }
+.nav-ind {
+  position: absolute;
+  left: 0;
+  bottom: 7px;
+  width: var(--w, 0);
+  height: 2px;
+  border-radius: 2px;
+  background: var(--action);
+  opacity: var(--o, 0);
+  transform: translateX(var(--x, 0));
+  pointer-events: none;
+}
 
 .header-actions {
   grid-area: actions;
@@ -219,7 +252,7 @@ button { cursor: pointer; touch-action: manipulation; }
 .btn:hover { border-color: var(--accent); }
 .btn.primary { border-color: var(--action); background: var(--action); color: var(--action-ink); }
 .btn.primary:hover { background: var(--action-hover); }
-.btn.theme-toggle { min-width: 44px; padding-inline: 11px; }
+.btn.theme-toggle { width: 44px; padding: 0; }
 .theme-toggle[hidden] { display: none; }
 .theme-toggle:hover { background: var(--surface); }
 .theme-toggle[aria-pressed="true"] { background: var(--surface); color: var(--action); }
@@ -805,7 +838,10 @@ button { cursor: pointer; touch-action: manipulation; }
     justify-content: space-between;
   }
 
-  .sitehead[data-nav-ready] .resume { display: none; }
+  .sitehead[data-nav-ready] :is(.resume, .theme-toggle) { display: none; }
+  .nav-email { padding-inline: 12px; }
+  .nav-email-long { display: none; }
+  .nav-ind { display: none; }
   .btn.menu-toggle:not([hidden]) { grid-area: menu; display: inline-flex; padding-inline: 11px; }
   .btn.menu-toggle[aria-expanded="true"] { background: var(--surface); color: var(--action); }
 
@@ -827,28 +863,54 @@ button { cursor: pointer; touch-action: manipulation; }
   .menu-toggle[aria-expanded="true"] .menu-icon::before { transform: translateY(2.5px) rotate(45deg); }
   .menu-toggle[aria-expanded="true"] .menu-icon::after { transform: translateY(-2.5px) rotate(-45deg); }
 
+  /* N7 the phone menu is a full sheet: large links, Résumé, the theme switch, then Email me */
   .sitehead[data-nav-ready] .site-nav {
-    position: absolute;
-    inset: calc(100% + 8px) var(--gutter) auto;
+    position: fixed;
+    inset: var(--header-height) 0 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    max-height: calc(100svh - var(--header-height) - 24px);
+    align-content: start;
     overflow: auto;
-    padding: 5px 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
+    padding: 18px var(--gutter) 28px;
     background: var(--bg);
-    box-shadow: 0 10px 22px #0c142425;
     opacity: 0;
     visibility: hidden;
   }
 
   .sitehead[data-menu-open] .site-nav { opacity: 1; visibility: visible; }
-  .sitehead[data-nav-ready] .site-nav .nav-resume { display: flex; }
-  .sitehead[data-nav-ready] .site-nav a { justify-content: space-between; padding-inline: 6px; }
+  .sitehead[data-nav-ready] .site-nav a { justify-content: space-between; min-height: 60px; padding-inline: 0; color: var(--ink); font: 650 30px/1.1 var(--display); letter-spacing: -.035em; }
   .sitehead[data-nav-ready] .site-nav a + a { border-top: 1px solid var(--line); }
   .sitehead[data-nav-ready] .site-nav a::after { content: none; }
-  .sitehead[data-nav-ready] .site-nav a:is(:hover, :focus-visible, [aria-current]) { text-decoration: underline; text-underline-offset: 4px; }
+  .sitehead[data-nav-ready] .site-nav a:is(:hover, :focus-visible, [aria-current]) { color: var(--action); }
+  .sitehead[data-nav-ready] .site-nav .nav-resume { display: flex; color: var(--muted); font-size: 20px; }
+  .sitehead[data-nav-ready] .site-nav .menu-theme {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-height: 56px;
+    padding: 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    background: none;
+    color: var(--muted);
+    font: 620 20px/1.2 var(--display);
+    cursor: pointer;
+  }
+  .sitehead[data-nav-ready] .site-nav .menu-theme[hidden] { display: none; }
+  .sitehead[data-nav-ready] .site-nav .menu-email {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    min-height: 52px;
+    margin-top: 18px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--action);
+    color: var(--action-ink);
+    font: 690 16px/1.2 var(--display);
+    letter-spacing: 0;
+  }
 }
 
 @media (max-width: 880px) {
@@ -937,6 +999,22 @@ button { cursor: pointer; touch-action: manipulation; }
     transition: opacity var(--m-panel, 200ms) var(--m-ease, ease-out), transform var(--m-panel, 200ms) var(--m-ease, ease-out), visibility 0s;
   }
   .menu-icon::before, .menu-icon::after { transition: transform var(--m-in, 150ms) var(--m-ease, ease-out); }
+  .sitehead[data-menu-open] .site-nav > * { animation: sheet-in 360ms cubic-bezier(.22, 1, .36, 1) both; }
+  .sitehead[data-menu-open] .site-nav > :nth-child(2) { animation-delay: 40ms; }
+  .sitehead[data-menu-open] .site-nav > :nth-child(3) { animation-delay: 80ms; }
+  .sitehead[data-menu-open] .site-nav > :nth-child(4) { animation-delay: 120ms; }
+  .sitehead[data-menu-open] .site-nav > :nth-child(n+5) { animation-delay: 160ms; }
+  @keyframes sheet-in { from { opacity: 0; transform: translateY(10px); } }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-ind { transition: transform 260ms cubic-bezier(.65, 0, .35, 1), width 260ms cubic-bezier(.65, 0, .35, 1), opacity 160ms ease; }
+  .brand:hover .brand-mark i { animation: voice-signal 420ms ease-in-out infinite alternate; }
+  .brand:hover .brand-mark i:nth-child(2) { animation-delay: 120ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sitehead, .head, .nav-email { transition: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
