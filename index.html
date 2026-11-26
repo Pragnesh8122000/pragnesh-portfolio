@@ -176,7 +176,7 @@
         </div>
       </section>
 
-      <section class="section professional-work" id="systems" aria-labelledby="calling" tabindex="-1">
+      <section class="section professional-work" id="systems" aria-labelledby="calling" tabindex="-1" data-scroll-moment="pinned-chapters">
         <div class="wrap">
           <div class="section-head">
             <div>
@@ -186,7 +186,7 @@
           </div>
           <p class="section-lead">I designed and owned the backend integration for a third-party WebRTC calling service.</p>
 
-          <ul class="work-metrics" aria-label="Engineering results" role="list" data-moment="counter-rolls">
+          <ul class="work-metrics" aria-label="Engineering results" role="list">
             <li><a href="#pipeline" aria-label="120K+ leads processed daily"><strong data-count aria-hidden="true">120K+</strong><span>Leads processed daily</span></a></li>
             <li><a href="#gateway" aria-label="10+ services on one gateway"><strong data-count aria-hidden="true">10+</strong><span>Services on one gateway</span></a></li>
             <li><a href="#caching" aria-label="35% lower peak API response time"><strong data-count aria-hidden="true">35%</strong><span>Lower peak API response time</span></a></li>
@@ -256,23 +256,25 @@
                 <li><i class="logo" style="--logo: url(/assets/icons/aws.svg)" aria-hidden="true"></i>AWS</li>
               </ul>
             </div>
+          </div>
+          <div class="bio-side">
             <!-- Client slot: portrait. Put a 4:5 photo at public/portrait.jpg and replace the span below with
                  <img src="/portrait.jpg" alt="Pragnesh Prajapati" width="400" height="500">. -->
             <figure class="portrait"><span class="portrait-mark" aria-hidden="true">PP</span></figure>
-          </div>
-          <div class="roles" aria-label="Career history" role="group">
-            <details open>
-              <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
-              <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
-            </details>
-            <details>
-              <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
-              <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
-            </details>
-            <details>
-              <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
-              <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
-            </details>
+            <div class="roles" aria-label="Career history" role="group">
+              <details open>
+                <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
+                <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
+              </details>
+              <details>
+                <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
+                <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
+              </details>
+              <details>
+                <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
+                <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
+              </details>
+            </div>
           </div>
         </div>
       </section>
@@ -280,7 +282,7 @@
 
     <footer class="closing" id="contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="wrap">
-        <div class="contact">
+        <div class="contact" data-scroll-moment="word-highlight">
           <p class="eyebrow">Contact</p>
           <h2 id="contact-title">Have a role or project in mind?</h2>
           <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
@@ -297,11 +299,11 @@
       </div>
     </footer>
     <script type="module" src="/assets/taste/motion/motion.js"></script>
-    <script type="module" src="/assets/taste/moments/moments.js"></script>
     <script type="module" src="/src/voice/theme.js"></script>
     <script type="module" src="/src/voice/navigation.js"></script>
     <script type="module" src="/src/voice/walkthrough.js"></script>
     <script type="module" src="/src/voice/intro.js"></script>
     <script type="module" src="/src/voice/hero-motion.js"></script>
+    <script type="module" src="/src/voice/work-chapters.js"></script>
   </body>
 </html>

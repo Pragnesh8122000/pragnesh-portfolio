@@ -51,17 +51,28 @@ async function heroSettled() {
 }
 
 // ---------------------------------------------------------------- M5 sound ripples
+// One SVG behind the console: a soft glow and three rings drawn as circles, so they read as decoration and
+// never as boxes. The SVG is 1.5 x --r across (the glow's edge); a ring grows to 0.66 of --r at most.
+const SVG = 'http://www.w3.org/2000/svg';
 function addRipples() {
-  const ripples = document.createElement('div');
-  ripples.className = 'hero-ripples';
+  const ripples = document.createElementNS(SVG, 'svg');
+  ripples.setAttribute('class', 'hero-ripples');
+  ripples.setAttribute('viewBox', '-100 -100 200 200');
   ripples.setAttribute('aria-hidden', 'true');
-  ripples.append(...Array.from({ length: 3 }, () => document.createElement('i')));
+  ripples.setAttribute('focusable', 'false');
+  ripples.innerHTML = '<defs><radialGradient id="hero-glow"><stop offset="0" stop-color="currentColor" stop-opacity=".16"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>'
+    + '<circle r="100" fill="url(#hero-glow)"/>'
+    + '<circle class="ring" r="66.6"/><circle class="ring" r="66.6"/><circle class="ring" r="66.6"/>';
   hero.prepend(ripples);
-  // Offsets ignore transforms, so the tilt and the scroll exit never move the centre.
+  // Offsets ignore transforms, so motion never moves the centre; --r is capped so the whole SVG stays
+  // inside the hero (house rule: nothing spills past the panel it sits on).
   const place = () => {
-    ripples.style.left = `${demo.offsetLeft + demo.offsetWidth / 2}px`;
-    ripples.style.top = `${demo.offsetTop + demo.offsetHeight / 2}px`;
-    ripples.style.setProperty('--r', `${Math.max(demo.offsetWidth, demo.offsetHeight) * 1.15}px`);
+    const x = demo.offsetLeft + demo.offsetWidth / 2;
+    const y = demo.offsetTop + demo.offsetHeight / 2;
+    const room = Math.min(x, y, hero.offsetWidth - x, hero.offsetHeight - y);
+    ripples.style.left = `${x}px`;
+    ripples.style.top = `${y}px`;
+    ripples.style.setProperty('--r', `${Math.min(Math.max(demo.offsetWidth, demo.offsetHeight) * 1.15, room / 0.76)}px`);
   };
   place();
   new ResizeObserver(place).observe(hero);
