@@ -1129,35 +1129,6 @@ html.hero-fx .hero .console { position: relative; z-index: 1; }
   to { box-shadow: 0 0 0 7px transparent; }
 }
 
-/* Pause for the hero loops: a solid 32px disc inside a 44px target */
-.motion-pause {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  margin: -6px -8px -6px -4px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--ink) 15.5px, transparent 16.5px);
-  color: var(--console-bg);
-  cursor: pointer;
-}
-
-.motion-pause[hidden] { display: none; }
-.motion-pause i { width: 10px; height: 11px; border-inline: 3px solid currentColor; }
-.motion-pause[aria-pressed="true"] i {
-  width: 0;
-  height: 0;
-  margin-left: 3px;
-  border-style: solid;
-  border-color: transparent transparent transparent currentColor;
-  border-width: 6px 0 6px 10px;
-}
-.motion-pause:hover { background: radial-gradient(circle, var(--action) 15.5px, transparent 16.5px); color: var(--action-ink); }
-
-html.motion-paused :is(.hero-ripples .ring, .hero-action span, .stream-tok.is-last::after, .console .voice-signal i, .route-chip i) { animation-play-state: paused; }
-
 /* M5 sound ripples */
 .hero-ripples {
   --ring: 5.4s;
@@ -1209,8 +1180,8 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
 
 @keyframes cta-nudge {
   0%, 62%, 100% { transform: none; }
-  74% { transform: translateY(4px); }
-  86% { transform: translateY(-1px); }
+  74% { transform: translate(3px, -3px); }
+  86% { transform: translate(-1px, 1px); }
 }
 
 /* C1 case studies open in place in their work rows */
