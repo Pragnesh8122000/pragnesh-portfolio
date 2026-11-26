@@ -4,15 +4,11 @@
 // - sound ripples spread from behind the console (M5)
 // The headline cycles through roles (M3). On mouse or trackpad devices a soft light follows the pointer
 // over the console (M6; the console itself never tilts) and the main button leans toward it (M7).
-// Nothing runs under prefers-reduced-motion. The round button in the console header pauses every loop
-// for the rest of the visit. Loops wait while their part of the hero is off screen or the tab is hidden,
-// and the streaming loop steps aside while walkthrough.js plays the sample conversation.
+// Nothing runs under prefers-reduced-motion. Loops wait while their part of the hero is off screen or the
+// tab is hidden, and the streaming loop steps aside while walkthrough.js plays the sample conversation.
 const root = document.documentElement;
 const hero = document.querySelector('.hero');
 const demo = document.querySelector('#voice-demo');
-const PAUSE_KEY = 'hero-motion-paused';
-const paused = () => root.classList.contains('motion-paused');
-const pauseListeners = [];
 
 const EASE = 'cubic-bezier(.22, 1, .36, 1)';
 const EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
@@ -92,7 +88,7 @@ function streamReply(ripples) {
 
   let run = 0;
   const playing = () => demo.hasAttribute('data-playing');
-  const alive = (id) => id === run && !playing() && !paused();
+  const alive = (id) => id === run && !playing();
 
   async function setRoute(state, text) {
     if (!chip || chip.dataset.state === state) return;
@@ -146,7 +142,7 @@ function streamReply(ripples) {
     await wait(700);
   }
 
-  // Pressing "Play sample conversation" or the pause button stops the loop at once and shows the whole reply.
+  // Pressing "Click For Demo" stops the loop at once and shows the whole reply.
   const stop = () => {
     run++;
     settle();
@@ -154,13 +150,10 @@ function streamReply(ripples) {
   new MutationObserver(() => {
     if (playing()) stop();
   }).observe(demo, { attributes: true, attributeFilter: ['data-playing'] });
-  pauseListeners.push(() => {
-    if (paused()) stop();
-  });
 
   (async () => {
     for (;;) {
-      await until(() => onScreen(demo) && !playing() && !paused());
+      await until(() => onScreen(demo) && !playing());
       const id = ++run;
       await streamOnce(id);
       settle();
@@ -184,34 +177,13 @@ function rotateRoles() {
   (async () => {
     for (let k = 0; ;) {
       await wait(k === 0 ? 3400 : 2200);
-      if (!onScreen(hero) || paused()) continue;
+      if (!onScreen(hero)) continue;
       await word.animate([{ transform: 'none' }, { transform: 'translateY(-105%)' }], { duration: 380, easing: EASE_IO, fill: 'forwards' }).finished;
       k = (k + 1) % ROLES.length;
       word.textContent = ROLES[k];
       await word.animate([{ transform: 'translateY(105%)' }, { transform: 'none' }], { duration: 520, easing: EASE, fill: 'forwards' }).finished;
     }
   })();
-}
-
-// ---------------------------------------------------------------- the pause button (house rule: loops past 5 s pause)
-function pauseControl() {
-  const button = demo.querySelector('.motion-pause');
-  if (!button) return;
-  const apply = (on) => {
-    root.classList.toggle('motion-paused', on);
-    button.setAttribute('aria-pressed', String(on));
-    button.setAttribute('aria-label', on ? 'Play motion' : 'Pause motion');
-    pauseListeners.forEach((listener) => listener());
-  };
-  let stored = false;
-  try { stored = sessionStorage.getItem(PAUSE_KEY) === '1'; } catch { /* nothing remembered */ }
-  apply(stored);
-  button.hidden = false;
-  button.addEventListener('click', () => {
-    const on = !paused();
-    apply(on);
-    try { sessionStorage.setItem(PAUSE_KEY, on ? '1' : '0'); } catch { /* this visit only */ }
-  });
 }
 
 // ---------------------------------------------------------------- M6 console sheen + M7 magnetic button
@@ -263,7 +235,6 @@ if (hero && demo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   observer.observe(hero);
   observer.observe(demo);
   const ripples = addRipples();
-  pauseControl();
   heroSettled().then(() => {
     streamReply(ripples);
     rotateRoles();
