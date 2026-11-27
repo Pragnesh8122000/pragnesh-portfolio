@@ -1482,20 +1482,30 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
 .work-stage { display: flow-root; }
 .work-stage[data-scroll-deck] .case-deck { scroll-snap-type: none; }
 .deck-controls output { font-variant-numeric: tabular-nums; }
-@media (max-width: 540px) and (prefers-reduced-motion: no-preference) {
-  .case-deck { transition: height 320ms cubic-bezier(.22, 1, .36, 1); }
-}
+/* Phones: the cases stack instead of scrolling sideways. Each shows its company, title and figure;
+   View more opens the story, the flow and the details. Without JavaScript everything stays open. */
+.case-more { display: grid; grid-template-rows: 1fr; }
+.case-more > div { min-height: 0; overflow: hidden; }
+/* .btn sets display, which would otherwise beat the hidden attribute */
+.case-toggle[hidden] { display: none; }
 @media (max-width: 540px) {
-  /* a visible slice of the next case tells the visitor the row scrolls sideways */
-  .case-deck { gap: 12px; align-items: flex-start; overflow-y: hidden; }
-  .case-deck article { flex-basis: 88%; padding: 20px; }
-  /* controls sit above the deck so they stay under the thumb while the deck resizes to each case */
-  .work-stage { display: flex; flex-direction: column; }
-  .deck-controls { order: -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 24px; }
-  .case-deck { margin-block: 14px 0; }
-  .deck-controls output { grid-column: 1 / -1; grid-row: 1; }
-  .deck-controls [data-prev] { justify-self: start; }
-  .deck-controls [data-next] { justify-self: end; }
+  .case-deck { display: grid; gap: 16px; overflow: visible; scroll-snap-type: none; margin-block: 24px 0; }
+  .case-deck article { padding: 20px 20px 16px; border-radius: 16px; }
+  .case-deck h3 { font-size: 26px; line-height: 1.15; }
+  .case-deck .metric { margin-top: 12px; font-size: 52px; }
+  .case-deck .metric + b { color: var(--ink); font-weight: 600; }
+  .deck-controls { display: none; }
+  .case-deck[data-collapsible] article:not([data-open]) .case-more { grid-template-rows: 0fr; }
+  .case-toggle { gap: 10px; margin-top: 16px; }
+  .case-toggle::after {
+    width: 8px; height: 8px; border: solid currentColor; border-width: 0 1.5px 1.5px 0;
+    content: ""; transform: translateY(-2px) rotate(45deg);
+  }
+  .case-deck article[data-open] .case-toggle::after { transform: translateY(2px) rotate(225deg); }
+}
+@media (max-width: 540px) and (prefers-reduced-motion: no-preference) {
+  .case-more { transition: grid-template-rows 320ms cubic-bezier(.22, 1, .36, 1); }
+  .case-toggle::after { transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
 }
 
 /* Phone spacing rhythm, on the --space scale:
