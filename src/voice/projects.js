@@ -8,20 +8,36 @@ if (card) {
     toggle.setAttribute('aria-expanded', String(open))
     brief.inert = !open
   })
-
-  const print = card.querySelector('.companion-print')
-  print.querySelector('.persona-switch').addEventListener('change', ({ target }) => {
-    print.dataset.persona = target.value
-    const reply = print.querySelector('.' + target.value + ' q')
-    const words = reply.textContent.split(' ')
-    reply.replaceChildren()
-    words.forEach((word, index) => {
-      const span = document.createElement('span')
-      span.className = 'reply-word'
-      span.style.setProperty('--delay', index * 90 + 'ms')
-      span.textContent = word
-      if (index) reply.append(' ')
-      reply.append(span)
-    })
-  })
 }
+
+// Each project shows real screens in one frame; the pills switch which one is visible.
+// Without JavaScript the first screen and its note stay on show.
+document.querySelectorAll('[data-screens]').forEach((stage) => {
+  const buttons = [...stage.querySelectorAll('.screens-switch button')]
+  const screens = [...stage.querySelectorAll('.screen')]
+  const note = stage.querySelector('.screens-note')
+
+  const show = (key) => {
+    buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.screen === key)))
+    screens.forEach((screen) => {
+      const current = screen.dataset.screen === key
+      screen.toggleAttribute('data-current', current)
+      // aria-hidden needs the literal "true"; an empty value does not hide the screen from assistive tech
+      if (current) screen.removeAttribute('aria-hidden')
+      else screen.setAttribute('aria-hidden', 'true')
+      if (current) {
+        const label = Object.assign(document.createElement('b'), { textContent: screen.dataset.noteLabel + '.' })
+        note.replaceChildren(label, ' ' + screen.dataset.note)
+      }
+    })
+  }
+
+  buttons.forEach((button) => button.addEventListener('click', () => show(button.dataset.screen)))
+
+  // The other screens load once the frame is near, so switching never waits on the network.
+  new IntersectionObserver((entries, observer) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return
+    stage.querySelectorAll('img[loading="lazy"]').forEach((img) => { img.loading = 'eager' })
+    observer.disconnect()
+  }, { rootMargin: '400px' }).observe(stage)
+})

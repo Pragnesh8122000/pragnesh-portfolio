@@ -165,33 +165,26 @@
                   </a>
                 </div>
               </div>
-              <div class="companion-print" data-visual="" data-persona="friend">
-                <span class="sample-prompt">“Where do I start?”</span>
-                <div class="persona-switch" role="radiogroup" aria-label="Personality">
-                  <label>
-                    <input type="radio" name="persona" value="friend" checked="" />
-                    <span>Friend</span>
-                  </label>
-                  <label>
-                    <input type="radio" name="persona" value="mentor" />
-                    <span>Mentor</span>
-                  </label>
+              <figure class="screens" data-screens data-visual="">
+                <div class="screens-switch" role="group" aria-label="AI Bestie screens">
+                  <button type="button" aria-pressed="true" data-screen="chat">Chat</button><button type="button" aria-pressed="false" data-screen="voice">Voice</button><button type="button" aria-pressed="false" data-screen="transcript">Transcript</button>
                 </div>
-                <span class="persona friend">
-                  <i class="voice-mark" aria-hidden="true"></i>
-                  <span>
-                    <b>Friend</b>
-                    <q>Want to talk it through?</q>
-                  </span>
-                </span>
-                <span class="persona mentor">
-                  <i class="voice-mark" aria-hidden="true"></i>
-                  <span>
-                    <b>Mentor</b>
-                    <q>Which part feels hardest?</q>
-                  </span>
-                </span>
-              </div>
+                <div class="screens-frame">
+                  <div class="screens-bar" aria-hidden="true"><i></i><i></i><i></i><span>AI Bestie</span></div>
+                  <div class="screens-views">
+                    <div class="screen" data-screen="chat" data-note-label="Text chat" data-note="Sam’s reply streamed in over SSE while it was generated." data-current style="--crop: 58% 100%">
+                      <picture><img src="/projects/bestie-chat.webp" width="1280" height="800" alt="AI Bestie text chat: Sam, the Friend persona, replies to a message about a stressful day at work" decoding="async"></picture>
+                    </div>
+                    <div class="screen" data-screen="voice" data-note-label="Voice mode" data-note="Speech in, then Fish Audio speaks each sentence as it arrives." aria-hidden="true">
+                      <picture><source media="(max-width: 600px)" srcset="/projects/bestie-voice-phone.webp" width="720" height="1558"><img src="/projects/bestie-voice.webp" width="1280" height="800" alt="AI Bestie voice mode: a glowing orb with mic, transcript and end-call controls" decoding="async" loading="lazy"></picture>
+                    </div>
+                    <div class="screen" data-screen="transcript" data-note-label="Transcript" data-note="One conversation history, whether you typed or spoke." aria-hidden="true" style="--crop: 100% 0">
+                      <picture><img src="/projects/bestie-transcript.webp" width="1280" height="800" alt="AI Bestie voice mode with the transcript panel open, showing the same conversation" decoding="async" loading="lazy"></picture>
+                    </div>
+                  </div>
+                </div>
+                <figcaption class="screens-note" aria-live="polite"><b>Text chat.</b> Sam’s reply streamed in over SSE while it was generated.</figcaption>
+              </figure>
             </div>
             <div class="brief-wrap" inert="">
               <div>
@@ -200,8 +193,7 @@
                     <h3>How the personalities work</h3>
                     <p>
                       Friend and Mentor each have their own voice and range of settings. Five traits shape a reply,
-                      from how warmly the companion responds to how directly it challenges you. The cover shows two
-                      scripted examples.
+                      from how warmly the companion responds to how directly it challenges you.
                     </p>
                   </div>
                   <div>
@@ -234,21 +226,44 @@
                   <span aria-hidden="true">↗</span>
                 </a>
               </div>
+              <div class="vaidya-flow">
+                <p class="flow-mini">
+                  <span>Question</span>
+                  <span class="step"><i></i><b>Retrieve context</b></span>
+                  <span class="step"><i></i><span>LLM answer</span></span>
+                  <span class="step"><i></i><span>Book a doctor</span></span>
+                </p>
+                <ul class="chips" aria-label="Vaidya Assist stack">
+                  <li>RAG</li>
+                  <li>LLM APIs</li>
+                  <li>Doctor search</li>
+                  <li>Booking</li>
+                </ul>
+              </div>
             </div>
-            <div class="vaidya-flow">
-              <p class="flow-mini">
-                <span>Question</span>
-                <span class="step"><i></i><b>Retrieve context</b></span>
-                <span class="step"><i></i><span>LLM answer</span></span>
-                <span class="step"><i></i><span>Book a doctor</span></span>
-              </p>
-              <ul class="chips" aria-label="Vaidya Assist stack">
-                <li>RAG</li>
-                <li>LLM APIs</li>
-                <li>Doctor search</li>
-                <li>Booking</li>
-              </ul>
-            </div>
+            <figure class="screens" data-screens data-visual="">
+                <div class="screens-switch" role="group" aria-label="Vaidya Assist screens">
+                  <button type="button" aria-pressed="true" data-screen="dashboard">Dashboard</button><button type="button" aria-pressed="false" data-screen="book">Book</button><button type="button" aria-pressed="false" data-screen="review">Review</button><button type="button" aria-pressed="false" data-screen="booked">Booked</button>
+                </div>
+                <div class="screens-frame">
+                  <div class="screens-bar" aria-hidden="true"><i></i><i></i><i></i><span>Vaidya Patient</span></div>
+                  <div class="screens-views">
+                    <div class="screen" data-screen="dashboard" data-note-label="Dashboard" data-note="The next appointment and profile status come from the patient portal API." data-current>
+                      <picture><source media="(max-width: 600px)" srcset="/projects/vaidya-dashboard-phone.webp" width="720" height="1558"><img src="/projects/vaidya-dashboard.webp" width="1280" height="800" alt="Vaidya patient dashboard showing the next appointment with Dr. Rajesh Sharma on December 1" decoding="async"></picture>
+                    </div>
+                    <div class="screen" data-screen="book" data-note-label="Book" data-note="Only doctors from the patient’s own clinic are listed." aria-hidden="true">
+                      <picture><source media="(max-width: 600px)" srcset="/projects/vaidya-book-phone.webp" width="720" height="1558"><img src="/projects/vaidya-book.webp" width="1280" height="800" alt="Booking form with Dr. Rajesh Sharma selected as the doctor" decoding="async" loading="lazy"></picture>
+                    </div>
+                    <div class="screen" data-screen="review" data-note-label="Review" data-note="Nothing is written until the patient confirms the summary." aria-hidden="true" style="--crop: 52% 22%">
+                      <picture><img src="/projects/vaidya-review.webp" width="1280" height="800" alt="Review dialog summarising doctor, date, time and reason before booking" decoding="async" loading="lazy"></picture>
+                    </div>
+                    <div class="screen" data-screen="booked" data-note-label="Booked" data-note="The appointment gets a reference and can be cancelled or rescheduled." aria-hidden="true">
+                      <picture><source media="(max-width: 600px)" srcset="/projects/vaidya-booked-phone.webp" width="720" height="1558"><img src="/projects/vaidya-booked.webp" width="1280" height="800" alt="My Appointments list with the new booking and Cancel and Reschedule buttons" decoding="async" loading="lazy"></picture>
+                    </div>
+                  </div>
+                </div>
+                <figcaption class="screens-note" aria-live="polite"><b>Dashboard.</b> The next appointment and profile status come from the patient portal API.</figcaption>
+              </figure>
           </article>
         </div>
       </section>
