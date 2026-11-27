@@ -5,6 +5,21 @@
   font-weight: 100 900;
 }
 
+/* Text and label faces paired with Bricolage: Figtree for reading, DM Mono for labels, chips and data */
+@font-face {
+  font-family: "Figtree";
+  src: url("/fonts/figtree-latin.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+}
+/* every mono label is set at 500 or heavier, so one DM Mono file serves them all */
+@font-face {
+  font-family: "DM Mono";
+  src: url("/fonts/dm-mono-500-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 html.voice-home:root {
   color-scheme: light;
   --bg: light-dark(#eef0f3, #101421);
@@ -30,7 +45,8 @@ html.voice-home:root {
   --space-8: 64px;
   --accent: var(--action);
   --display: "Bricolage Grotesque", system-ui, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --text: "Figtree", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
   --gutter: clamp(24px, 5.55vw, 80px);
   --header-height: 68px;
   scroll-padding-top: calc(var(--header-height) + 16px);
@@ -45,7 +61,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 16px/1.6 system-ui, sans-serif;
+  font: 16px/1.6 var(--text);
 }
 
 h1, h2, h3, p { margin: 0; }
@@ -333,7 +349,7 @@ button { cursor: pointer; touch-action: manipulation; }
 
 .demo-label, .speaker {
   color: var(--accent);
-  font: 500 11px/1.5 var(--mono);
+  font: 500 12px/1.5 var(--mono);
   letter-spacing: .045em;
   text-transform: uppercase;
 }
@@ -391,7 +407,7 @@ button { cursor: pointer; touch-action: manipulation; }
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   color: var(--muted);
-  font: 500 11px/1.5 var(--mono);
+  font: 500 12px/1.5 var(--mono);
 }
 
 .sample-track span {
@@ -499,7 +515,8 @@ button { cursor: pointer; touch-action: manipulation; }
 }
 .bestie-copy { display: grid; justify-items: start; gap: 16px; }
 #bestie-name { color: var(--accent); font: 680 22px/1.1 var(--display); }
-#bestie-title { font: 650 clamp(32px, 3.7vw, 54px)/1.02 var(--display); letter-spacing: -.05em; }
+/* both projects share one name and title scale */
+#bestie-title, .project-title { color: var(--ink); font: 650 clamp(32px, 3.7vw, 54px)/1.04 var(--display); letter-spacing: -.045em; text-wrap: balance; }
 #bestie-title em { color: var(--accent); font-style: normal; }
 .bestie-deck { color: var(--muted); max-width: 42ch; }
 .bestie-brief { padding: 26px 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px, 4vw, 64px); }
@@ -519,11 +536,11 @@ button { cursor: pointer; touch-action: manipulation; }
 
 .vaidya-card {
   display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 18px clamp(24px, 3vw, 40px); align-items: center;
-  margin-top: clamp(26px, 4vw, 48px); padding: clamp(20px, 2.4vw, 32px);
-  border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--project-bg) 90%, #8fb0ff);
+  margin-top: clamp(40px, 5vw, 72px); padding-top: clamp(40px, 5vw, 72px);
+  border-top: 1px solid var(--line);
 }
-.vaidya-card .v-name { color: var(--accent); font: 680 20px/1.1 var(--display); }
-.vaidya-card h3 { margin: 10px 0 8px; font-size: clamp(24px, 2.4vw, 34px); }
+.vaidya-card .v-name { color: var(--accent); font: 680 22px/1.1 var(--display); }
+.vaidya-card .project-title { margin-block: 12px; }
 .vaidya-card .links { margin-top: 12px; }
 .vaidya-flow { display: grid; gap: 14px; margin-top: 20px; }
 .vaidya-card .flow-mini { margin: 0; }
@@ -559,20 +576,27 @@ button { cursor: pointer; touch-action: manipulation; }
 .screen { grid-area: 1 / 1; transition: opacity 280ms ease; }
 .screen:not([data-current]) { opacity: 0; visibility: hidden; transition: opacity 280ms ease, visibility 0s 280ms; }
 .screen img { display: block; width: 100%; height: auto; }
-.screens-note { min-height: 3em; max-width: 60ch; color: var(--muted); font-size: 14px; line-height: 1.5; }
+/* two lines held, so the frame below never jumps when the note changes */
+.screens-note { min-height: 3em; max-width: 60ch; color: var(--muted); font-size: 15px; line-height: 1.5; }
 .screens-note b { color: var(--ink); font-weight: 650; }
-/* phones: a taller frame; phone screenshots where the app has them, a crop of the desktop screen elsewhere */
+/* phones: the app's own phone screens in a phone frame; the switch spans the column edge to edge */
 @media (max-width: 600px) {
-  .screen img { aspect-ratio: 9 / 13; object-fit: cover; object-position: var(--crop, 50% 0); }
+  .screens { justify-items: stretch; }
+  .screens-switch { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; }
+  .screens-switch button { padding-inline: 4px; }
+  .screens-frame {
+    justify-self: center; width: min(100%, 288px); padding: 7px; border-radius: 36px; background: #05070d;
+    box-shadow: 0 28px 48px -26px #000000e6, 0 0 0 1px color-mix(in srgb, var(--ink) 18%, transparent);
+  }
+  .screens-bar { display: none; }
+  .screen img { border-radius: 29px; }
 }
-/* narrow phones: four pills have to fit inside the Vaidya card */
 @media (max-width: 374px) {
-  .vaidya-card { padding: 16px; }
-  .screens-switch button { padding-inline: 8px; font-size: 12px; }
+  .screens-switch button { font-size: 12px; }
 }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
-.chips li { padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font: 600 11.5px/1.3 var(--mono); }
+.chips li { padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font: 500 12px/1.3 var(--mono); }
 
 
 
@@ -971,7 +995,7 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
   .console-identity { gap: 8px; }
   .voice-signal { width: 32px; height: 32px; }
   #demo-title { font-size: 23px; }
-  .demo-label { font-size: 10px; }
+  .demo-label { font-size: 12px; }
   .conversation { gap: 8px; padding: 12px; }
   .turn { padding: 7px 9px 8px; }
   .turn p { font-size: 14px; }
@@ -1007,7 +1031,7 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
   .header-actions { gap: 6px; }
   .resume { padding-inline: 9px; }
   .resume span, .theme-label { display: none; }
-  .eyebrow { font-size: 11px; }
+  .eyebrow { font-size: 12px; }
   .work-metrics a { padding-inline: 9px; }
 }
 
@@ -1488,10 +1512,10 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
 
   .hero-action, .bestie-card, .stack, .contact .actions { margin-top: var(--space-5); }
   .hero-text, .bio-layout { gap: var(--space-6); }
-  .vaidya-card { margin-top: var(--space-6); row-gap: var(--space-4); }
+  .vaidya-card { margin-top: var(--space-6); padding-top: var(--space-6); row-gap: var(--space-5); }
   .bestie-cover { row-gap: var(--space-5); }
 
-  .vaidya-card h3 { margin-block: var(--space-2) var(--space-3); }
+  .vaidya-card .project-title { margin-block: var(--space-3); }
   .vaidya-card .links { margin-top: var(--space-3); }
   .vaidya-flow { gap: var(--space-3); }
   .bio-side { gap: var(--space-3); }
