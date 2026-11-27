@@ -283,82 +283,102 @@
                 <p class="eyebrow">Justdial</p>
                 <h3>Kafka lead pipeline</h3>
                 <strong class="metric">120K+</strong><b>leads processed daily</b>
-                <p>
-                  I built the consumer pipeline that delivers lead data to communication, appointment and database
-                  services.
-                </p>
-                <p class="flow-mini" aria-hidden="true">
-                  <span>DB team</span><span class="step"><i></i><b>Kafka</b></span><span class="step"><i></i><span>My consumer</span></span><span class="step"><i></i><span>3 services</span></span>
-                </p>
-                <dl>
+                <div class="case-more" id="pipeline-more">
                   <div>
-                    <dt>My part</dt>
-                    <dd>
-                      Justdial’s database team publishes new lead data to Kafka. I built the consumer pipeline that
-                      processes it and passes each lead on.
-                    </dd>
+                    <p>
+                      I built the consumer pipeline that delivers lead data to communication, appointment and database
+                      services.
+                    </p>
+                    <p class="flow-mini" aria-hidden="true">
+                      <span>DB team</span><span class="step"><i></i><b>Kafka</b></span><span class="step"><i></i><span>My consumer</span></span><span class="step"><i></i><span>3 services</span></span>
+                    </p>
+                    <dl>
+                      <div>
+                        <dt>My part</dt>
+                        <dd>
+                          Justdial’s database team publishes new lead data to Kafka. I built the consumer pipeline that
+                          processes it and passes each lead on.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Result</dt>
+                        <dd>
+                          Around 120K to 130K leads a day, about 10K per city. Consumer lag builds while a batch is processed
+                          and drains back to zero once it is done.
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
-                  <div>
-                    <dt>Result</dt>
-                    <dd>
-                      Around 120K to 130K leads a day, about 10K per city. Consumer lag builds while a batch is processed
-                      and drains back to zero once it is done.
-                    </dd>
-                  </div>
-                </dl>
+                </div>
+                <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="pipeline-more" hidden>View more</button>
               </article>
               <article tabindex="0" id="gateway">
                 <p class="eyebrow">Justdial</p>
                 <h3>Node.js API gateway</h3>
                 <strong class="metric">10+</strong><b>services on one gateway</b>
-                <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
-                <p class="flow-mini" aria-hidden="true">
-                  <span>Clients</span><span class="step"><i></i><b>Express gateway</b></span><span class="step"><i></i><span>10+ services</span></span>
-                </p>
+                <div class="case-more" id="gateway-more">
+                  <div>
+                    <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
+                    <p class="flow-mini" aria-hidden="true">
+                      <span>Clients</span><span class="step"><i></i><b>Express gateway</b></span><span class="step"><i></i><span>10+ services</span></span>
+                    </p>
+                  </div>
+                </div>
+                <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="gateway-more" hidden>View more</button>
               </article>
               <article tabindex="0" id="caching">
                 <p class="eyebrow">Justdial</p>
                 <h3>Redis caching</h3>
                 <strong class="metric">35%</strong><b>lower peak API response time</b>
-                <p>
-                  I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses
-                  during peak traffic.
-                </p>
-                <p class="flow-mini" aria-hidden="true">
-                  <span>Request</span><span class="step"><i></i><b>Redis</b></span><span class="step"><i></i><span>IRO platform on a miss</span></span>
-                </p>
+                <div class="case-more" id="caching-more">
+                  <div>
+                    <p>
+                      I added Redis caching and load balancing to Justdial’s IRO platform. Service logs showed faster responses
+                      during peak traffic.
+                    </p>
+                    <p class="flow-mini" aria-hidden="true">
+                      <span>Request</span><span class="step"><i></i><b>Redis</b></span><span class="step"><i></i><span>IRO platform on a miss</span></span>
+                    </p>
+                  </div>
+                </div>
+                <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="caching-more" hidden>View more</button>
               </article>
               <article tabindex="0" id="ecs">
                 <p class="eyebrow">Mypcot Infotech</p>
                 <h3>AWS ECS migration</h3>
                 <strong class="metric">4</strong><b>independently deployed services</b>
-                <p>
-                  I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services
-                  independently.
-                </p>
-                <p class="flow-mini" aria-hidden="true">
-                  <span>Monolith</span><span class="step"><i></i><b>AWS ECS</b></span><span class="step"><i></i><span>4 services</span></span>
-                </p>
-                <dl>
+                <div class="case-more" id="ecs-more">
                   <div>
-                    <dt>Problem</dt>
-                    <dd>
-                      The client asked for the split. As the project grew, the monolith became hard to maintain, and a
-                      failure in one part could not be allowed to break the whole system.
-                    </dd>
+                    <p>
+                      I led a four-person team through a monolith migration at Mypcot Infotech. We deployed four services
+                      independently.
+                    </p>
+                    <p class="flow-mini" aria-hidden="true">
+                      <span>Monolith</span><span class="step"><i></i><b>AWS ECS</b></span><span class="step"><i></i><span>4 services</span></span>
+                    </p>
+                    <dl>
+                      <div>
+                        <dt>Problem</dt>
+                        <dd>
+                          The client asked for the split. As the project grew, the monolith became hard to maintain, and a
+                          failure in one part could not be allowed to break the whole system.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>My part</dt>
+                        <dd>
+                          I worked with a third-party consultant to design the target architecture from the start, and led the
+                          migration. We built it around a shared database and the saga pattern.
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Result</dt>
+                        <dd>Independent deployments and better service isolation.</dd>
+                      </div>
+                    </dl>
                   </div>
-                  <div>
-                    <dt>My part</dt>
-                    <dd>
-                      I worked with a third-party consultant to design the target architecture from the start, and led the
-                      migration. We built it around a shared database and the saga pattern.
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Result</dt>
-                    <dd>Independent deployments and better service isolation.</dd>
-                  </div>
-                </dl>
+                </div>
+                <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="ecs-more" hidden>View more</button>
               </article>
             </div>
             <div class="deck-controls" aria-label="Browse work cases" role="group">

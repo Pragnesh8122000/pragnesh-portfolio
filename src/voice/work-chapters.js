@@ -4,8 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const MOTION = '(prefers-reduced-motion: no-preference)';
-// Pinning the deck needs it to fit one screen; on phones the cards are taller than the viewport,
-// so phones swipe the deck natively instead of having page scroll drive it.
+// Pinning the deck needs it to fit one screen. Phones skip the deck altogether: the cases stack,
+// each showing its headline figure, with a View more button for the rest.
 const PIN = MOTION + ' and (min-width: 541px)';
 const PHONE = '(max-width: 540px)';
 const media = gsap.matchMedia();
@@ -28,8 +28,6 @@ if (deck) {
     next.disabled = index === cards.length - 1;
     const label = (index + 1) + ' / ' + cards.length + ' · ' + cards[index].querySelector('h3').textContent;
     if (position.value !== label) position.value = label;
-    // On phones the deck takes the current card's height, so a short case is not padded out to the tallest one.
-    deck.style.height = matchMedia(PHONE).matches ? cards[index].offsetHeight + 'px' : '';
   }
 
   function move(step) {
@@ -74,6 +72,29 @@ if (deck) {
   const resize = new ResizeObserver(sync);
   [deck, ...cards].forEach((element) => resize.observe(element));
   sync();
+
+  // Phones: each case opens and closes on its own. Collapsed details are inert, so keyboard and
+  // screen-reader users meet only what is on screen; wider screens always show everything.
+  const phone = matchMedia(PHONE);
+  const toggles = cards.map((card) => card.querySelector('.case-toggle'));
+  const setOpen = (card, open) => {
+    card.toggleAttribute('data-open', open);
+    const toggle = card.querySelector('.case-toggle');
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.textContent = open ? 'View less' : 'View more';
+    card.querySelector('.case-more').inert = phone.matches && !open;
+  };
+  const layout = () => {
+    deck.toggleAttribute('data-collapsible', phone.matches);
+    toggles.forEach((toggle) => { toggle.hidden = !phone.matches; });
+    cards.forEach((card) => setOpen(card, card.hasAttribute('data-open')));
+  };
+  toggles.forEach((toggle) => toggle.addEventListener('click', () => {
+    const card = toggle.closest('article');
+    setOpen(card, !card.hasAttribute('data-open'));
+  }));
+  phone.addEventListener('change', layout);
+  layout();
 }
 
 function closingHighlight() {
