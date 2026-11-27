@@ -3,7 +3,8 @@
 // Set BASE_URL for another host and CHROME_PATH to use a specific browser.
 import { chromium } from 'playwright';
 
-const base = process.env.BASE_URL ?? 'http://localhost:4173/';
+const base = process.env.BASE_URL ?? 'http://localhost:4173/engineering/';
+const home = new URL('/', base);
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {});
 const results = [];
 const check = (name, ok, extra = '') => results.push({ ok, line: `${ok ? 'PASS' : 'FAIL'} ${name}${ok ? '' : ` ${extra}`}` });
@@ -122,6 +123,37 @@ for (const { w, h, theme } of viewports) {
   await page.goto(base, { waitUntil: 'load' });
   const r = await page.evaluate(() => ({ h1: document.querySelector('h1')?.textContent ?? '', rows: document.querySelectorAll('.work-row').length }));
   check('content renders with JavaScript off', r.h1.includes('Behind the API') && r.rows > 0, JSON.stringify(r));
+  await context.close();
+}
+
+// Homepage intro plays on every load, including for tabs marked as seen by older versions.
+{
+  const context = await browser.newContext({ reducedMotion: 'no-preference' });
+  await context.addInitScript(() => sessionStorage.setItem('welcome-seen', '1'));
+  const page = await context.newPage();
+  const intro = page.locator('#welcome');
+  await page.goto(home.href);
+  check('welcome intro plays on homepage visit', await intro.isVisible());
+  await page.reload();
+  check('welcome intro replays on reload', await intro.isVisible());
+  await page.waitForFunction(() => document.querySelector('.welcome-num')?.textContent === '100%');
+  await intro.waitFor({ state: 'detached' });
+  check('welcome intro finishes and reveals the hero', await page.locator('.hero h1').isVisible());
+
+  await page.goto(new URL('/#top', home).href);
+  await page.reload();
+  check('welcome intro replays from the homepage top link', await intro.isVisible());
+  await page.keyboard.press('Escape');
+  await intro.waitFor({ state: 'detached' });
+
+  await page.goto(new URL('/?intro=0', home).href);
+  check('welcome intro can be disabled explicitly', await intro.count() === 0);
+  await page.goto(new URL('/#projects', home).href);
+  check('welcome intro skips section deep links', await intro.count() === 0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(home.href);
+  await page.reload();
+  check('welcome intro respects reduced motion', await intro.count() === 0);
   await context.close();
 }
 

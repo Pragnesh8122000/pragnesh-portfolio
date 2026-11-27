@@ -155,12 +155,17 @@ async function play() {
   finish();
 }
 
+function startWhenVisible() {
+  if (document.hidden) return;
+  document.removeEventListener('visibilitychange', startWhenVisible);
+  SKIP_EVENTS.forEach((type) => window.addEventListener(type, skip, { passive: true }));
+  play().catch(() => finish({ fade: true }));
+}
+
 if (welcome && root.classList.contains('welcome-on')) {
   clearTimeout(window.__welcomeSafety);
-  try { sessionStorage.setItem('welcome-seen', '1'); } catch { /* plays again next load, nothing else */ }
-  SKIP_EVENTS.forEach((type) => window.addEventListener(type, skip, { passive: true }));
-  if (document.hidden) finish();
-  else play().catch(() => finish({ fade: true }));
+  document.addEventListener('visibilitychange', startWhenVisible);
+  startWhenVisible();
 } else {
   welcome?.remove();
 }

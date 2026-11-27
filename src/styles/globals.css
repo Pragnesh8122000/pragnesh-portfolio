@@ -58,9 +58,10 @@
     }
   }
 
-  @media (max-width: 359px) {
+  /* phones share the homepage's 16px gutter, so edges don't jump between the two pages */
+  @media (max-width: 620px) {
     :root {
-      --gutter: 20px;
+      --gutter: 16px;
     }
   }
 

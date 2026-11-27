@@ -19,6 +19,15 @@ html.voice-home:root {
   --target-row: light-dark(#dfe4ff, #242f53);
   --line-strong: color-mix(in srgb, currentColor 28%, transparent);
   --s-2: 8px;
+  /* spacing scale: every vertical gap on phones picks one of these steps */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
   --accent: var(--action);
   --display: "Bricolage Grotesque", system-ui, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -241,7 +250,8 @@ h3 { font-size: clamp(21px, 2.5vw, 31px); letter-spacing: -.04em; }
 
 .btn {
   padding: 9px 16px;
-  border: 1px solid var(--line);
+  /* secondary buttons need an edge that survives a squint; the hairline --line is for dividers */
+  border: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
   border-radius: 8px;
   background: transparent;
   color: var(--ink);
@@ -249,7 +259,7 @@ h3 { font-size: clamp(21px, 2.5vw, 31px); letter-spacing: -.04em; }
 }
 
 button { cursor: pointer; touch-action: manipulation; }
-.btn:hover { border-color: var(--accent); }
+@media (hover: hover) { .btn:hover { border-color: var(--accent); } }
 .btn.primary { border-color: var(--action); background: var(--action); color: var(--action-ink); }
 .btn.primary:hover { background: var(--action-hover); }
 .btn.theme-toggle { width: 44px; padding: 0; }
@@ -412,7 +422,7 @@ button { cursor: pointer; touch-action: manipulation; }
   color: var(--action);
 }
 
-.console .play:hover { background: var(--console-turn); }
+@media (hover: hover) { .console .play:hover { background: var(--console-turn); } }
 
 .play::before {
   flex: 0 0 auto;
@@ -546,7 +556,8 @@ button { cursor: pointer; touch-action: manipulation; }
 .persona-switch label { position: relative; cursor: pointer; }
 .persona-switch input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .persona-switch span { display: grid; place-items: center; min-height: 44px; padding: 8px 16px; border-radius: 999px; color: var(--muted); font: 650 13px/1.5 var(--display); }
-.persona-switch input:checked + span { background: #ffffff; color: var(--project-bg); }
+/* the selected personality is a tinted pill, not solid white: a white pill outshone the card's own "How it works" button */
+.persona-switch input:checked + span { background: color-mix(in srgb, var(--accent) 26%, var(--project-bg)); color: #ffffff; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 60%, transparent); }
 .persona-switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
 [data-persona] .persona { transition: opacity 260ms ease, transform 320ms cubic-bezier(.22, 1, .36, 1); }
 [data-persona="friend"] .persona.mentor, [data-persona="mentor"] .persona.friend { opacity: .76; transform: scale(.98); }
@@ -563,9 +574,10 @@ button { cursor: pointer; touch-action: manipulation; }
 .vaidya-card h3 { margin: 10px 0 8px; font-size: clamp(24px, 2.4vw, 34px); }
 .vaidya-card .links { margin-top: 12px; }
 .vaidya-card .flow-mini { margin: 0; }
-.vaidya-card .flow-mini :is(span, b) { background: var(--project-bg); }
+.vaidya-card .flow-mini :is(span, b):not(.step) { background: var(--project-bg); }
 .vaidya-card .flow-mini b { color: var(--accent); border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
-.vaidya-card .flow-mini i, .vaidya-card .flow-mini i::after { background: var(--accent); border-color: var(--accent); }
+.vaidya-card .flow-mini i { background: var(--accent); }
+.vaidya-card .flow-mini i::after { border-color: var(--accent); }
 @media (max-width: 740px) { .vaidya-card { grid-template-columns: minmax(0, 1fr); } }
 
 
@@ -582,6 +594,16 @@ button { cursor: pointer; touch-action: manipulation; }
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 18px;
+}
+
+/* The tap box is 44px tall, so a line drawn at its bottom hung ~13px under the words and read as a divider.
+   Draw it just under the text instead. motion.css loads later at equal specificity, hence the extra body. */
+html:not([data-motion="off"]) body :is(.link, .footer .link) {
+  background-position: 0 calc(50% + .85em), 0 calc(50% + .85em);
+  background-size: 0% 1px, calc(100% - 1em - var(--s-2)) 1px;
+}
+html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-visible) {
+  background-size: calc(100% - 1em - var(--s-2)) 1px, calc(100% - 1em - var(--s-2)) 1px;
 }
 
 .work-metrics {
@@ -689,7 +711,10 @@ button { cursor: pointer; touch-action: manipulation; }
   font: 600 12px/1.2 var(--mono);
 }
 
-.flow-mini :is(span, b) {
+/* an arrow and the step it points to wrap together, so no line ends on a bare arrow */
+.flow-mini .step { display: inline-flex; align-items: center; gap: inherit; }
+
+.flow-mini :is(span, b):not(.step) {
   padding: 5px 9px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -840,7 +865,10 @@ button { cursor: pointer; touch-action: manipulation; }
 @media (max-width: 760px) {
   html.voice-home:root { --header-height: 64px; }
   html.voice-home:root:has(.sitehead:not([data-nav-ready])) { --header-height: 100px; }
-  .head { grid-template: "brand menu actions" / minmax(0, 1fr) auto auto; gap: 0 8px; }
+  /* Menu stays pinned to the right edge; the Email button appears to its left once the hero CTA scrolls away */
+  .head { grid-template: "brand actions menu" / minmax(0, 1fr) auto auto; gap: 0 8px; }
+  .sitehead[data-nav-ready]:not([data-show-cta]) .header-actions { display: none; }
+  @starting-style { .sitehead[data-show-cta] .nav-email { opacity: 0; translate: 0 -6px; } }
   .sitehead:not([data-nav-ready]) .head {
     grid-template: "brand actions" "nav nav" / minmax(0, 1fr) auto;
     padding-top: 5px;
@@ -963,14 +991,25 @@ button { cursor: pointer; touch-action: manipulation; }
 
   .work-row { grid-template-columns: minmax(0, 1fr); }
 
-  .project-section, .bio { min-height: 100svh; }
-  .closing > .wrap {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    min-height: 100svh;
-    padding-block-end: 24px;
-  }
-  .contact { align-self: start; }
+  /* the closing ends where its content ends; a full-screen min-height left a tall empty band above the footer */
+  .closing > .wrap { padding-block-end: 24px; }
+  .contact { padding-block: 72px 56px; }
+}
+
+/* narrow phones: the Menu button keeps its accessible name but shows only the icon, so the name stays on one line */
+@media (max-width: 374px) {
+  .brand { white-space: nowrap; }
+  .btn.menu-toggle:not([hidden]) { justify-content: center; width: 44px; padding: 0; gap: 0; font-size: 0; }
+}
+
+@media (max-width: 374px) {
+  .contact .actions { display: grid; grid-template-columns: repeat(2, auto); justify-content: start; gap: 8px 20px; }
+  .contact .actions .btn.primary { grid-column: 1 / -1; }
+}
+
+/* the menu sheet already carries Email me, so the smallest phones drop the duplicate from the bar */
+@media (max-width: 340px) {
+  .sitehead[data-nav-ready] .header-actions { display: none; }
 }
 
 @media (max-width: 370px) {
@@ -1121,7 +1160,7 @@ html.welcome-on .welcome {
 @media (max-width: 600px) {
   .welcome-say { max-width: 100%; }
   .welcome-meta { font-size: 11px; }
-  .welcome-skip { right: 14px; bottom: 14px; font-size: 10px; }
+  .welcome-skip { right: var(--gutter, 16px); bottom: max(16px, env(safe-area-inset-bottom)); font-size: 11px; }
 }
 
 /* Hero motion: src/voice/hero-motion.js adds html.hero-fx only when motion is allowed. */
@@ -1381,7 +1420,7 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
 }
 
 .work-pane .flow-mini { justify-content: center; gap: 10px; margin: 0; font-size: 14px; }
-.work-pane .flow-mini :is(span, b) { padding: 8px 12px; }
+.work-pane .flow-mini :is(span, b):not(.step) { padding: 8px 12px; }
 .work-pane .flow-mini i { width: 22px; }
 
 /* G2 word highlight on the closing question */
@@ -1422,16 +1461,50 @@ html.hero-fx .hero-action span { display: inline-block; animation: cta-nudge 2.6
 .case-deck dt { font-weight: 700; }
 .case-deck dd { margin: 0 0 10px; max-width: 78ch; }
 .deck-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.deck-controls button { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+.deck-controls button { background: var(--surface); color: var(--ink); }
 .deck-controls button:disabled { opacity: .5; }
 
 
 .work-stage { display: flow-root; }
 .work-stage[data-scroll-deck] .case-deck { scroll-snap-type: none; }
 .deck-controls output { font-variant-numeric: tabular-nums; }
+@media (max-width: 540px) and (prefers-reduced-motion: no-preference) {
+  .case-deck { transition: height 320ms cubic-bezier(.22, 1, .36, 1); }
+}
 @media (max-width: 540px) {
-  .deck-controls { display: grid; grid-template-columns: 1fr 1fr; }
+  /* a visible slice of the next case tells the visitor the row scrolls sideways */
+  .case-deck { gap: 12px; align-items: flex-start; overflow-y: hidden; }
+  .case-deck article { flex-basis: 88%; padding: 20px; }
+  /* controls sit above the deck so they stay under the thumb while the deck resizes to each case */
+  .work-stage { display: flex; flex-direction: column; }
+  .deck-controls { order: -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 24px; }
+  .case-deck { margin-block: 14px 0; }
   .deck-controls output { grid-column: 1 / -1; grid-row: 1; }
   .deck-controls [data-prev] { justify-self: start; }
   .deck-controls [data-next] { justify-self: end; }
+}
+
+/* Phone spacing rhythm, on the --space scale:
+   label → heading 8 · heading → its text 12 · inside a card 16 · text → what it introduces 24 ·
+   block → block 32 · section padding 64. Kept last so it settles the earlier per-component values. */
+@media (max-width: 620px) {
+  .section { padding-block: var(--space-8); }
+  .hero { padding-block-end: var(--space-6); }
+  .contact { padding-block: var(--space-8) var(--space-7); }
+
+  .eyebrow + :is(h1, h2) { margin-top: var(--space-2); }
+  .hero h1 { margin-block: var(--space-2) var(--space-3); }
+  .section-lead { margin-top: var(--space-3); }
+
+  .hero-action, .bestie-card, .stack, .contact .actions { margin-top: var(--space-5); }
+  .hero-text, .bio-layout { gap: var(--space-6); }
+  .vaidya-card { margin-top: var(--space-6); row-gap: var(--space-4); }
+  .bestie-cover { row-gap: var(--space-5); }
+
+  .vaidya-card h3 { margin-block: var(--space-2) var(--space-3); }
+  .vaidya-card .links { margin-top: var(--space-3); }
+  .vaidya-flow { gap: var(--space-3); }
+  .bio-side { gap: var(--space-3); }
+  .case-deck article > .eyebrow { margin-block: 0 var(--space-2); }
+  .case-deck .metric + b { display: block; margin-top: var(--space-1); }
 }

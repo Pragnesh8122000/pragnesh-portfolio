@@ -398,10 +398,17 @@
     display: none;
   }
 
+  /* the row scrolls sideways: fade its right edge so a cut-off entry reads as "more this way",
+     and pad the end so the last entry clears the fade once scrolled to */
+  .flow-index-scroll {
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  }
+
   .flow-index-list {
     width: max-content;
     height: 52px;
     gap: 0;
+    padding-inline-end: 24px;
   }
 
   .flow-index-link {
