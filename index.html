@@ -29,19 +29,14 @@
     <link rel="stylesheet" href="/src/voice/portfolio.css">
     <link rel="stylesheet" href="/assets/taste/motion/motion.css">
     <script>
-      // The welcome intro plays once per tab session. It is skipped for reduced motion, deep links and
-      // headless browsers; ?intro=1 forces it and ?intro=0 turns it off. Otherwise the hero gets its usual entrance.
+      // Play the welcome intro on every homepage load, including reloads.
+      // Deep links and reduced motion skip it unless ?intro=1 is set. Use ?intro=0 to turn it off.
       (() => {
         const root = document.documentElement;
-        let welcome = false;
-        try {
-          const forced = new URLSearchParams(location.search).get('intro');
-          welcome = forced === '1' || (forced !== '0'
-            && !location.hash
-            && !matchMedia('(prefers-reduced-motion: reduce)').matches
-            && !/HeadlessChrome/.test(navigator.userAgent)
-            && !sessionStorage.getItem('welcome-seen'));
-        } catch {}
+        const intro = new URLSearchParams(location.search).get('intro');
+        const atTop = !location.hash || location.hash === '#top';
+        const welcome = intro === '1' || (intro !== '0' && atTop
+          && !matchMedia('(prefers-reduced-motion: reduce)').matches);
         if (welcome) {
           root.classList.add('welcome-on');
           // If intro.js never runs, the page must not stay covered.
@@ -243,12 +238,9 @@
             <div class="vaidya-flow">
               <p class="flow-mini">
                 <span>Question</span>
-                <i></i>
-                <b>Retrieve context</b>
-                <i></i>
-                <span>LLM answer</span>
-                <i></i>
-                <span>Book a doctor</span>
+                <span class="step"><i></i><b>Retrieve context</b></span>
+                <span class="step"><i></i><span>LLM answer</span></span>
+                <span class="step"><i></i><span>Book a doctor</span></span>
               </p>
               <ul class="chips" aria-label="Vaidya Assist stack">
                 <li>RAG</li>
@@ -280,7 +272,7 @@
                   services.
                 </p>
                 <p class="flow-mini" aria-hidden="true">
-                  <span>DB team</span><i></i><b>Kafka</b><i></i><span>My consumer</span><i></i><span>3 services</span>
+                  <span>DB team</span><span class="step"><i></i><b>Kafka</b></span><span class="step"><i></i><span>My consumer</span></span><span class="step"><i></i><span>3 services</span></span>
                 </p>
                 <dl>
                   <div>
@@ -305,7 +297,7 @@
                 <strong class="metric">10+</strong><b>services on one gateway</b>
                 <p>I built the Node.js and Express gateway that routes requests across Justdial’s backend services.</p>
                 <p class="flow-mini" aria-hidden="true">
-                  <span>Clients</span><i></i><b>Express gateway</b><i></i><span>10+ services</span>
+                  <span>Clients</span><span class="step"><i></i><b>Express gateway</b></span><span class="step"><i></i><span>10+ services</span></span>
                 </p>
               </article>
               <article tabindex="0" id="caching">
@@ -317,7 +309,7 @@
                   during peak traffic.
                 </p>
                 <p class="flow-mini" aria-hidden="true">
-                  <span>Request</span><i></i><b>Redis</b><i></i><span>IRO platform on a miss</span>
+                  <span>Request</span><span class="step"><i></i><b>Redis</b></span><span class="step"><i></i><span>IRO platform on a miss</span></span>
                 </p>
               </article>
               <article tabindex="0" id="ecs">
@@ -329,7 +321,7 @@
                   independently.
                 </p>
                 <p class="flow-mini" aria-hidden="true">
-                  <span>Monolith</span><i></i><b>AWS ECS</b><i></i><span>4 services</span>
+                  <span>Monolith</span><span class="step"><i></i><b>AWS ECS</b></span><span class="step"><i></i><span>4 services</span></span>
                 </p>
                 <dl>
                   <div>

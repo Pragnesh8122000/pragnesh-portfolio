@@ -4,6 +4,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const MOTION = '(prefers-reduced-motion: no-preference)';
+// Pinning the deck needs it to fit one screen; on phones the cards are taller than the viewport,
+// so phones swipe the deck natively instead of having page scroll drive it.
+const PIN = MOTION + ' and (min-width: 541px)';
+const PHONE = '(max-width: 540px)';
 const media = gsap.matchMedia();
 
 const deck = document.querySelector('.case-deck');
@@ -24,6 +28,8 @@ if (deck) {
     next.disabled = index === cards.length - 1;
     const label = (index + 1) + ' / ' + cards.length + ' · ' + cards[index].querySelector('h3').textContent;
     if (position.value !== label) position.value = label;
+    // On phones the deck takes the current card's height, so a short case is not padded out to the tallest one.
+    deck.style.height = matchMedia(PHONE).matches ? cards[index].offsetHeight + 'px' : '';
   }
 
   function move(step) {
@@ -33,11 +39,11 @@ if (deck) {
       const fraction = Math.min(1, cardLeft(card) / (deck.scrollWidth - deck.clientWidth));
       window.scrollTo({ top: pin.start + fraction * (pin.end - pin.start), behavior: 'smooth' });
     } else {
-      deck.scrollTo({ left: cardLeft(card), behavior: 'instant' });
+      deck.scrollTo({ left: cardLeft(card), behavior: matchMedia(MOTION).matches ? 'smooth' : 'instant' });
     }
   }
 
-  media.add(MOTION, () => {
+  media.add(PIN, () => {
     const stage = deck.closest('.work-stage');
     stage.dataset.scrollDeck = '';
     const travel = () => deck.scrollWidth - deck.clientWidth;
@@ -65,7 +71,8 @@ if (deck) {
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
   deck.addEventListener('scroll', sync, { passive: true });
-  new ResizeObserver(sync).observe(deck);
+  const resize = new ResizeObserver(sync);
+  [deck, ...cards].forEach((element) => resize.observe(element));
   sync();
 }
 

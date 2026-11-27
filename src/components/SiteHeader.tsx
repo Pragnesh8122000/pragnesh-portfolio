@@ -30,7 +30,7 @@ export function SiteHeader() {
         <nav aria-label="Primary" className="hidden md:block">
           <NavLinks className="flex items-center gap-1" />
         </nav>
-        <div className="flex items-center gap-1 justify-self-end">
+        <div className="flex items-center gap-2 justify-self-end">
           <ConfiguredLink
             linkKey="resume"
             label={site.resumeLabel}
@@ -41,7 +41,8 @@ export function SiteHeader() {
         </div>
       </div>
       <nav aria-label="Primary mobile" className="border-t border-rule md:hidden">
-        <NavLinks className="container-page flex h-11 items-center gap-2" />
+        {/* links carry 8px of side padding for their tap area, so the row starts 8px early to line their text up with the gutter */}
+        <NavLinks className="container-page flex h-11 items-center gap-2 ps-[calc(var(--gutter)-8px)]" />
       </nav>
     </header>
   );

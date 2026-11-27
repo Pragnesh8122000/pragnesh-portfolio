@@ -6,3 +6,5 @@ dist-server
 .DS_Store
 screenshots
 .lavish
+.claude
+.swarm
