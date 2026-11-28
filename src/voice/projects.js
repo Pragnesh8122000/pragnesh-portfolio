@@ -1,15 +1,3 @@
-const card = document.querySelector('.bestie-card')
-if (card) {
-  const toggle = card.querySelector('.bestie-actions button')
-  const brief = card.querySelector('.brief-wrap')
-  toggle.addEventListener('click', () => {
-    const open = !card.hasAttribute('data-open')
-    card.toggleAttribute('data-open', open)
-    toggle.setAttribute('aria-expanded', String(open))
-    brief.inert = !open
-  })
-}
-
 // Each project shows real screens in one frame; the pills switch which one is visible.
 // Without JavaScript the first screen and its note stay on show.
 document.querySelectorAll('[data-screens]').forEach((stage) => {
