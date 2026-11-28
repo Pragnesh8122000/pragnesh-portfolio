@@ -1,6 +1,7 @@
 // The voice cursor (mouse and trackpad only). At rest it is a small dot. Over anything clickable it opens into a
 // tiny live waveform (the three bars of the logo) with a chip that says what the click will do: Email, Play, Open,
-// Code. Over text it becomes a caret sized to the line, and over the demo console it turns into a listening ring.
+// Code. Over text it shrinks to a quiet, faded dot (nothing to click there), and over the demo console it turns
+// into a listening ring.
 // Phones, pens and keyboards keep the system cursor; text fields keep their own; an open sheet brings the system
 // cursor back (a modal dialog sits above everything the page can draw). Under reduced motion it follows the
 // pointer exactly and the waveform stays still.
@@ -61,12 +62,7 @@ if (fine.matches) {
     } else if (target.closest?.('#voice-demo')) {
       mode = 'listen';
     } else {
-      const line = target.closest?.(TEXT);
-      if (line) {
-        mode = 'text';
-        const size = parseFloat(getComputedStyle(line).fontSize) || 16;
-        cursor.style.setProperty('--caret', `${Math.round(Math.min(Math.max(size * 0.95, 16), 76))}px`);
-      }
+      if (target.closest?.(TEXT)) mode = 'text';
     }
     cursor.dataset.mode = mode;
     cursor.toggleAttribute('data-label', Boolean(text));

@@ -1,6 +1,7 @@
 // The page as one conversation.
-// J3 chapters (desktop, motion allowed): each section is sticky, so the next one slides up over it like a new
-//   chapter, and the one underneath sinks back a little. A tall section sticks by its bottom edge, so all of it is
+// J3 chapters (desktop, motion allowed): each section is sticky, so the next one slides up over it like a drawer
+//   (S1: rounded top corners and a grab handle that flatten and fade as it docks), and the one underneath dims and
+//   sinks back a little. A tall section sticks by its bottom edge, so all of it is
 //   read before it is covered.
 // J1 rail (desktop): Hello, What I built, In production, Who's talking, Your turn, on the right edge; the line fills
 //   with the scroll and the current chapter is named.
@@ -39,6 +40,8 @@ function update() {
     const next = chapters[i + 1];
     const top = section.getBoundingClientRect().top;
     if (top <= vh * 0.5) current = i;
+    // S1 drawer: 0 while the section waits below the screen, 1 once it has docked at the top
+    if (i > 0) section.style.setProperty('--enter', stacking ? clamp(1 - top / vh).toFixed(3) : '1');
     if (!next) return;
     const cover = stacking ? clamp((vh - next.getBoundingClientRect().top) / vh) : 0;
     section.style.setProperty('--cover', cover.toFixed(3));

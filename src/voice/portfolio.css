@@ -1922,8 +1922,8 @@ html.vc-on:has(dialog[open]) .vc { display: none; }
 .vc[data-mode="act"] .vc-shape i:nth-child(2) { animation-delay: .16s; }
 .vc[data-mode="act"] .vc-shape i:nth-child(3) { animation-delay: .32s; }
 .vc[data-mode="act"] .vc-shape i:nth-child(4) { animation-delay: .08s; }
-/* over text: a caret the height of the line */
-.vc[data-mode="text"] .vc-shape { width: 2px; height: var(--caret, 22px); border-radius: 1px; }
+/* over text: a quiet dot, small and faded, so reading stays clear and buttons stand out */
+.vc[data-mode="text"] .vc-shape { width: 6px; height: 6px; opacity: .45; }
 /* over the demo console: a listening ring */
 .vc[data-mode="listen"] .vc-shape { width: 44px; height: 44px; background: color-mix(in srgb, var(--vc) 16%, transparent); box-shadow: inset 0 0 0 1.5px var(--vc); }
 .vc[data-mode="listen"] .vc-shape i { height: 12px; background: var(--vc); animation: vc-wave .46s ease-in-out infinite alternate; }
@@ -1966,11 +1966,27 @@ html.chapters :is(.hero, .project-section, .professional-work, .bio, .closing) {
   transform-origin: 50% calc(var(--stick, 0px) * -1 + 50svh);
 }
 html.chapters :is(.hero, .professional-work, .bio) { background: var(--bg); }
-/* each new chapter arrives as a sheet with rounded top corners */
+/* S1 drawer: each new chapter rises like a drawer. Its top corners start round and flatten as it docks, a grab
+   handle fades out, and its shadow settles; --enter (journey.js) runs 0 below the screen to 1 docked. */
 html.chapters :is(.project-section, .professional-work, .bio, .closing) {
+  --drawer: calc(1 - var(--enter, 1));
   border-top: 0;
-  border-radius: 28px 28px 0 0;
-  box-shadow: 0 -28px 60px -36px light-dark(#16224a73, #000000cc);
+  border-radius: calc(var(--drawer) * 32px) calc(var(--drawer) * 32px) 0 0;
+  box-shadow: 0 -28px 60px -36px light-dark(rgb(22 34 74 / calc(.15 + var(--drawer) * .45)), rgb(0 0 0 / calc(.3 + var(--drawer) * .5)));
+}
+html.chapters :is(.project-section, .professional-work, .bio, .closing)::before {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: 7;
+  width: 48px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 32%, transparent);
+  content: "";
+  opacity: var(--drawer);
+  translate: -50% 0;
+  pointer-events: none;
 }
 /* the chapter underneath dims as it is covered */
 html.chapters :is(.hero, .project-section, .professional-work, .bio)::after {
