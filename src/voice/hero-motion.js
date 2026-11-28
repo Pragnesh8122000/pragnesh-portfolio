@@ -15,7 +15,8 @@ const EASE = 'cubic-bezier(.22, 1, .36, 1)';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const visibility = new Map();
-const onScreen = (el) => visibility.get(el) !== false && !document.hidden;
+// a section covered by the next chapter (journey.js) counts as off screen
+const onScreen = (el) => visibility.get(el) !== false && !document.hidden && !el.closest('[data-covered]');
 const observer = new IntersectionObserver((entries) => entries.forEach((e) => visibility.set(e.target, e.isIntersecting)));
 
 async function until(test) {

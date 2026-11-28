@@ -87,7 +87,18 @@
       </div>
     </header>
 
+
     <main id="main" tabindex="-1">
+      <nav class="journey-rail" aria-label="Page progress">
+        <ol>
+          <li><a href="#top" data-chapter="0" aria-label="Hello"><span class="jr-dot" aria-hidden="true"></span><span class="jr-label" aria-hidden="true">Hello</span></a></li>
+          <li><a href="#projects" data-chapter="1" aria-label="What I built"><span class="jr-dot" aria-hidden="true"></span><span class="jr-label" aria-hidden="true">What I built</span></a></li>
+          <li><a href="#systems" data-chapter="2" aria-label="In production"><span class="jr-dot" aria-hidden="true"></span><span class="jr-label" aria-hidden="true">In production</span></a></li>
+          <li><a href="#about" data-chapter="3" aria-label="Who’s talking"><span class="jr-dot" aria-hidden="true"></span><span class="jr-label" aria-hidden="true">Who’s talking</span></a></li>
+          <li><a href="#contact" data-chapter="4" aria-label="Your turn"><span class="jr-dot" aria-hidden="true"></span><span class="jr-label" aria-hidden="true">Your turn</span></a></li>
+        </ol>
+      </nav>
+
       <section class="hero" data-enter aria-labelledby="headline">
         <div class="wrap">
           <div class="hero-text">
@@ -431,7 +442,7 @@
     <footer class="closing" id="contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="wrap">
         <div class="contact" data-scroll-moment="word-highlight">
-          <p class="eyebrow">Contact</p>
+          <p class="eyebrow your-turn"><svg class="yt-mic" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5V15"/></svg><span class="yt-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Your turn</p>
           <h2 id="contact-title">Have a role or project in mind?</h2>
           <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
           <div class="actions">
@@ -593,5 +604,7 @@
     <script type="module" src="/src/voice/projects.js"></script>
     <script type="module" src="/src/voice/work-chapters.js"></script>
     <script type="module" src="/src/voice/ship.js"></script>
+    <script type="module" src="/src/voice/journey.js"></script>
+    <script type="module" src="/src/voice/cursor.js"></script>
   </body>
 </html>

@@ -1877,3 +1877,230 @@ html:has(.ship[open]) { overflow: hidden; }
   .ship, .ship::backdrop, .ship-steps details::details-content, .trace-track i { transition: none; }
   .trace li[data-state="active"] .trace-track i, .console .interrupt:not(:disabled) { animation: none; }
 }
+
+/* ===================================================================== C1+C2 the voice cursor (cursor.js) */
+html.vc-on, html.vc-on * { cursor: none !important; }
+html.vc-on :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"]) { cursor: auto !important; }
+/* a modal sheet sits above anything the page draws, so it brings the system cursor back */
+html.vc-on:has(dialog[open]), html.vc-on:has(dialog[open]) * { cursor: auto !important; }
+html.vc-on:has(dialog[open]) .vc { display: none; }
+
+.vc {
+  --vc: var(--action);
+  --vc-ink: var(--action-ink);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: transform;
+}
+.vc[hidden] { display: none; }
+.vc[data-ground="dark"] { --vc: #9db9ff; --vc-ink: #121b34; }
+.vc[data-ground="blue"] { --vc: #ffffff; --vc-ink: #2346a0; }
+
+.vc-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--vc);
+  translate: -50% -50%;
+  transition: width .24s cubic-bezier(.22, 1, .36, 1), height .24s cubic-bezier(.22, 1, .36, 1), border-radius .24s, background-color .2s, box-shadow .2s, scale .15s;
+}
+.vc-shape i { width: 2px; height: 0; border-radius: 2px; background: var(--vc-ink); transition: height .2s; }
+
+/* over something clickable: a small live waveform */
+.vc[data-mode="act"] .vc-shape { width: 36px; height: 22px; box-shadow: 0 0 0 2px color-mix(in srgb, var(--vc-ink) 75%, transparent); }
+.vc[data-mode="act"] .vc-shape i { height: 10px; animation: vc-wave .62s ease-in-out infinite alternate; }
+.vc[data-mode="act"] .vc-shape i:nth-child(2) { animation-delay: .16s; }
+.vc[data-mode="act"] .vc-shape i:nth-child(3) { animation-delay: .32s; }
+.vc[data-mode="act"] .vc-shape i:nth-child(4) { animation-delay: .08s; }
+/* over text: a caret the height of the line */
+.vc[data-mode="text"] .vc-shape { width: 2px; height: var(--caret, 22px); border-radius: 1px; }
+/* over the demo console: a listening ring */
+.vc[data-mode="listen"] .vc-shape { width: 44px; height: 44px; background: color-mix(in srgb, var(--vc) 16%, transparent); box-shadow: inset 0 0 0 1.5px var(--vc); }
+.vc[data-mode="listen"] .vc-shape i { height: 12px; background: var(--vc); animation: vc-wave .46s ease-in-out infinite alternate; }
+.vc[data-mode="listen"] .vc-shape i:nth-child(2) { animation-delay: .12s; }
+.vc[data-mode="listen"] .vc-shape i:nth-child(3) { animation-delay: .24s; }
+.vc[data-mode="listen"] .vc-shape i:nth-child(4) { display: none; }
+.vc[data-press] .vc-shape { scale: .86; }
+
+/* what the click will do */
+.vc-label {
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--vc);
+  color: var(--vc-ink);
+  font: 600 11.5px/1 var(--mono);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -4px 0;
+  scale: .92;
+  transition: opacity .16s ease, translate .24s cubic-bezier(.22, 1, .36, 1), scale .24s cubic-bezier(.22, 1, .36, 1);
+}
+.vc[data-label] .vc-label { opacity: 1; translate: none; scale: 1; }
+.vc[data-flip] .vc-label { left: auto; right: 24px; }
+
+@keyframes vc-wave { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .vc-shape, .vc-label { transition: none; }
+  .vc-shape i { animation: none !important; }
+}
+
+/* ===================================================================== J3 stacked chapters (journey.js, desktop) */
+html.chapters :is(.hero, .project-section, .professional-work, .bio, .closing) {
+  position: sticky;
+  top: var(--stick, 0px);
+  transform: scale(calc(1 - var(--cover, 0) * .045));
+  transform-origin: 50% calc(var(--stick, 0px) * -1 + 50svh);
+}
+html.chapters :is(.hero, .professional-work, .bio) { background: var(--bg); }
+/* each new chapter arrives as a sheet with rounded top corners */
+html.chapters :is(.project-section, .professional-work, .bio, .closing) {
+  border-top: 0;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -28px 60px -36px light-dark(#16224a73, #000000cc);
+}
+/* the chapter underneath dims as it is covered */
+html.chapters :is(.hero, .project-section, .professional-work, .bio)::after {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  background: #050814;
+  opacity: calc(var(--cover, 0) * .42);
+  content: "";
+  pointer-events: none;
+}
+html.chapters .hero { overflow: clip; }
+
+/* ===================================================================== J1 the conversation rail (desktop) */
+.journey-rail { display: none; }
+@media (min-width: 1024px) {
+  .journey-rail {
+    --rail: var(--action);
+    --rail-ink: var(--ink);
+    --rail-muted: var(--muted);
+    --rail-line: var(--line);
+    --rail-bg: var(--bg);
+    position: fixed;
+    top: 50%;
+    right: clamp(14px, 1.6vw, 28px);
+    z-index: 7;
+    display: block;
+    translate: 0 -50%;
+  }
+  .journey-rail[data-ground="dark"] { --rail: #9db9ff; --rail-ink: #f0f3fc; --rail-muted: #b7c3db; --rail-line: #465473; --rail-bg: #121b34; }
+  .journey-rail[data-ground="blue"] { --rail: #ffffff; --rail-ink: #ffffff; --rail-muted: #dbe3f2; --rail-line: color-mix(in srgb, #ffffff 40%, transparent); --rail-bg: #2346a0; }
+  .journey-rail ol { position: relative; display: grid; gap: 22px; width: 14px; margin: 0; padding: 0; list-style: none; }
+  .journey-rail ol::before, .journey-rail ol::after {
+    position: absolute;
+    top: 7px;
+    right: 6px;
+    width: 2px;
+    border-radius: 1px;
+    content: "";
+  }
+  .journey-rail ol::before { bottom: 7px; background: var(--rail-line); }
+  .journey-rail ol::after { height: calc((100% - 14px) * var(--fill, 0)); background: var(--rail); }
+  .journey-rail a {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 14px;
+    text-decoration: none;
+  }
+  /* the tap area stays 44px tall even though the dot is small */
+  .journey-rail a::before { position: absolute; inset: -15px -10px; content: ""; }
+  .jr-dot {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--rail-line);
+    border-radius: 50%;
+    background: var(--rail-bg);
+    transition: border-color .25s, background-color .25s, scale .25s;
+  }
+  .journey-rail a[data-passed] .jr-dot { border-color: var(--rail); }
+  .journey-rail a[aria-current] .jr-dot { background: var(--rail); scale: 1.15; }
+  .jr-label {
+    position: absolute;
+    top: 50%;
+    right: 24px;
+    padding: 4px 9px;
+    border: 1px solid var(--rail);
+    border-radius: 999px;
+    background: var(--rail-bg);
+    color: var(--rail-ink);
+    font: 600 11px/1 var(--mono);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    translate: 6px -50%;
+    pointer-events: none;
+    transition: opacity .2s ease, translate .25s cubic-bezier(.22, 1, .36, 1), visibility 0s .25s;
+  }
+  .journey-rail a:is(:hover, :focus-visible) .jr-label { opacity: 1; visibility: visible; translate: 0 -50%; transition-delay: 0s; }
+  .journey-rail a:focus-visible { outline: 2px solid var(--rail); outline-offset: 6px; border-radius: 999px; }
+}
+/* very wide screens have room beside the content to name the current chapter; elsewhere it shows on hover */
+@media (min-width: 1680px) {
+  .journey-rail a[aria-current] .jr-label { opacity: 1; visibility: visible; translate: 0 -50%; transition-delay: 0s; }
+}
+@media (prefers-reduced-motion: reduce) { .jr-dot, .jr-label { transition: none; } }
+
+/* ===================================================================== M1 the project screens boot */
+.screens-frame.will-boot .screens-bar { transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.screens-frame.will-boot .screens-bar > * { opacity: 0; transition: opacity .3s .35s; }
+.screens-frame.will-boot .screens-views { clip-path: inset(0 0 100% 0); opacity: .4; transition: clip-path .8s .3s cubic-bezier(.22, 1, .36, 1), opacity .6s .3s; }
+.screens-frame.will-boot.is-booted :is(.screens-bar, .screens-bar > *, .screens-views) { transform: none; opacity: 1; clip-path: inset(0); }
+
+/* ===================================================================== M2 figures keep their width while counting */
+.case-deck .metric { font-variant-numeric: tabular-nums; }
+
+/* ===================================================================== M3 a pulse runs along each work flow */
+.case-deck .flow-mini.is-run :is(span:not(.step), b) { animation: flow-node .5s calc(var(--k, 0) * 110ms) ease-out both; }
+.case-deck .flow-mini.is-run i { transform-origin: left; animation: flow-edge .32s calc(var(--k, 0) * 110ms) ease-out both; }
+@keyframes flow-node { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--action) 0%, transparent); } 45% { border-color: var(--action); box-shadow: 0 0 0 3px color-mix(in srgb, var(--action) 22%, transparent); } 100% { box-shadow: none; } }
+@keyframes flow-edge { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ===================================================================== M4 the career line draws with the scroll */
+.roles.will-draw::after {
+  position: absolute;
+  top: 8px;
+  left: 4px;
+  width: 1px;
+  height: calc((100% - 16px) * var(--draw, 0));
+  background: var(--action);
+  content: "";
+}
+.roles.will-draw > li::before { transition: background-color .25s, scale .25s; }
+.roles.will-draw > li:first-child::before { background: var(--bg); }
+.roles.will-draw > li[data-reached]::before { background: var(--action); scale: 1.1; }
+@media (min-width: 801px) and (max-width: 1023px) {
+  .roles.will-draw::after { top: 0; left: 0; width: calc(100% * var(--draw, 0)); height: 1px; }
+}
+
+/* ===================================================================== M5 "Your turn": the mic listens */
+.your-turn { display: inline-flex; align-items: center; gap: 8px; }
+.yt-mic { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.yt-bars { display: inline-flex; align-items: center; gap: 2px; height: 12px; }
+.yt-bars i { width: 2px; height: 4px; border-radius: 1px; background: currentColor; }
+.your-turn.is-listening .yt-bars i { animation: yt-listen .55s ease-in-out 6 alternate; }
+.your-turn.is-listening .yt-bars i:nth-child(2) { animation-delay: .14s; }
+.your-turn.is-listening .yt-bars i:nth-child(3) { animation-delay: .28s; }
+.your-turn.is-listening .yt-bars i:nth-child(4) { animation-delay: .06s; }
+@keyframes yt-listen { to { height: 12px; } }
