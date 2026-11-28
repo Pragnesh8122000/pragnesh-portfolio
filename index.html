@@ -64,12 +64,12 @@
       <div class="wrap head">
         <a href="#top" class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>Pragnesh Prajapati</a>
         <button type="button" class="btn menu-toggle" aria-controls="site-navigation" aria-expanded="false" hidden>
-          <span class="menu-icon" aria-hidden="true"></span> Menu
+          <span class="menu-icon" aria-hidden="true"></span><span class="visually-hidden">Menu</span>
         </button>
         <nav class="site-nav" id="site-navigation" aria-label="Main">
           <a href="#projects">Projects</a>
           <a href="#systems">Work</a>
-          <button type="button" class="nav-ship" data-ship-open aria-haspopup="dialog" aria-controls="ship">How I build</button>
+          <button type="button" class="nav-ship" data-sheet-open="ship" aria-haspopup="dialog" aria-controls="ship">How I build</button>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
           <a class="nav-resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
@@ -102,7 +102,7 @@
               </ul>
               <div class="hero-actions">
                 <a class="btn primary hero-action" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
-                <button type="button" class="btn ship-open" data-ship-open aria-haspopup="dialog" aria-controls="ship">How I ship a voice agent <svg class="ship-open-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="4" cy="3" r="1.6"/><circle cx="4" cy="13" r="1.6"/><path d="M4 4.6v6.8M8 3h5M8 8h5M8 13h3"/><circle cx="4" cy="8" r="1.6"/></svg></button>
+                <button type="button" class="btn ship-open" data-sheet-open="ship" aria-haspopup="dialog" aria-controls="ship">How I ship a voice agent <svg class="ship-open-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="4" cy="3" r="1.6"/><circle cx="4" cy="13" r="1.6"/><path d="M4 4.6v6.8M8 3h5M8 8h5M8 13h3"/><circle cx="4" cy="8" r="1.6"/></svg></button>
               </div>
             </div>
 
@@ -171,10 +171,7 @@
                   <li>Load tested</li>
                 </ul>
                 <div class="bestie-actions">
-                  <button type="button" class="link brief-toggle" aria-expanded="false" aria-controls="bestie-brief">
-                    How it works
-                    <i aria-hidden="true"></i>
-                  </button>
+                  <button type="button" class="link brief-toggle" data-sheet-open="bestie-sheet" aria-haspopup="dialog" aria-controls="bestie-sheet">How it works <span aria-hidden="true">→</span></button>
                   <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">
                     View source
                     <span aria-hidden="true">↗</span>
@@ -201,26 +198,6 @@
                   </div>
                 </div>
               </figure>
-            </div>
-            <div class="brief-wrap" inert="">
-              <div>
-                <div class="bestie-brief" id="bestie-brief">
-                  <div>
-                    <h4>How the personalities work</h4>
-                    <p>
-                      Friend and Mentor each have their own voice and range of settings. Five traits shape a reply,
-                      from how warmly the companion responds to how directly it challenges you.
-                    </p>
-                  </div>
-                  <div>
-                    <h4>From a thought to a spoken reply</h4>
-                    <p>
-                      Speech recognition captures your question. The backend uses the last 20 messages for context
-                      and streams the reply as it forms. Fish Audio speaks it sentence by sentence.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </article>
 
@@ -459,8 +436,8 @@
           <p class="section-lead">Email me about a role in Bengaluru or a remote opportunity. If you’re building a voice or chat product, tell me what you want people to do with it.</p>
           <div class="actions">
             <a class="btn primary" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
-            <a class="link" href="https://www.linkedin.com/in/pragneshprajapati08">LinkedIn <span aria-hidden="true">↗</span></a>
-            <a class="link" href="https://github.com/Pragnesh8122000">GitHub <span aria-hidden="true">↗</span></a>
+            <a class="btn" href="https://www.linkedin.com/in/pragneshprajapati08">LinkedIn <span aria-hidden="true">↗</span></a>
+            <a class="btn" href="https://github.com/Pragnesh8122000">GitHub <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <div class="footer">
@@ -469,6 +446,36 @@
         </div>
       </div>
     </footer>
+    <dialog class="ship" id="bestie-sheet" aria-labelledby="bestie-sheet-title">
+      <div class="ship-panel">
+        <header class="ship-head">
+          <div>
+            <h2 id="bestie-sheet-title">How AI Bestie works</h2>
+            <p>One voice companion, two personalities. This is what happens between your question and its spoken reply.</p>
+          </div>
+          <button type="button" class="ship-close" data-sheet-close aria-label="Close" autofocus><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+        </header>
+        <ol class="ship-steps">
+          <li style="--i: 0">
+            <div class="ship-row"><span class="ship-n" aria-hidden="true">1</span><span class="ship-t"><b>You speak or type</b><span>Speech recognition captures your question. Typed and spoken messages share one conversation.</span></span></div>
+          </li>
+          <li style="--i: 1">
+            <div class="ship-row"><span class="ship-n" aria-hidden="true">2</span><span class="ship-t"><b>The persona answers</b><span>The backend sends the last 20 messages as context and streams the reply over SSE as it forms.</span></span></div>
+          </li>
+          <li style="--i: 2">
+            <div class="ship-row"><span class="ship-n" aria-hidden="true">3</span><span class="ship-t"><b>It speaks back</b><span>Fish Audio speaks the reply sentence by sentence, as each one arrives.</span></span></div>
+          </li>
+          <li style="--i: 3">
+            <div class="ship-row"><span class="ship-n" aria-hidden="true">4</span><span class="ship-t"><b>You can cut in</b><span>Start talking while it speaks and it stops to listen.</span></span></div>
+          </li>
+        </ol>
+        <p class="ship-note"><b>Two personalities.</b> Friend and Mentor each have their own voice and range of settings. Five traits shape a reply, from how warmly the companion responds to how directly it challenges you.</p>
+        <footer class="ship-foot">
+          <a class="btn primary" href="https://github.com/Pragnesh8122000/ai_bestie">View source <span aria-hidden="true">↗</span></a>
+          <button type="button" class="link" data-sheet-open="ship" aria-haspopup="dialog" aria-controls="ship">How I ship a voice agent <span aria-hidden="true">→</span></button>
+        </footer>
+      </div>
+    </dialog>
     <dialog class="ship" id="ship" aria-labelledby="ship-title">
       <div class="ship-panel">
         <header class="ship-head">
@@ -476,7 +483,7 @@
             <h2 id="ship-title">How I ship a voice agent</h2>
             <p>From the mic to the metrics, in the order a turn travels. Open a step to see what breaks and what I build.</p>
           </div>
-          <button type="button" class="ship-close" data-ship-close aria-label="Close" autofocus><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+          <button type="button" class="ship-close" data-sheet-close aria-label="Close" autofocus><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
         </header>
         <ol class="ship-steps">
           <li style="--i: 0">

@@ -18,7 +18,7 @@ menuToggle.addEventListener('click', () => {
 });
 
 navigation.addEventListener('click', (event) => {
-  if (mobile.matches && event.target.closest('a, [data-ship-open]')) setMenu(false);
+  if (mobile.matches && event.target.closest('a, [data-sheet-open]')) setMenu(false);
 });
 
 document.addEventListener('keydown', (event) => {

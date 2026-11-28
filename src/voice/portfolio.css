@@ -637,22 +637,14 @@ html.voice-home:root { --h3-size: clamp(28px, 3.3vw, 46px); }
 .project-head em { color: var(--accent); font-style: normal; }
 .project-name { color: var(--accent); font: 680 22px/1.1 var(--display); letter-spacing: -.02em; }
 .bestie-deck { color: var(--muted); max-width: 44ch; }
-.bestie-brief h4 { margin: 0; color: var(--ink); font: 650 20px/1.2 var(--display); letter-spacing: -.02em; }
-/* "How it works" is a text action like "View source" beside it, so the section keeps one link look */
-.brief-toggle { padding: 0; border: 0; background-color: transparent; color: inherit; cursor: pointer; }
-.bestie-brief { padding: 26px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
-.bestie-brief p { margin-block: 9px; }
+/* a button that opens a sheet can wear the text-link look ("How it works" beside "View source") */
+button.link { padding: 0; border: 0; background-color: transparent; color: inherit; cursor: pointer; }
 @media (max-width: 740px) {
-  .bestie-cover, .bestie-brief { grid-template-columns: minmax(0, 1fr); }
+  .bestie-cover { grid-template-columns: minmax(0, 1fr); }
   .bestie-copy { gap: 12px; }
 }
 .bestie-card { margin-top: clamp(22px, 3vw, 40px); }
 .bestie-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
-.bestie-actions .btn[aria-expanded="true"] i { transform: rotate(225deg) translate(-1px, -1px); }
-.bestie-actions .btn i { width: 10px; height: 10px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg) translateY(-2px); transition: transform 320ms cubic-bezier(.2,.75,.2,1); }
-.brief-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 420ms cubic-bezier(.22, 1, .36, 1); }
-.brief-wrap > div { overflow: hidden; }
-.bestie-card[data-open] .brief-wrap { grid-template-rows: 1fr; }
 
 
 .vaidya-card {
@@ -728,7 +720,7 @@ html.voice-home:root { --h3-size: clamp(28px, 3.3vw, 46px); }
 
 
 
-@media (prefers-reduced-motion: reduce) { .brief-wrap, .screen, .screen:not([data-current]), .bestie-actions .btn i { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .screen, .screen:not([data-current]) { transition: none; } }
 
 .links, .actions {
   display: flex;
@@ -923,8 +915,17 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
 
 .contact { padding-block: clamp(62px, 8vw, 114px); }
 .contact h2 { max-width: 17ch; font-size: clamp(43px, 7vw, 98px); text-wrap: balance; }
+.contact .actions { gap: 12px; }
+.contact .actions .btn { min-height: 48px; padding-inline: 18px; font-size: 15px; }
+.contact .btn:not(.primary) { border-color: color-mix(in srgb, #ffffff 55%, transparent); color: #ffffff; }
+@media (hover: hover) { .contact .btn:not(.primary):hover { border-color: #ffffff; background: color-mix(in srgb, #ffffff 12%, transparent); } }
 .contact .btn.primary { border-color: #ffffff; background: #ffffff; color: #0b0c0e; }
 .contact .btn.primary:hover { background: #dfe6f3; }
+@media (max-width: 620px) {
+  .contact .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact .actions .btn { width: 100%; }
+  .contact .actions .btn.primary { grid-column: 1 / -1; }
+}
 .actions { margin-top: 24px; }
 
 .footer {
@@ -980,10 +981,9 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
 @media (max-width: 760px) {
   html.voice-home:root { --header-height: 64px; }
   html.voice-home:root:has(.sitehead:not([data-nav-ready])) { --header-height: 100px; }
-  /* Menu stays pinned to the right edge; the Email button appears to its left once the hero CTA scrolls away */
+  /* phones: the bar is the brand and an icon-only menu button; Email me sits in the hero and in the menu sheet */
   .head { grid-template: "brand actions menu" / minmax(0, 1fr) auto auto; gap: 0 8px; }
-  .sitehead[data-nav-ready]:not([data-show-cta]) .header-actions { display: none; }
-  @starting-style { .sitehead[data-show-cta] .nav-email { opacity: 0; translate: 0 -6px; } }
+  .sitehead[data-nav-ready] .header-actions { display: none; }
   .sitehead:not([data-nav-ready]) .head {
     grid-template: "brand actions" "nav nav" / minmax(0, 1fr) auto;
     padding-top: 5px;
@@ -997,7 +997,7 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
   .nav-email { padding-inline: 12px; }
   .nav-email-long { display: none; }
   .nav-ind { display: none; }
-  .btn.menu-toggle:not([hidden]) { grid-area: menu; display: inline-flex; padding-inline: 11px; }
+  .btn.menu-toggle:not([hidden]) { grid-area: menu; display: inline-flex; justify-content: center; width: 44px; padding: 0; }
   .btn.menu-toggle[aria-expanded="true"] { background: var(--surface); color: var(--action); }
 
   .menu-icon {
@@ -1121,21 +1121,6 @@ html:not([data-motion="off"]) body :is(.link, .footer .link):is(:hover, :focus-v
   .contact { padding-block: 72px 56px; }
 }
 
-/* narrow phones: the Menu button keeps its accessible name but shows only the icon, so the name stays on one line */
-@media (max-width: 374px) {
-  .brand { white-space: nowrap; }
-  .btn.menu-toggle:not([hidden]) { justify-content: center; width: 44px; padding: 0; gap: 0; font-size: 0; }
-}
-
-@media (max-width: 374px) {
-  .contact .actions { display: grid; grid-template-columns: repeat(2, auto); justify-content: start; gap: 8px 20px; }
-  .contact .actions .btn.primary { grid-column: 1 / -1; }
-}
-
-/* the menu sheet already carries Email me, so the smallest phones drop the duplicate from the bar */
-@media (max-width: 340px) {
-  .sitehead[data-nav-ready] .header-actions { display: none; }
-}
 
 @media (max-width: 370px) {
   .brand { font-size: 15px; }
@@ -1757,6 +1742,15 @@ html:has(.ship[open]) { overflow: hidden; }
 .ship-steps summary::-webkit-details-marker { display: none; }
 .ship-steps summary:focus-visible { outline-offset: 2px; border-radius: 8px; }
 
+.ship-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 10px 0;
+}
+
 .ship-n {
   position: relative;
   z-index: 1;
@@ -1869,7 +1863,7 @@ html:has(.ship[open]) { overflow: hidden; }
   .ship-head p { font-size: 14px; }
   .ship-steps { padding: 8px 16px 4px; }
   .ship-steps::before, .ship[data-run] .ship-steps::after { left: calc(16px + 15px); }
-  .ship-steps summary { gap: 14px; min-height: 60px; }
+  .ship-steps :is(summary, .ship-row) { gap: 14px; min-height: 60px; }
   .ship-t b { font-size: 17px; }
   .ship-t span { font-size: 13.5px; }
   .ship-steps dl { margin-left: 0; padding: 14px; }
