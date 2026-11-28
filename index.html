@@ -43,6 +43,9 @@
           && !matchMedia('(prefers-reduced-motion: reduce)').matches);
         if (welcome) {
           root.classList.add('welcome-on');
+          // A reload would put the old scroll position back, and that scroll would skip the intro. Start at the top.
+          if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+          scrollTo(0, 0);
           // If intro.js never runs, the page must not stay covered.
           window.__welcomeSafety = setTimeout(() => root.classList.remove('welcome-on'), 9000);
         } else {
