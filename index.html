@@ -3,18 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="Pragnesh Prajapati builds voice agents and real-time backends. Explore the voice prototype, streamed replies and model provider fallback.">
+    <meta name="description" content="Pragnesh Prajapati builds production voice agents and chatbots: streaming speech, turn detection, barge-in, model failover, and per-turn tracing and metrics. Projects include AI Bestie and Vaidya Assist; backend work at Justdial runs on Kafka, Redis and AWS.">
     <meta name="page-type" content="software">
     <meta name="site-kind" content="software">
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#eef0f3">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pragnesh-portfolio-seven.vercel.app/">
-    <meta property="og:title" content="Pragnesh Prajapati — Voice Agents &amp; Real-Time Systems">
-    <meta property="og:description" content="Explore Pragnesh Prajapati’s voice prototype and real-time backend engineering work.">
-    <meta property="og:image" content="https://pragnesh-portfolio-seven.vercel.app/og.png">
+    <meta property="og:title" content="Pragnesh Prajapati — Production Voice Agents &amp; Chatbots">
+    <meta property="og:description" content="Voice agents and chatbots built for production: turn detection, barge-in, model failover, tracing and load testing.">
+    <meta property="og:image" content="https://pragnesh-portfolio-seven.vercel.app/og-voice.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Pragnesh Prajapati: voice agents and chatbots, built for production, with a turn trace.">
     <meta name="twitter:card" content="summary_large_image">
-    <title>Pragnesh Prajapati — Voice Agents &amp; Real-Time Systems</title>
+    <title>Pragnesh Prajapati — Production Voice Agents &amp; Chatbots</title>
     <link rel="canonical" href="https://pragnesh-portfolio-seven.vercel.app/">
     <link rel="icon" href="/favicon.svg">
     <script>
@@ -52,7 +55,7 @@
   <body id="top">
     <div class="welcome" id="welcome" aria-hidden="true">
       <div class="welcome-wave"></div>
-      <p class="welcome-say"><span class="welcome-w">I’m</span> <span class="welcome-w" data-zoom>Pragnesh.</span> <span class="welcome-w">I</span> <span class="welcome-w">build</span> <span class="welcome-w">voice</span> <span class="welcome-w">agents</span> <span class="welcome-w">that</span> <span class="welcome-w">work</span> <span class="welcome-w">in</span> <span class="welcome-w">production.</span></p>
+      <p class="welcome-say"><span class="welcome-w">I’m</span> <span class="welcome-w" data-zoom>Pragnesh.</span> <span class="welcome-w">I</span> <span class="welcome-w">build</span> <span class="welcome-w">voice</span> <span class="welcome-w">agents</span> <span class="welcome-w">and</span> <span class="welcome-w">chatbots</span> <span class="welcome-w">for</span> <span class="welcome-w">production.</span></p>
       <p class="welcome-meta"><span>AI Bestie · warming up</span><span class="welcome-num">0%</span></p>
       <span class="welcome-skip">Skip intro →</span>
     </div>
@@ -66,6 +69,7 @@
         <nav class="site-nav" id="site-navigation" aria-label="Main">
           <a href="#projects">Projects</a>
           <a href="#systems">Work</a>
+          <button type="button" class="nav-ship" data-ship-open aria-haspopup="dialog" aria-controls="ship">How I build</button>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
           <a class="nav-resume" href="/resume.pdf">Résumé <span aria-hidden="true">↗</span></a>
@@ -88,10 +92,18 @@
         <div class="wrap">
           <div class="hero-text">
             <div class="hero-copy">
-              <p class="eyebrow">Backend engineer in Bengaluru</p>
-              <h1 id="headline" data-enter-whole>I build <em>voice agents.</em></h1>
-              <p class="intro hero__lead">My voice prototype streams replies as they’re generated and switches model providers when one fails.</p>
-              <a class="btn primary hero-action" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+              <h1 id="headline" data-enter-whole>Voice agents and chatbots, <em>built for production.</em></h1>
+              <p class="intro hero__lead">Streaming speech, natural turn-taking, interruptions and model failover, with every turn traced and measured. Built on 3.5+ years of production backend work, now at Justdial.</p>
+              <ul class="hero-proof" aria-label="Built into every agent">
+                <li>Barge-in</li>
+                <li>Turn detection</li>
+                <li>LLM failover</li>
+                <li>Tracing and metrics</li>
+              </ul>
+              <div class="hero-actions">
+                <a class="btn primary hero-action" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+                <button type="button" class="btn ship-open" data-ship-open aria-haspopup="dialog" aria-controls="ship">How I ship a voice agent <svg class="ship-open-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="4" cy="3" r="1.6"/><circle cx="4" cy="13" r="1.6"/><path d="M4 4.6v6.8M8 3h5M8 8h5M8 13h3"/><circle cx="4" cy="8" r="1.6"/></svg></button>
+              </div>
             </div>
 
             <article class="console app-frame" id="voice-demo" aria-labelledby="demo-title" data-enter-media data-visual tabindex="-1">
@@ -116,20 +128,29 @@
                   <p><q>Let’s make the next five minutes easy. Put your phone down, take a slow breath, and get a glass of water.</q></p>
                 </div>
               </div>
+              <ol class="trace" id="turn-trace" aria-label="Turn trace">
+                <li data-stage="stt"><span class="trace-name">Speech to text</span><span class="trace-track" aria-hidden="true"><i></i></span><span class="trace-meta" data-default="Web Speech">Web Speech</span></li>
+                <li data-stage="end"><span class="trace-name">End of turn</span><span class="trace-track" aria-hidden="true"><i></i></span><span class="trace-meta" data-default="1.6 s silence">1.6 s silence</span></li>
+                <li data-stage="llm"><span class="trace-name">First token</span><span class="trace-track" aria-hidden="true"><i></i></span><span class="trace-meta" data-default="Gemini">Gemini</span></li>
+                <li data-stage="tts"><span class="trace-name">First audio</span><span class="trace-track" aria-hidden="true"><i></i></span><span class="trace-meta" data-default="Fish Audio">Fish Audio</span></li>
+                <li data-stage="speak"><span class="trace-name">Speaking</span><span class="trace-track" aria-hidden="true"><i></i></span><span class="trace-meta" data-default="Streamed">Streamed</span></li>
+              </ol>
               <div class="console-foot">
-                <div class="console-listen">
-                  <div class="playback" id="playback" hidden>
-                    <div class="sample-track" aria-hidden="true">
-                      <span>Prompt</span><span>Reply</span>
-                    </div>
-                    <button type="button" class="btn play" id="play">Click For Demo</button>
-                  </div>
-                  <p id="demo-status" class="demo-status" role="status"></p>
+                <div class="playback" id="playback" hidden>
+                  <button type="button" class="btn play" id="play">Play the demo</button>
+                  <button type="button" class="btn interrupt" id="interrupt" disabled><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 8.5V3.75a1 1 0 0 1 2 0V7.5m0-.5V2.75a1 1 0 0 1 2 0V7m0-.25V3.75a1 1 0 0 1 2 0V9.5c0 2.5-1.6 4.5-4 4.5-1.7 0-2.7-.8-3.6-2.1L2.6 9.3a1 1 0 0 1 1.6-1.2l1.3 1.4"/></svg>Interrupt</button>
                 </div>
-                <a class="link" href="#projects">See the projects <span aria-hidden="true">↓</span></a>
+                <p id="demo-status" class="demo-status" role="status"></p>
               </div>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section class="section demo-section" id="demo" aria-labelledby="demo-title-phone" hidden>
+        <div class="wrap">
+          <h2 id="demo-title-phone">One voice turn, traced</h2>
+          <div class="demo-slot"></div>
         </div>
       </section>
 
@@ -140,23 +161,17 @@
           <article class="bestie-card">
             <div class="bestie-cover">
               <div class="bestie-copy">
-                <h3 id="bestie-name">AI Bestie</h3>
-                <span id="bestie-title">
-                  Same question.
-                  <br />
-                  <em>Different company.</em>
-                </span>
-                <span class="bestie-deck">
-                  One voice companion, two personalities. What changes when you ask a friend instead of a mentor?
-                </span>
+                <h3 id="bestie-name" class="project-head"><span class="project-name">AI Bestie<span class="visually-hidden">:</span></span> <span class="project-line">A voice companion with <em>two personalities.</em></span></h3>
+                <p class="bestie-deck">Same question, different company: what changes when you ask a friend instead of a mentor?</p>
                 <ul class="chips" aria-label="AI Bestie stack">
                   <li>SSE streaming</li>
-                  <li>LLM fallback</li>
-                  <li>JWT</li>
-                  <li>Rate limits</li>
+                  <li>Barge-in</li>
+                  <li>LLM failover</li>
+                  <li>Turn tracing</li>
+                  <li>Load tested</li>
                 </ul>
                 <div class="bestie-actions">
-                  <button type="button" class="btn primary" aria-expanded="false" aria-controls="bestie-brief">
+                  <button type="button" class="link brief-toggle" aria-expanded="false" aria-controls="bestie-brief">
                     How it works
                     <i aria-hidden="true"></i>
                   </button>
@@ -191,14 +206,14 @@
               <div>
                 <div class="bestie-brief" id="bestie-brief">
                   <div>
-                    <h3>How the personalities work</h3>
+                    <h4>How the personalities work</h4>
                     <p>
                       Friend and Mentor each have their own voice and range of settings. Five traits shape a reply,
                       from how warmly the companion responds to how directly it challenges you.
                     </p>
                   </div>
                   <div>
-                    <h3>From a thought to a spoken reply</h3>
+                    <h4>From a thought to a spoken reply</h4>
                     <p>
                       Speech recognition captures your question. The backend uses the last 20 messages for context
                       and streams the reply as it forms. Fish Audio speaks it sentence by sentence.
@@ -211,8 +226,7 @@
 
           <article class="vaidya-card">
             <div>
-              <h3 class="v-name">Vaidya Assist</h3>
-              <p class="project-title">From a health question to a booked doctor.</p>
+              <h3 class="project-head"><span class="project-name">Vaidya Assist<span class="visually-hidden">:</span></span> <span class="project-line">From a health question to <em>a booked doctor.</em></span></h3>
               <p>
                 An AI healthcare assistant that answers health questions, helps people find doctors and books
                 appointments. It retrieves relevant context before an LLM answers.
@@ -279,8 +293,8 @@
           </p>
           <div class="work-stage">
             <div class="case-deck" id="case-deck">
-              <article tabindex="0" id="pipeline">
-                <p class="eyebrow">Justdial</p>
+              <article id="pipeline">
+                <p class="eyebrow case-tag"><i class="logo case-logo" style="--logo: url(/assets/icons/kafka.svg)" role="img" aria-label="Kafka"></i>Justdial</p>
                 <h3>Kafka lead pipeline</h3>
                 <strong class="metric">120K+</strong><b>leads processed daily</b>
                 <div class="case-more" id="pipeline-more">
@@ -312,8 +326,8 @@
                 </div>
                 <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="pipeline-more" hidden>View more</button>
               </article>
-              <article tabindex="0" id="gateway">
-                <p class="eyebrow">Justdial</p>
+              <article id="gateway">
+                <p class="eyebrow case-tag"><i class="logo case-logo" style="--logo: url(/assets/icons/nodejs.svg)" role="img" aria-label="Node.js"></i>Justdial</p>
                 <h3>Node.js API gateway</h3>
                 <strong class="metric">10+</strong><b>services on one gateway</b>
                 <div class="case-more" id="gateway-more">
@@ -326,8 +340,8 @@
                 </div>
                 <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="gateway-more" hidden>View more</button>
               </article>
-              <article tabindex="0" id="caching">
-                <p class="eyebrow">Justdial</p>
+              <article id="caching">
+                <p class="eyebrow case-tag"><i class="logo case-logo" style="--logo: url(/assets/icons/redis.svg)" role="img" aria-label="Redis"></i>Justdial</p>
                 <h3>Redis caching</h3>
                 <strong class="metric">35%</strong><b>lower peak API response time</b>
                 <div class="case-more" id="caching-more">
@@ -343,9 +357,9 @@
                 </div>
                 <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="caching-more" hidden>View more</button>
               </article>
-              <article tabindex="0" id="ecs">
-                <p class="eyebrow">Mypcot Infotech</p>
-                <h3>AWS ECS migration</h3>
+              <article id="ecs">
+                <p class="eyebrow case-tag"><i class="logo case-logo" style="--logo: url(/assets/icons/aws.svg)" role="img" aria-label="AWS"></i>Mypcot Infotech</p>
+                <h3>Monolith split into 4 ECS services</h3>
                 <strong class="metric">4</strong><b>independently deployed services</b>
                 <div class="case-more" id="ecs-more">
                   <div>
@@ -381,11 +395,6 @@
                 <button type="button" class="btn case-toggle" aria-expanded="false" aria-controls="ecs-more" hidden>View more</button>
               </article>
             </div>
-            <div class="deck-controls" aria-label="Browse work cases" role="group">
-              <button class="btn" aria-controls="case-deck" data-prev>← Previous</button
-              ><output aria-live="polite">1 / 4 · Kafka lead pipeline</output
-              ><button class="btn" aria-controls="case-deck" data-next>Next →</button>
-            </div>
           </div>
         </div>
       </section>
@@ -408,21 +417,35 @@
             </div>
           </div>
           <div class="bio-side">
-            <h3 id="career-history">Career history</h3>
-            <div class="roles" aria-labelledby="career-history" role="group">
-              <details open>
-                <summary><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></summary>
-                <p><strong>SDE 1</strong> · API gateway, Kafka pipeline, monitoring and WebRTC calling.</p>
-              </details>
-              <details>
-                <summary><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></summary>
-                <p><strong>Software Engineer</strong> · AWS ECS migration, zero-downtime releases and real-time dispatch.</p>
-              </details>
-              <details>
-                <summary><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></summary>
-                <p><strong>Backend Engineer</strong> · REST APIs and Twilio/WebRTC video calling.</p>
-              </details>
-            </div>
+            <p class="roles-title" id="career-history">Career history</p>
+            <ol class="roles" aria-labelledby="career-history">
+              <li>
+                <p class="role-head"><span>Justdial</span><time datetime="2026-01">Jan 2026–present</time></p>
+                <p class="role-what"><strong>SDE 1</strong> · Bengaluru</p>
+                <ul>
+                  <li>Built the centralized API gateway and the Kafka lead pipeline.</li>
+                  <li>Added Redis caching to the IRO platform and automated error monitoring.</li>
+                  <li>Designed and integrated WebRTC calling, owning the backend end to end.</li>
+                </ul>
+              </li>
+              <li>
+                <p class="role-head"><span>Mypcot Infotech</span><span class="role-date">May 2024–Dec 2025</span></p>
+                <p class="role-what"><strong>Software Engineer</strong> · Mumbai</p>
+                <ul>
+                  <li>Led the monolith-to-microservices migration on AWS ECS.</li>
+                  <li>Set up zero-downtime releases and CI/CD pipelines.</li>
+                  <li>Built REST and GraphQL APIs and a real-time emergency dispatch system.</li>
+                </ul>
+              </li>
+              <li>
+                <p class="role-head"><span>Weboccult Technologies</span><span class="role-date">Jan 2023–May 2024</span></p>
+                <p class="role-what"><strong>Backend Engineer</strong> · Ahmedabad</p>
+                <ul>
+                  <li>Built REST backends with Node.js, Express and MongoDB.</li>
+                  <li>Built Twilio and WebRTC video calling; better session handling raised average session length by 25%.</li>
+                </ul>
+              </li>
+            </ol>
           </div>
         </div>
       </section>
@@ -446,6 +469,114 @@
         </div>
       </div>
     </footer>
+    <dialog class="ship" id="ship" aria-labelledby="ship-title">
+      <div class="ship-panel">
+        <header class="ship-head">
+          <div>
+            <h2 id="ship-title">How I ship a voice agent</h2>
+            <p>From the mic to the metrics, in the order a turn travels. Open a step to see what breaks and what I build.</p>
+          </div>
+          <button type="button" class="ship-close" data-ship-close aria-label="Close" autofocus><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 4 8 8M12 4l-8 8"/></svg></button>
+        </header>
+        <ol class="ship-steps">
+          <li style="--i: 0">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">1</span><span class="ship-t"><b>Capture</b><span>Mic in, speech to text</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>Browser speech engines stop mid-word, and Safari behaves differently from Chrome. Words go missing without an error.</dd></div>
+                <div><dt>What I build</dt><dd>A capture loop that restarts the engine and keeps adding to the same transcript, with a server-side Whisper fallback for browsers that can’t transcribe.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 1">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">2</span><span class="ship-t"><b>Turn detection</b><span>Knowing when someone has finished</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>The agent jumps in on a short pause, or sits silent after the person is done.</dd></div>
+                <div><dt>What I build</dt><dd>Silence-based endpointing: 1.6 s of quiet ends the turn, stretched to 2.4 s when the sentence sounds unfinished.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 2">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">3</span><span class="ship-t"><b>Reasoning</b><span>A streamed reply, written for the ear</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>A slow first token is dead air on a call, and long paragraphs sound robotic when spoken.</dd></div>
+                <div><dt>What I build</dt><dd>Token streaming over SSE, short replies in voice mode, recent conversation as context, and persona prompts that keep the tone steady.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 3">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">4</span><span class="ship-t"><b>Failover</b><span>Surviving a slow or failing model</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>One provider times out or hits a rate limit, and the whole call stalls.</dd></div>
+                <div><dt>What I build</dt><dd>A model list for each mode and hedged requests: if no token arrives in 2 s, the next model races alongside. No blind retries of the same model.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 4">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">5</span><span class="ship-t"><b>Speech</b><span>Text to speech, sentence by sentence</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>Gaps between sentences, frozen playback, or a long wait for the first word.</dd></div>
+                <div><dt>What I build</dt><dd>Each sentence is spoken as soon as it is written, every synthesis call has a time limit, and the voice provider sits behind one switchable interface.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 5">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">6</span><span class="ship-t"><b>Barge-in</b><span>Letting people interrupt</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>The agent keeps talking over the person. Nothing makes a voice agent feel fake faster.</dd></div>
+                <div><dt>What I build</dt><dd>The agent listens while it speaks. The first sign of the person’s voice stops playback and hands the turn back.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 6">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">7</span><span class="ship-t"><b>Tracing</b><span>Following one turn end to end</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>“It felt slow”, and no way to tell whether speech recognition, the model or the voice caused it.</dd></div>
+                <div><dt>What I build</dt><dd>One turn ID from the browser to the server. Mic, transcription, model, every audio chunk and playback land on one timeline.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 7">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">8</span><span class="ship-t"><b>Metrics and logs</b><span>Measuring every turn</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>No numbers, so no way to know whether a change made things faster or slower.</dd></div>
+                <div><dt>What I build</dt><dd>One JSON line per event: time to first token, stream time, total, provider, failovers and outcome. Timings only, never what anyone said.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 8">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">9</span><span class="ship-t"><b>Load testing</b><span>Finding the limit before users do</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>A bottleneck nobody sees until real traffic arrives.</dd></div>
+                <div><dt>What I build</dt><dd>Load tests with mocked providers on one machine. The first run showed a TTS queue capping voice at about 10 users. With it raised, 100 concurrent voice users ran with 0 errors, and the server added 26 ms to a turn.</dd></div>
+              </dl>
+            </details>
+          </li>
+          <li style="--i: 9">
+            <details name="ship-step">
+              <summary><span class="ship-n" aria-hidden="true">10</span><span class="ship-t"><b>Shipping</b><span>Secured, tested, deployed</span></span><svg class="ship-chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m6 4 4 4-4 4"/></svg></summary>
+              <dl>
+                <div><dt>What breaks</dt><dd>Leaked keys, abuse, and regressions nobody notices until users do.</dd></div>
+                <div><dt>What I build</dt><dd>JWT auth, rate limits, secrets kept out of the code, tests on the voice paths, and a repeatable deploy.</dd></div>
+              </dl>
+            </details>
+          </li>
+        </ol>
+        <p class="ship-note"><b>Chatbots run on the same backbone.</b> Text chat skips capture, turn detection, speech and barge-in. Reasoning, failover, tracing, metrics, load testing and shipping work the same way.</p>
+        <footer class="ship-foot">
+          <a class="btn primary" href="mailto:pragnesh8122000@gmail.com">Email me <span aria-hidden="true">↗</span></a>
+          <a class="link" href="https://github.com/Pragnesh8122000/ai_bestie">Read the AI Bestie code <span aria-hidden="true">↗</span></a>
+        </footer>
+      </div>
+    </dialog>
     <script type="module" src="/assets/taste/motion/motion.js"></script>
     <script type="module" src="/src/voice/theme.js"></script>
     <script type="module" src="/src/voice/navigation.js"></script>
@@ -454,5 +585,6 @@
     <script type="module" src="/src/voice/hero-motion.js"></script>
     <script type="module" src="/src/voice/projects.js"></script>
     <script type="module" src="/src/voice/work-chapters.js"></script>
+    <script type="module" src="/src/voice/ship.js"></script>
   </body>
 </html>

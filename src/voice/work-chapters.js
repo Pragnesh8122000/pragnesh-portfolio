@@ -4,76 +4,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const MOTION = '(prefers-reduced-motion: no-preference)';
-// Pinning the deck needs it to fit one screen. Phones skip the deck altogether: the cases stack,
-// each showing its headline figure, with a View more button for the rest.
-const PIN = MOTION + ' and (min-width: 541px)';
+// The work cases sit in a grid that scrolls with the page. Phones stack them, each showing its headline figure,
+// with a View more button for the rest.
 const PHONE = '(max-width: 540px)';
 const media = gsap.matchMedia();
 
 const deck = document.querySelector('.case-deck');
 if (deck) {
   const cards = [...deck.children];
-  const controls = document.querySelector('.deck-controls');
-  const previous = controls.querySelector('[data-prev]');
-  const next = controls.querySelector('[data-next]');
-  const position = controls.querySelector('output');
-  const cardLeft = (card) => card.offsetLeft - cards[0].offsetLeft;
-  const distance = (card) => Math.abs(cardLeft(card) - deck.scrollLeft);
-  const current = () => cards.indexOf(cards.reduce((a, b) => distance(a) <= distance(b) ? a : b));
-
-  let pin;
-  function sync() {
-    const index = current();
-    previous.disabled = index === 0;
-    next.disabled = index === cards.length - 1;
-    const label = (index + 1) + ' / ' + cards.length + ' · ' + cards[index].querySelector('h3').textContent;
-    if (position.value !== label) position.value = label;
-  }
-
-  function move(step) {
-    const card = cards[current() + step];
-    if (!card) return;
-    if (pin) {
-      const fraction = Math.min(1, cardLeft(card) / (deck.scrollWidth - deck.clientWidth));
-      window.scrollTo({ top: pin.start + fraction * (pin.end - pin.start), behavior: 'smooth' });
-    } else {
-      deck.scrollTo({ left: cardLeft(card), behavior: matchMedia(MOTION).matches ? 'smooth' : 'instant' });
-    }
-  }
-
-  media.add(PIN, () => {
-    const stage = deck.closest('.work-stage');
-    stage.dataset.scrollDeck = '';
-    const travel = () => deck.scrollWidth - deck.clientWidth;
-    pin = ScrollTrigger.create({
-      trigger: stage,
-      pin: true,
-      start: () => 'top ' + Math.min(document.querySelector('.sitehead').offsetHeight, innerHeight - stage.offsetHeight) + 'px',
-      end: () => '+=' + travel(),
-      onUpdate: (trigger) => { deck.scrollLeft = travel() * trigger.progress; },
-    });
-
-    // Carry a horizontal swipe into the page's scroll position when it settles.
-    const alignPage = () => {
-      if (!pin?.isActive || Math.abs(deck.scrollLeft - travel() * pin.progress) < 2) return;
-      window.scrollTo({ top: pin.start + deck.scrollLeft / travel() * (pin.end - pin.start), behavior: 'instant' });
-    };
-    deck.addEventListener('scrollend', alignPage);
-    return () => {
-      deck.removeEventListener('scrollend', alignPage);
-      delete stage.dataset.scrollDeck;
-      pin = undefined;
-    };
-  });
-
-  previous.addEventListener('click', () => move(-1));
-  next.addEventListener('click', () => move(1));
-  deck.addEventListener('scroll', sync, { passive: true });
-  const resize = new ResizeObserver(sync);
-  [deck, ...cards].forEach((element) => resize.observe(element));
-  sync();
-
-  // Phones: each case opens and closes on its own. Collapsed details are inert, so keyboard and
+  // Phones: each case opens and closes on its own. Collapsed details are inert and hidden, so keyboard and
   // screen-reader users meet only what is on screen; wider screens always show everything.
   const phone = matchMedia(PHONE);
   const toggles = cards.map((card) => card.querySelector('.case-toggle'));

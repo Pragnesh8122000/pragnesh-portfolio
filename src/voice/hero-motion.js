@@ -1,18 +1,17 @@
 // Hero motion. The console acts out what the hero claims:
-// - the reply streams word by word (M1)
-// - mid-stream the primary model times out and a fallback takes over (M2)
-// - sound ripples spread from behind the console (M5)
-// The headline cycles through roles (M3). On mouse or trackpad devices a soft light follows the pointer
-// over the console (M6; the console itself never tilts) and the main button leans toward it (M7).
-// Nothing runs under prefers-reduced-motion. Loops wait while their part of the hero is off screen or the
-// tab is hidden, and the streaming loop steps aside while walkthrough.js plays the sample conversation.
+// - each turn runs through the trace: speech to text, end of turn, first token, first audio, speaking (M1)
+// - every other turn the primary model sends no token in time and a hedged fallback answers (M2)
+// On mouse or trackpad devices a soft light follows the pointer over the console (M6; the console itself never
+// tilts) and the main button leans toward it (M7). Nothing runs under prefers-reduced-motion. Loops wait while
+// their part of the hero is off screen or the tab is hidden, and step aside while walkthrough.js plays the demo
+// or holds its result on screen.
+import { stage, resetTrace, markHedged, speakProgress, replyTokens } from './turn-trace.js';
+
 const root = document.documentElement;
 const hero = document.querySelector('.hero');
 const demo = document.querySelector('#voice-demo');
 
 const EASE = 'cubic-bezier(.22, 1, .36, 1)';
-const EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
-const ROLES = ['voice agents.', 'chat agents.', 'AI backends.'];
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const visibility = new Map();
@@ -46,48 +45,17 @@ async function heroSettled() {
   await wait(200);
 }
 
-// ---------------------------------------------------------------- M5 sound ripples
-// One SVG behind the console: a soft glow and three rings drawn as circles, so they read as decoration and
-// never as boxes. The SVG is 1.5 x --r across (the glow's edge); a ring grows to 0.66 of --r at most.
-const SVG = 'http://www.w3.org/2000/svg';
-function addRipples() {
-  const ripples = document.createElementNS(SVG, 'svg');
-  ripples.setAttribute('class', 'hero-ripples');
-  ripples.setAttribute('viewBox', '-100 -100 200 200');
-  ripples.setAttribute('aria-hidden', 'true');
-  ripples.setAttribute('focusable', 'false');
-  ripples.innerHTML = '<defs><radialGradient id="hero-glow"><stop offset="0" stop-color="currentColor" stop-opacity=".16"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>'
-    + '<circle r="100" fill="url(#hero-glow)"/>'
-    + '<circle class="ring" r="66.6"/><circle class="ring" r="66.6"/><circle class="ring" r="66.6"/>';
-  hero.prepend(ripples);
-  // Offsets ignore transforms, so motion never moves the centre; --r is capped so the whole SVG stays
-  // inside the hero (house rule: nothing spills past the panel it sits on).
-  const place = () => {
-    const x = demo.offsetLeft + demo.offsetWidth / 2;
-    const y = demo.offsetTop + demo.offsetHeight / 2;
-    const room = Math.min(x, y, hero.offsetWidth - x, hero.offsetHeight - y);
-    ripples.style.left = `${x}px`;
-    ripples.style.top = `${y}px`;
-    ripples.style.setProperty('--r', `${Math.min(Math.max(demo.offsetWidth, demo.offsetHeight) * 1.15, room / 0.76)}px`);
-  };
-  place();
-  new ResizeObserver(place).observe(hero);
-  return ripples;
-}
-
-// ---------------------------------------------------------------- M1 streaming reply + M2 failover chip
-function streamReply(ripples) {
+// ---------------------------------------------------------------- M1 traced turn + M2 hedged failover
+function streamReply() {
   const [prompt, reply] = demo.querySelectorAll('.turn');
-  const quote = reply.querySelector('q');
   const chip = demo.querySelector('.route-chip');
   const chipName = chip?.querySelector('.route-chip-name');
-  // Each word becomes a span, so the text (and walkthrough.js's speech) reads exactly as before.
-  const tokens = quote.textContent.trim().split(/\s+/).map((word) => Object.assign(document.createElement('span'), { className: 'stream-tok', textContent: word }));
-  quote.replaceChildren(...tokens.flatMap((token, i) => (i ? [' ', token] : [token])));
+  const tokens = replyTokens();
   if (chip) chip.hidden = false;
 
   let run = 0;
   const playing = () => demo.hasAttribute('data-playing');
+  const held = () => demo.hasAttribute('data-held');
   const alive = (id) => id === run && !playing();
 
   async function setRoute(state, text) {
@@ -98,90 +66,96 @@ function streamReply(ripples) {
     await chipName.animate([{ transform: 'translateY(70%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 220, easing: EASE }).finished;
   }
 
+  function resetRoute() {
+    if (!chip) return;
+    chip.dataset.state = 'primary';
+    chipName.getAnimations().forEach((animation) => animation.cancel());
+    chipName.textContent = 'Primary model';
+  }
+
+  // The demo takes over mid-turn: drop only this loop's own states. walkthrough.js owns the turns, the words and
+  // the trace from here on.
+  function yieldToDemo() {
+    demo.removeAttribute('data-thinking');
+    demo.removeAttribute('data-streaming');
+    resetRoute();
+  }
+
   function settle() {
     demo.removeAttribute('data-revealing');
     demo.removeAttribute('data-thinking');
     demo.removeAttribute('data-streaming');
     tokens.forEach((token) => token.classList.remove('is-last'));
-    ripples?.removeAttribute('data-fast');
-    // While the sample conversation plays, walkthrough.js owns the highlighted turn.
-    if (!playing()) [prompt, reply].forEach((turn) => turn.removeAttribute('data-current'));
+    [prompt, reply].forEach((turn) => turn.removeAttribute('data-current'));
   }
 
-  async function streamOnce(id) {
+  async function streamOnce(id, hedged) {
     await setRoute('primary', 'Primary model');
-    tokens.forEach((token) => token.classList.remove('is-on', 'is-last'));
+    resetTrace();
+    tokens.forEach((token) => token.classList.remove('is-on', 'is-last', 'is-cut'));
     demo.setAttribute('data-revealing', '');
     prompt.setAttribute('data-current', '');
+    stage('stt', 'active');
     await wait(900);
     if (!alive(id)) return;
+    stage('stt', 'done');
+    stage('end', 'active');
+    await wait(560);
+    if (!alive(id)) return;
+    stage('end', 'done');
     prompt.removeAttribute('data-current');
     reply.setAttribute('data-current', '');
     demo.setAttribute('data-thinking', '');
-    ripples?.setAttribute('data-fast', '');
-    await wait(520);
+    stage('llm', 'active');
+    if (hedged) {
+      await wait(900);
+      if (!alive(id)) return;
+      stage('llm', 'failed', 'No token in 2 s');
+      await setRoute('failing', 'Primary model');
+      await wait(850);
+      if (!alive(id)) return;
+      markHedged(true);
+      stage('llm', 'active', 'Fallback model');
+      await setRoute('fallback', 'Fallback model');
+      await wait(420);
+    } else {
+      await wait(620);
+    }
     if (!alive(id)) return;
+    stage('llm', 'done', hedged ? 'Fallback model' : undefined);
     demo.removeAttribute('data-thinking');
+    stage('tts', 'active');
+    await wait(380);
+    if (!alive(id)) return;
+    stage('tts', 'done');
+    speakProgress(0);
+    stage('speak', 'active');
     demo.setAttribute('data-streaming', '');
-    const failAt = chip ? Math.floor(tokens.length * 0.4) : -1;
     for (let i = 0; i < tokens.length; i++) {
-      if (i === failAt) {
-        demo.removeAttribute('data-streaming');
-        await setRoute('failing', 'Primary model');
-        await wait(850);
-        await setRoute('fallback', 'Fallback model');
-        if (!alive(id)) return;
-        demo.setAttribute('data-streaming', '');
-      }
       tokens[i - 1]?.classList.remove('is-last');
       tokens[i].classList.add('is-on', 'is-last');
+      speakProgress((i + 1) / tokens.length);
       await wait(55 + Math.random() * 85);
       if (!alive(id)) return;
     }
+    stage('speak', 'done');
     demo.removeAttribute('data-revealing');
     await wait(700);
   }
 
-  // Pressing "Click For Demo" stops the loop at once and shows the whole reply.
-  const stop = () => {
-    run++;
-    settle();
-  };
   new MutationObserver(() => {
-    if (playing()) stop();
+    if (!playing()) return;
+    run++;
+    yieldToDemo();
   }).observe(demo, { attributes: true, attributeFilter: ['data-playing'] });
 
   (async () => {
-    for (;;) {
-      await until(() => onScreen(demo) && !playing());
+    for (let turn = 0; ; turn++) {
+      await until(() => onScreen(demo) && !playing() && !held());
       const id = ++run;
-      await streamOnce(id);
-      settle();
+      await streamOnce(id, turn % 2 === 1);
+      if (id === run) settle();
       await wait(5200);
-    }
-  })();
-}
-
-// ---------------------------------------------------------------- M3 rotating role
-function rotateRoles() {
-  const em = hero.querySelector('h1 em');
-  if (!em) return;
-  // Screen readers keep reading the original words; the moving copy is hidden from them.
-  const spoken = Object.assign(document.createElement('span'), { className: 'visually-hidden', textContent: em.textContent });
-  const box = Object.assign(document.createElement('span'), { className: 'role-rot' });
-  const word = Object.assign(document.createElement('span'), { textContent: em.textContent });
-  box.setAttribute('aria-hidden', 'true');
-  box.append(word);
-  em.replaceChildren(spoken, box);
-
-  (async () => {
-    for (let k = 0; ;) {
-      await wait(k === 0 ? 3400 : 2200);
-      if (!onScreen(hero)) continue;
-      await word.animate([{ transform: 'none' }, { transform: 'translateY(-105%)' }], { duration: 380, easing: EASE_IO, fill: 'forwards' }).finished;
-      k = (k + 1) % ROLES.length;
-      word.textContent = ROLES[k];
-      await word.animate([{ transform: 'translateY(105%)' }, { transform: 'none' }], { duration: 520, easing: EASE, fill: 'forwards' }).finished;
     }
   })();
 }
@@ -234,10 +208,8 @@ if (hero && demo && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
   demo.querySelector('.route-chip')?.removeAttribute('hidden');
   observer.observe(hero);
   observer.observe(demo);
-  const ripples = addRipples();
   heroSettled().then(() => {
-    streamReply(ripples);
-    rotateRoles();
+    streamReply();
     followPointer();
   });
 }

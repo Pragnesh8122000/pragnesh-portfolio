@@ -8,7 +8,9 @@ const welcome = document.getElementById('welcome');
 const COUNT_MS = 2200;
 const EASE = 'cubic-bezier(.22, 1, .36, 1)';
 const EASE_IO = 'cubic-bezier(.65, 0, .35, 1)';
-const SKIP_EVENTS = ['pointerdown', 'wheel', 'keydown', 'touchstart'];
+const SKIP_EVENTS = ['pointerdown', 'wheel', 'keydown', 'touchstart', 'scroll'];
+// A visitor who scrolls or swipes is on the way down the page: the hero is shown as it is, not risen from nothing.
+const SCROLL_EVENTS = new Set(['wheel', 'touchstart', 'scroll']);
 
 let finished = false;
 
@@ -68,14 +70,14 @@ function zoomPoint(el) {
 }
 
 function revealHero() {
-  const parts = document.querySelectorAll('.hero .eyebrow, .hero h1, .hero .hero__lead, .hero .hero-action, .hero .console');
+  const parts = document.querySelectorAll('.hero h1, .hero .hero__lead, .hero .hero-proof, .hero .hero-actions, .hero .console');
   parts.forEach((el, i) => el.animate(
     [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }],
     { duration: 800, delay: i * 90, easing: EASE, fill: 'backwards' }
   ));
 }
 
-function finish({ fade = false } = {}) {
+function finish({ fade = false, reveal = true } = {}) {
   if (finished) return;
   finished = true;
   SKIP_EVENTS.forEach((type) => window.removeEventListener(type, skip));
@@ -84,14 +86,15 @@ function finish({ fade = false } = {}) {
     welcome.remove();
   };
   if (!root.classList.contains('welcome-on')) return end();
-  // The hero's start state is applied in this frame, so it never shows before it rises.
-  revealHero();
+  // The hero's start state is applied in this frame, so it never shows before it rises. A page already scrolled
+  // past the top skips the rise, so nothing on it is ever caught invisible mid-animation.
+  if (reveal && scrollY < innerHeight / 3) revealHero();
   if (fade) welcome.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, easing: EASE_IO }).finished.then(end, end);
   else end();
 }
 
-function skip() {
-  finish({ fade: true });
+function skip(event) {
+  finish({ fade: true, reveal: !SCROLL_EVENTS.has(event?.type) });
 }
 
 async function play() {
